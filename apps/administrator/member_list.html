@@ -376,7 +376,7 @@
         <div class="flex items-center justify-center min-h-screen p-4">
           <div class="bg-white rounded-xl shadow-xl w-full max-w-md" role="dialog" aria-labelledby="edit-modal-title">
             <div class="p-6">
-              <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
                 <h2 id="edit-modal-title" class="text-xl font-semibold text-slate-900">Edit Member</h2>
                 <button id="close-edit-modal" class="text-slate-400 hover:text-slate-600 focus:outline-none"
                   aria-label="Close">
@@ -919,6 +919,10 @@
       editingMemberId = memberId;
       document.getElementById('edit-member-name').value = member.name || '';
       document.getElementById('edit-member-email').value = member.email || '';
+
+      // Ensure any prior error UI is cleared and enable Save button
+      funClearEditErrors();
+
       document.getElementById('edit-member-modal').classList.remove('hidden');
       document.getElementById('edit-member-name').focus();
     };
@@ -928,6 +932,9 @@
       document.getElementById('edit-member-modal').classList.add('hidden');
       document.getElementById('edit-member-form').reset();
       funClearEditErrors();
+
+      // ensure Save is disabled on close (keeps modal predictable)
+      document.getElementById('save-edit').disabled = true;
     }
 
     function funClearEditErrors() {

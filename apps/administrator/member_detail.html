@@ -1,941 +1,1041 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Internal Team Management System</title>
 
-    <!-- Required: Main JS Script -->
-    <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Team Management System</title>
 
-    <!-- Required: TailwindCSS -->
-    <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+  <!-- Required: Main JS Script -->
+  <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
 
-    <!-- Required: Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+  <!-- Required: TailwindCSS -->
+  <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
 
-    <!-- Required: Favicon -->
-    <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen"/>
+  <!-- Required: Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
 
-    <!-- ECharts Support (for charts/graphs) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+  <!-- Required: Favicon -->
+  <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen" />
 
-    <!-- Markdown Support (for content rendering) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+  <!-- ECharts Support (for charts/graphs) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
 
-    <script data-tiramai="web-gen">
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
-            },
-            colors: {
-              'brand-primary': '#2563EB',
-              'brand-secondary': '#475569',
-              'brand-accent': '#059669',
-              'brand-surface': '#FFFFFF',
-              'brand-background': '#F8FAFC',
-              'brand-border': '#E2E8F0',
-              'brand-text-primary': '#0B1220',
-              'brand-text-secondary': '#111827'
-            }
+  <!-- Markdown Support (for content rendering) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+  <script data-tiramai="web-gen">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+          },
+          colors: {
+            'brand-primary': '#2563EB',
+            'brand-secondary': '#475569',
+            'brand-accent': '#059669',
+            'brand-surface': '#FFFFFF',
+            'brand-background': '#F8FAFC',
+            'brand-border': '#E2E8F0',
+            'brand-text-primary': '#0B1220',
+            'brand-text-secondary': '#111827'
           }
         }
       }
-    </script>
-  </head>
-  <body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
-    <!-- Top Navigation -->
-    <header class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
-      <div class="flex items-center gap-4">
-        <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
-          <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none"/>
-          <circle cx="120" cy="170" r="22" fill="#2563EB"/>
-          <circle cx="280" cy="170" r="22" fill="#2563EB"/>
-          <circle cx="200" cy="255" r="22" fill="#2563EB"/>
-          <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
-          <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
-          <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
-          <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white"/>
-        </svg>
-        <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
-        <!-- Mobile Menu Toggle -->
-        <button id="mobile-menu-toggle" class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
-          <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
-      </div>
-      
-      <div class="flex items-center gap-4">
-        <!-- User Profile Dropdown -->
-        <div class="relative">
-          <button id="user-profile-button" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold" id="user-avatar">
-              U
-            </div>
-            <span id="user-display-name" class="hidden sm:block">Loading...</span>
-            <i data-lucide="chevron-down" class="w-4 h-4"></i>
-          </button>
-          
-          <!-- Dropdown Menu -->
-          <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
-            <div class="px-4 py-2 border-b border-slate-200">
-              <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
-              <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
-            </div>
-            <button id="sign-out-btn" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-              Sign Out
-            </button>
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+  <!-- Top Navigation -->
+  <header
+    class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+    <div class="flex items-center gap-4">
+      <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+        <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none" />
+        <circle cx="120" cy="170" r="22" fill="#2563EB" />
+        <circle cx="280" cy="170" r="22" fill="#2563EB" />
+        <circle cx="200" cy="255" r="22" fill="#2563EB" />
+        <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white" />
+      </svg>
+      <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
+      <!-- Mobile Menu Toggle -->
+      <button id="mobile-menu-toggle"
+        class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <button id="user-profile-button"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <div
+            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold"
+            id="user-avatar">
+            U
           </div>
+          <span id="user-display-name" class="hidden sm:block">Loading...</span>
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="user-dropdown"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
+          <div class="px-4 py-2 border-b border-slate-200">
+            <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
+            <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
+          </div>
+          <button id="sign-out-btn"
+            class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            Sign Out
+          </button>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <div class="flex pt-16">
-      <!-- Side Navigation -->
-      <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
-        <nav class="p-4 space-y-2">
-          <!-- Admin Dashboard -->
-          <a href="admin_dashboard.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="admin_dashboard">
-            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-            <span>Admin Dashboard</span>
+  <div class="flex pt-16">
+    <!-- Side Navigation -->
+    <aside id="sidebar"
+      class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
+      <nav class="p-4 space-y-2">
+        <!-- Admin Dashboard -->
+        <a href="admin_dashboard.html"
+          class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          data-page="admin_dashboard">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span>Admin Dashboard</span>
+        </a>
+
+        <!-- Team Management -->
+        <div class="space-y-1">
+          <a href="team_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="team_list">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span>Team List</span>
           </a>
-
-          <!-- Team Management -->
-          <div class="space-y-1">
-            <a href="team_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="team_list">
-              <i data-lucide="users" class="w-5 h-5"></i>
-              <span>Team List</span>
-            </a>
-          </div>
-
-          <!-- Member Management -->
-          <div class="space-y-1">
-            <a href="member_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="member_list">
-              <i data-lucide="user" class="w-5 h-5"></i>
-              <span>Member List</span>
-            </a>
-          </div>
-
-          <!-- Role Management -->
-          <div class="space-y-1">
-            <a href="role_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="role_list">
-              <i data-lucide="award" class="w-5 h-5"></i>
-              <span>Role List</span>
-            </a>
-          </div>
-        </nav>
-        
-        <!-- Footer -->
-        <div class="absolute bottom-4 left-0 right-0 px-4">
-          <div class="text-center text-xs text-slate-500 bg-white py-2">
-            Made with ❤️ by TiramAi
-          </div>
         </div>
-      </aside>
 
-      <!-- Mobile Overlay -->
-      <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
-
-      <!-- Main Content -->
-      <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
-        
-<!-- Member Detail Page -->
-<div class="container mx-auto max-w-7xl">
-  <!-- Back Navigation -->
-  <div class="mb-6">
-    <button id="back-button" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 font-medium">
-      <i data-lucide="arrow-left" class="w-4 h-4"></i>
-      Back to Members List
-    </button>
-  </div>
-
-  <!-- Member Info Card -->
-  <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
-    <!-- Skeleton for Member Info -->
-    <div id="member-info-skeleton" class="animate-pulse">
-      <div class="h-6 bg-slate-200 rounded w-48 mb-4"></div>
-      <div class="flex items-start justify-between">
-        <div class="space-y-2">
-          <div class="h-4 bg-slate-200 rounded w-64"></div>
-          <div class="h-4 bg-slate-200 rounded w-48"></div>
+        <!-- Member Management -->
+        <div class="space-y-1">
+          <a href="member_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="member_list">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span>Member List</span>
+          </a>
         </div>
-        <div class="flex gap-2">
-          <div class="h-9 bg-slate-200 rounded w-20"></div>
-          <div class="h-9 bg-slate-200 rounded w-20"></div>
+
+        <!-- Role Management -->
+        <div class="space-y-1">
+          <a href="role_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="role_list">
+            <i data-lucide="award" class="w-5 h-5"></i>
+            <span>Role List</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="absolute bottom-4 left-0 right-0 px-4">
+        <div class="text-center text-xs text-slate-500 bg-white py-2">
+          Made with ❤️ by TiramAi
         </div>
       </div>
-    </div>
+    </aside>
 
-    <!-- Actual Member Info -->
-    <div id="member-info-content" class="hidden">
-      <h1 id="member-name" class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900 mb-4"></h1>
-      <div class="flex items-start justify-between">
-        <div class="space-y-2">
-          <div class="flex items-center gap-2 text-sm text-slate-600">
-            <i data-lucide="mail" class="w-4 h-4"></i>
-            <span id="member-email"></span>
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+    <!-- Main Content -->
+    <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
+
+      <!-- Member Detail Page -->
+      <div class="container mx-auto max-w-7xl">
+        <!-- Back Navigation -->
+        <div class="mb-6">
+          <button id="back-button"
+            class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 font-medium">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            Back to Members List
+          </button>
+        </div>
+
+        <!-- Member Info Card -->
+        <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
+          <!-- Skeleton for Member Info -->
+          <div id="member-info-skeleton" class="animate-pulse">
+            <div class="h-6 bg-slate-200 rounded w-48 mb-4"></div>
+            <div class="flex items-start justify-between">
+              <div class="space-y-2">
+                <div class="h-4 bg-slate-200 rounded w-64"></div>
+                <div class="h-4 bg-slate-200 rounded w-48"></div>
+              </div>
+              <div class="flex gap-2">
+                <div class="h-9 bg-slate-200 rounded w-20"></div>
+                <div class="h-9 bg-slate-200 rounded w-20"></div>
+              </div>
+            </div>
           </div>
-          <div class="flex items-center gap-2 text-sm text-slate-600">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            <span>Member since <span id="member-created-date"></span></span>
+
+          <!-- Actual Member Info -->
+          <div id="member-info-content" class="hidden">
+            <h1 id="member-name" class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900 mb-4"></h1>
+            <div class="flex items-start justify-between">
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                  <span id="member-email"></span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                  <i data-lucide="calendar" class="w-4 h-4"></i>
+                  <span>Member since <span id="member-created-date"></span></span>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button id="edit-member-btn"
+                  class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm">
+                  Edit
+                </button>
+                <button id="delete-member-btn"
+                  class="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm">
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex gap-2">
-          <button id="edit-member-btn" class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm">
-            Edit
-          </button>
-          <button id="delete-member-btn" class="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm">
-            Delete
-          </button>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Teams Section -->
+          <div class="bg-white rounded-lg shadow border border-slate-200">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl leading-7 font-semibold text-slate-900">Teams</h2>
+                <span id="teams-count"
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">0</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="refresh-teams-btn"
+                  class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700"
+                  aria-label="Refresh teams">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+                <button id="add-to-teams-btn"
+                  class="px-3 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  Add to Teams
+                </button>
+              </div>
+            </div>
+
+            <div class="p-6">
+              <!-- Teams Skeleton -->
+              <div id="teams-skeleton" class="animate-pulse space-y-3">
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+                  <div class="h-4 bg-slate-200 rounded w-32"></div>
+                  <div class="h-4 bg-slate-200 rounded w-20"></div>
+                </div>
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+                  <div class="h-4 bg-slate-200 rounded w-40"></div>
+                  <div class="h-4 bg-slate-200 rounded w-20"></div>
+                </div>
+              </div>
+
+              <!-- Teams Content -->
+              <div id="teams-content" class="hidden">
+                <!-- Teams Table -->
+                <div id="teams-table-container" class="hidden">
+                  <div class="space-y-2">
+                    <!-- Search -->
+                    <div class="mb-4">
+                      <div class="relative">
+                        <i data-lucide="search"
+                          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+                        <input type="text" id="teams-search" placeholder="Search teams..."
+                          class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                      </div>
+                    </div>
+
+                    <!-- Teams List -->
+                    <div id="teams-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+
+                    <!-- Pagination -->
+                    <div id="teams-pagination" class="flex items-center justify-between mt-4">
+                      <div class="text-sm text-slate-600">
+                        Showing <span id="teams-showing">0</span> of <span id="teams-total">0</span> teams
+                      </div>
+                      <div class="flex gap-2">
+                        <button id="teams-prev-btn"
+                          class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                          Previous
+                        </button>
+                        <button id="teams-next-btn"
+                          class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="teams-empty-state" class="text-center py-8">
+                  <i data-lucide="users" class="w-12 h-12 text-slate-300 mx-auto mb-4"></i>
+                  <p class="text-slate-600 text-sm">This member is not part of any teams yet.</p>
+                  <button id="add-to-teams-empty-btn"
+                    class="mt-4 px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Add to Teams
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Roles Section -->
+          <div class="bg-white rounded-lg shadow border border-slate-200">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl leading-7 font-semibold text-slate-900">Roles</h2>
+                <span id="roles-count"
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">0</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="refresh-roles-btn"
+                  class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700"
+                  aria-label="Refresh roles">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+                <button id="add-to-roles-btn"
+                  class="px-3 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  Add to Roles
+                </button>
+              </div>
+            </div>
+
+            <div class="p-6">
+              <!-- Roles Skeleton -->
+              <div id="roles-skeleton" class="animate-pulse space-y-3">
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+                  <div class="space-y-1">
+                    <div class="h-4 bg-slate-200 rounded w-32"></div>
+                    <div class="h-3 bg-slate-200 rounded w-48"></div>
+                  </div>
+                  <div class="h-4 bg-slate-200 rounded w-20"></div>
+                </div>
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+                  <div class="space-y-1">
+                    <div class="h-4 bg-slate-200 rounded w-28"></div>
+                    <div class="h-3 bg-slate-200 rounded w-40"></div>
+                  </div>
+                  <div class="h-4 bg-slate-200 rounded w-20"></div>
+                </div>
+              </div>
+
+              <!-- Roles Content -->
+              <div id="roles-content" class="hidden">
+                <!-- Roles Table -->
+                <div id="roles-table-container" class="hidden">
+                  <div class="space-y-2">
+                    <!-- Search -->
+                    <div class="mb-4">
+                      <div class="relative">
+                        <i data-lucide="search"
+                          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+                        <input type="text" id="roles-search" placeholder="Search roles..."
+                          class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                      </div>
+                    </div>
+
+                    <!-- Roles List -->
+                    <div id="roles-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+
+                    <!-- Pagination -->
+                    <div id="roles-pagination" class="flex items-center justify-between mt-4">
+                      <div class="text-sm text-slate-600">
+                        Showing <span id="roles-showing">0</span> of <span id="roles-total">0</span> roles
+                      </div>
+                      <div class="flex gap-2">
+                        <button id="roles-prev-btn"
+                          class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                          Previous
+                        </button>
+                        <button id="roles-next-btn"
+                          class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="roles-empty-state" class="text-center py-8">
+                  <i data-lucide="award" class="w-12 h-12 text-slate-300 mx-auto mb-4"></i>
+                  <p class="text-slate-600 text-sm">This member has no roles assigned yet.</p>
+                  <button id="add-to-roles-empty-btn"
+                    class="mt-4 px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Add to Roles
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Teams Section -->
-    <div class="bg-white rounded-lg shadow border border-slate-200">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <div class="flex items-center gap-2">
-          <h2 class="text-xl leading-7 font-semibold text-slate-900">Teams</h2>
-          <span id="teams-count" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">0</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="refresh-teams-btn" class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700" aria-label="Refresh teams">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-          </button>
-          <button id="add-to-teams-btn" class="px-3 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Add to Teams
-          </button>
-        </div>
-      </div>
-      
-      <div class="p-6">
-        <!-- Teams Skeleton -->
-        <div id="teams-skeleton" class="animate-pulse space-y-3">
-          <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-            <div class="h-4 bg-slate-200 rounded w-32"></div>
-            <div class="h-4 bg-slate-200 rounded w-20"></div>
-          </div>
-          <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-            <div class="h-4 bg-slate-200 rounded w-40"></div>
-            <div class="h-4 bg-slate-200 rounded w-20"></div>
-          </div>
-        </div>
+      <!-- Add to Teams Modal -->
+      <div id="add-teams-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
+        aria-labelledby="add-teams-title" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden" role="document">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h3 id="add-teams-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Add to Teams</h3>
+              <button id="close-add-teams-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
 
-        <!-- Teams Content -->
-        <div id="teams-content" class="hidden">
-          <!-- Teams Table -->
-          <div id="teams-table-container" class="hidden">
-            <div class="space-y-2">
+            <div class="p-6 overflow-y-auto max-h-96">
               <!-- Search -->
               <div class="mb-4">
                 <div class="relative">
-                  <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
-                  <input type="text" id="teams-search" placeholder="Search teams..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                  <i data-lucide="search"
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+                  <input type="text" id="teams-modal-search" placeholder="Search available teams..."
+                    class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                 </div>
               </div>
-              
+
+              <!-- Select All -->
+              <div class="flex items-center justify-between mb-4">
+                <label class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                  <input type="checkbox" id="select-all-teams"
+                    class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                  Select All
+                </label>
+                <button id="deselect-all-teams" class="text-sm text-blue-600 hover:text-blue-700">Deselect All</button>
+              </div>
+
               <!-- Teams List -->
-              <div id="teams-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
-              
-              <!-- Pagination -->
-              <div id="teams-pagination" class="flex items-center justify-between mt-4">
-                <div class="text-sm text-slate-600">
-                  Showing <span id="teams-showing">0</span> of <span id="teams-total">0</span> teams
-                </div>
-                <div class="flex gap-2">
-                  <button id="teams-prev-btn" class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Previous
-                  </button>
-                  <button id="teams-next-btn" class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Next
-                  </button>
-                </div>
+              <div id="available-teams-list" class="space-y-2 max-h-48 overflow-y-auto">
+                <!-- Dynamic content -->
+              </div>
+
+              <!-- Loading -->
+              <div id="teams-modal-loading" class="text-center py-4">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="text-sm text-slate-600 mt-2">Loading available teams...</p>
+              </div>
+
+              <!-- Empty state -->
+              <div id="no-available-teams" class="hidden text-center py-4">
+                <p class="text-sm text-slate-600">All teams are already assigned to this member.</p>
               </div>
             </div>
-          </div>
 
-          <!-- Empty State -->
-          <div id="teams-empty-state" class="text-center py-8">
-            <i data-lucide="users" class="w-12 h-12 text-slate-300 mx-auto mb-4"></i>
-            <p class="text-slate-600 text-sm">This member is not part of any teams yet.</p>
-            <button id="add-to-teams-empty-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-              Add to Teams
-            </button>
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
+              <button id="cancel-add-teams"
+                class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Cancel
+              </button>
+              <button id="save-teams-assignments"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Roles Section -->
-    <div class="bg-white rounded-lg shadow border border-slate-200">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <div class="flex items-center gap-2">
-          <h2 class="text-xl leading-7 font-semibold text-slate-900">Roles</h2>
-          <span id="roles-count" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">0</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="refresh-roles-btn" class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700" aria-label="Refresh roles">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-          </button>
-          <button id="add-to-roles-btn" class="px-3 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Add to Roles
-          </button>
-        </div>
-      </div>
-      
-      <div class="p-6">
-        <!-- Roles Skeleton -->
-        <div id="roles-skeleton" class="animate-pulse space-y-3">
-          <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-            <div class="space-y-1">
-              <div class="h-4 bg-slate-200 rounded w-32"></div>
-              <div class="h-3 bg-slate-200 rounded w-48"></div>
+      <!-- Add to Roles Modal -->
+      <div id="add-roles-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
+        aria-labelledby="add-roles-title" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden" role="document">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h3 id="add-roles-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Add to Roles</h3>
+              <button id="close-add-roles-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
             </div>
-            <div class="h-4 bg-slate-200 rounded w-20"></div>
-          </div>
-          <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-            <div class="space-y-1">
-              <div class="h-4 bg-slate-200 rounded w-28"></div>
-              <div class="h-3 bg-slate-200 rounded w-40"></div>
-            </div>
-            <div class="h-4 bg-slate-200 rounded w-20"></div>
-          </div>
-        </div>
 
-        <!-- Roles Content -->
-        <div id="roles-content" class="hidden">
-          <!-- Roles Table -->
-          <div id="roles-table-container" class="hidden">
-            <div class="space-y-2">
+            <div class="p-6 overflow-y-auto max-h-96">
               <!-- Search -->
               <div class="mb-4">
                 <div class="relative">
-                  <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
-                  <input type="text" id="roles-search" placeholder="Search roles..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                  <i data-lucide="search"
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+                  <input type="text" id="roles-modal-search" placeholder="Search available roles..."
+                    class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                 </div>
               </div>
-              
+
+              <!-- Select All -->
+              <div class="flex items-center justify-between mb-4">
+                <label class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                  <input type="checkbox" id="select-all-roles"
+                    class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                  Select All
+                </label>
+                <button id="deselect-all-roles" class="text-sm text-blue-600 hover:text-blue-700">Deselect All</button>
+              </div>
+
               <!-- Roles List -->
-              <div id="roles-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
-              
-              <!-- Pagination -->
-              <div id="roles-pagination" class="flex items-center justify-between mt-4">
-                <div class="text-sm text-slate-600">
-                  Showing <span id="roles-showing">0</span> of <span id="roles-total">0</span> roles
+              <div id="available-roles-list" class="space-y-2 max-h-48 overflow-y-auto">
+                <!-- Dynamic content -->
+              </div>
+
+              <!-- Loading -->
+              <div id="roles-modal-loading" class="text-center py-4">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="text-sm text-slate-600 mt-2">Loading available roles...</p>
+              </div>
+
+              <!-- Empty state -->
+              <div id="no-available-roles" class="hidden text-center py-4">
+                <p class="text-sm text-slate-600">All roles are already assigned to this member.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
+              <button id="cancel-add-roles"
+                class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Cancel
+              </button>
+              <button id="save-roles-assignments"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remove from Team Confirmation Modal -->
+      <div id="remove-team-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
+        aria-labelledby="remove-team-title" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl max-w-md w-full" role="document">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h3 id="remove-team-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Remove from Team
+              </h3>
+              <button id="close-remove-team-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
                 </div>
-                <div class="flex gap-2">
-                  <button id="roles-prev-btn" class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Previous
-                  </button>
-                  <button id="roles-next-btn" class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Next
-                  </button>
+                <div>
+                  <p class="text-sm text-slate-900">Are you sure you want to remove <strong
+                      id="remove-member-name-team"></strong> from <strong id="remove-team-name"></strong>?</p>
+                  <p class="text-sm text-slate-600 mt-1">This action cannot be undone.</p>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Empty State -->
-          <div id="roles-empty-state" class="text-center py-8">
-            <i data-lucide="award" class="w-12 h-12 text-slate-300 mx-auto mb-4"></i>
-            <p class="text-slate-600 text-sm">This member has no roles assigned yet.</p>
-            <button id="add-to-roles-empty-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-              Add to Roles
-            </button>
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
+              <button id="cancel-remove-team"
+                class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Cancel
+              </button>
+              <button id="confirm-remove-team"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Remove from Role Confirmation Modal -->
+      <div id="remove-role-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
+        aria-labelledby="remove-role-title" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl max-w-md w-full" role="document">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h3 id="remove-role-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Remove from Role
+              </h3>
+              <button id="close-remove-role-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-900">Are you sure you want to remove the <strong
+                      id="remove-role-name"></strong> role from <strong id="remove-member-name-role"></strong>?</p>
+                  <p class="text-sm text-slate-600 mt-1">This action cannot be undone.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
+              <button id="cancel-remove-role"
+                class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Cancel
+              </button>
+              <button id="confirm-remove-role"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Edit Member Modal -->
+      <div id="edit-member-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
+        aria-labelledby="edit-member-title" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl w-full max-w-md" role="document">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h3 id="edit-member-title" class="text-xl font-semibold text-slate-900">Edit Member</h3>
+              <button id="close-edit-member-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <div class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-2">Member Name
+                    *</label>
+                  <input id="edit-member-name" required type="text"
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-2">Email Address
+                    *</label>
+                  <input id="edit-member-email" type="email"
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
+              <button id="cancel-edit-member"
+                class="px-4 py-2 text-slate-700 bg-white border border-slate-200 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500">Cancel</button>
+              <button id="save-edit-member"
+                class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </main>
   </div>
-</div>
 
-<!-- Add to Teams Modal -->
-<div id="add-teams-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog" aria-labelledby="add-teams-title" aria-hidden="true">
-  <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden" role="document">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <h3 id="add-teams-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Add to Teams</h3>
-        <button id="close-add-teams-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      
-      <div class="p-6 overflow-y-auto max-h-96">
-        <!-- Search -->
-        <div class="mb-4">
-          <div class="relative">
-            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
-            <input type="text" id="teams-modal-search" placeholder="Search available teams..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-          </div>
-        </div>
+  <!-- Required: JavaScript -->
+  <script type="module" data-tiramai="web-gen">
+    import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+    import { auth, db, storage } from "./scripts/firebase.js";
+    import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 
-        <!-- Select All -->
-        <div class="flex items-center justify-between mb-4">
-          <label class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
-            <input type="checkbox" id="select-all-teams" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-            Select All
-          </label>
-          <button id="deselect-all-teams" class="text-sm text-blue-600 hover:text-blue-700">Deselect All</button>
-        </div>
+    // Initialize Lucide icons
+    lucide.createIcons();
 
-        <!-- Teams List -->
-        <div id="available-teams-list" class="space-y-2 max-h-48 overflow-y-auto">
-          <!-- Dynamic content -->
-        </div>
+    // Global variables
+    let currentUser = null;
+    let userData = null;
 
-        <!-- Loading -->
-        <div id="teams-modal-loading" class="text-center py-4">
-          <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
-          <p class="text-sm text-slate-600 mt-2">Loading available teams...</p>
-        </div>
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
 
-        <!-- Empty state -->
-        <div id="no-available-teams" class="hidden text-center py-4">
-          <p class="text-sm text-slate-600">All teams are already assigned to this member.</p>
-        </div>
-      </div>
-      
-      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
-        <button id="cancel-add-teams" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          Cancel
-        </button>
-        <button id="save-teams-assignments" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+    mobileMenuToggle?.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      mobileOverlay.classList.toggle('hidden');
+    });
 
-<!-- Add to Roles Modal -->
-<div id="add-roles-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog" aria-labelledby="add-roles-title" aria-hidden="true">
-  <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden" role="document">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <h3 id="add-roles-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Add to Roles</h3>
-        <button id="close-add-roles-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      
-      <div class="p-6 overflow-y-auto max-h-96">
-        <!-- Search -->
-        <div class="mb-4">
-          <div class="relative">
-            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"></i>
-            <input type="text" id="roles-modal-search" placeholder="Search available roles..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-          </div>
-        </div>
+    mobileOverlay?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      mobileOverlay.classList.add('hidden');
+    });
 
-        <!-- Select All -->
-        <div class="flex items-center justify-between mb-4">
-          <label class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
-            <input type="checkbox" id="select-all-roles" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-            Select All
-          </label>
-          <button id="deselect-all-roles" class="text-sm text-blue-600 hover:text-blue-700">Deselect All</button>
-        </div>
+    // User profile dropdown functionality
+    const userProfileButton = document.getElementById('user-profile-button');
+    const userDropdown = document.getElementById('user-dropdown');
 
-        <!-- Roles List -->
-        <div id="available-roles-list" class="space-y-2 max-h-48 overflow-y-auto">
-          <!-- Dynamic content -->
-        </div>
+    userProfileButton?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
 
-        <!-- Loading -->
-        <div id="roles-modal-loading" class="text-center py-4">
-          <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
-          <p class="text-sm text-slate-600 mt-2">Loading available roles...</p>
-        </div>
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
+        userDropdown?.classList.add('hidden');
+      }
+    });
 
-        <!-- Empty state -->
-        <div id="no-available-roles" class="hidden text-center py-4">
-          <p class="text-sm text-slate-600">All roles are already assigned to this member.</p>
-        </div>
-      </div>
-      
-      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
-        <button id="cancel-add-roles" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          Cancel
-        </button>
-        <button id="save-roles-assignments" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+    // Sign out functionality
+    document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
+      try {
+        showLoader('Signing out...');
+        await signOut(auth);
+        hideLoader();
+        window.location.href = 'auth.html';
+      } catch (error) {
+        hideLoader();
+        showToast('Failed to sign out: ' + error.message, 'error');
+      }
+    });
 
-<!-- Remove from Team Confirmation Modal -->
-<div id="remove-team-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog" aria-labelledby="remove-team-title" aria-hidden="true">
-  <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full" role="document">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <h3 id="remove-team-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Remove from Team</h3>
-        <button id="close-remove-team-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      
-      <div class="p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
-          </div>
-          <div>
-            <p class="text-sm text-slate-900">Are you sure you want to remove <strong id="remove-member-name-team"></strong> from <strong id="remove-team-name"></strong>?</p>
-            <p class="text-sm text-slate-600 mt-1">This action cannot be undone.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
-        <button id="cancel-remove-team" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          Cancel
-        </button>
-        <button id="confirm-remove-team" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-          Remove
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+    // Initialize user profile
+    async function initializeUserProfile(user) {
+      currentUser = user;
 
-<!-- Remove from Role Confirmation Modal -->
-<div id="remove-role-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog" aria-labelledby="remove-role-title" aria-hidden="true">
-  <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full" role="document">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <h3 id="remove-role-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Remove from Role</h3>
-        <button id="close-remove-role-modal" class="text-slate-400 hover:text-slate-600" aria-label="Close modal">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      
-      <div class="p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
-          </div>
-          <div>
-            <p class="text-sm text-slate-900">Are you sure you want to remove the <strong id="remove-role-name"></strong> role from <strong id="remove-member-name-role"></strong>?</p>
-            <p class="text-sm text-slate-600 mt-1">This action cannot be undone.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
-        <button id="cancel-remove-role" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          Cancel
-        </button>
-        <button id="confirm-remove-role" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-          Remove
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+      try {
+        // Try to get user data from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
 
-      </main>
-    </div>
-
-    <!-- Required: JavaScript -->
-    <script type="module" data-tiramai="web-gen">
-      import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
-      import { auth, db, storage } from "./scripts/firebase.js";
-      import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-      import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
-
-      // Initialize Lucide icons
-      lucide.createIcons();
-
-      // Global variables
-      let currentUser = null;
-      let userData = null;
-
-      // Mobile menu functionality
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const sidebar = document.getElementById('sidebar');
-      const mobileOverlay = document.getElementById('mobile-overlay');
-
-      mobileMenuToggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('-translate-x-full');
-        mobileOverlay.classList.toggle('hidden');
-      });
-
-      mobileOverlay?.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full');
-        mobileOverlay.classList.add('hidden');
-      });
-
-      // User profile dropdown functionality
-      const userProfileButton = document.getElementById('user-profile-button');
-      const userDropdown = document.getElementById('user-dropdown');
-
-      userProfileButton?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        userDropdown.classList.toggle('hidden');
-      });
-
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
-          userDropdown?.classList.add('hidden');
-        }
-      });
-
-      // Sign out functionality
-      document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
-        try {
-          showLoader('Signing out...');
-          await signOut(auth);
-          hideLoader();
-          window.location.href = 'auth.html';
-        } catch (error) {
-          hideLoader();
-          showToast('Failed to sign out: ' + error.message, 'error');
-        }
-      });
-
-      // Initialize user profile
-      async function initializeUserProfile(user) {
-        currentUser = user;
-        
-        try {
-          // Try to get user data from Firestore
-          const userDocRef = doc(db, 'users', user.uid);
-          const userDoc = await getDoc(userDocRef);
-          
-          if (userDoc.exists()) {
-            userData = userDoc.data();
-            updateUserUI(userData, user.email);
-          } else {
-            // Fallback to auth user data
-            updateUserUI(null, user.email);
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
+        if (userDoc.exists()) {
+          userData = userDoc.data();
+          updateUserUI(userData, user.email);
+        } else {
           // Fallback to auth user data
           updateUserUI(null, user.email);
         }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Fallback to auth user data
+        updateUserUI(null, user.email);
       }
-
-      // Update user UI elements
-      function updateUserUI(userData, email) {
-        const userAvatar = document.getElementById('user-avatar');
-        const userDisplayName = document.getElementById('user-display-name');
-        const dropdownUserName = document.getElementById('dropdown-user-name');
-        const dropdownUserEmail = document.getElementById('dropdown-user-email');
-
-        let displayName = 'User';
-        let fullName = 'User';
-
-        if (userData && userData.firstName) {
-          displayName = userData.firstName;
-          fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
-        } else if (email) {
-          displayName = email.split('@')[0];
-          fullName = email;
-        }
-
-        // Update avatar with first letter
-        if (userAvatar) {
-          userAvatar.textContent = displayName.charAt(0).toUpperCase();
-        }
-
-        // Update display name
-        if (userDisplayName) {
-          userDisplayName.textContent = displayName;
-        }
-
-        // Update dropdown
-        if (dropdownUserName) {
-          dropdownUserName.textContent = fullName;
-        }
-        if (dropdownUserEmail) {
-          dropdownUserEmail.textContent = email || 'No email';
-        }
-      }
-
-      // Set active navigation item
-      function setActiveNavItem() {
-        const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
-        
-        document.querySelectorAll('.nav-item').forEach(item => {
-          const pageName = item.getAttribute('data-page');
-          if (pageName === currentPage) {
-            item.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            item.classList.add('bg-blue-600', 'text-white');
-          } else {
-            item.classList.remove('bg-blue-600', 'text-white');
-            item.classList.add('text-slate-700', 'hover:bg-slate-100');
-          }
-        });
-      }
-
-      // Auth state observer
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          initializeUserProfile(user);
-          setActiveNavItem();
-        } else {
-          window.location.href = 'auth.html';
-        }
-      });
-
-      // Set active nav item on page load
-      setActiveNavItem();
-
-      // Export for use in page-specific scripts
-      window.appGlobals = {
-        currentUser,
-        userData,
-        showToast,
-        showLoader,
-        hideLoader
-      };
-    </script>
-
-    
-<script id="data-script" type="module" data-tiramai="web-gen">
-  import { onAuthStateChanged, getAuth } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-  import { 
-    collection, getDocs, doc, getDoc, deleteDoc, writeBatch, addDoc,
-    query, where, orderBy, limit, startAfter, Timestamp
-  } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
-  import { auth, getDb } from "./scripts/firebase.js";
-  import { showToast, showLoader, hideLoader } from "./scripts/main.js";
-
-  const db = getDb();
-
-  // Global variables
-  let currentMember = null;
-  let currentTeams = [];
-  let currentRoles = [];
-  let teamsPageSize = 25;
-  let teamsCurrentPage = 0;
-  let rolesPageSize = 25;
-  let rolesCurrentPage = 0;
-  let filteredTeams = [];
-  let filteredRoles = [];
-  let currentTeamToRemove = null;
-  let currentRoleToRemove = null;
-
-  // Get member ID from URL parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  const memberId = urlParams.get('memberId');
-
-  if (!memberId) {
-    showToast('Member ID is required', 'error');
-    window.location.href = 'member_list.html';
-  }
-
-  // Authentication check
-  onAuthStateChanged(auth, user => {
-    if (!user) location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname + location.search);
-    else funInitialLoad();
-  });
-
-  // Utility functions
-  const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
-
-  // Format date function
-  function formatDate(dateString) {
-    if (!dateString) return 'N/A';
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-    } catch (error) {
-      return 'N/A';
     }
-  }
 
-  // Load member details
-  async function funLoadMember() {
-    try {
-      const memberDoc = await getDoc(doc(db, 'members', memberId));
-      if (!memberDoc.exists()) {
-        showToast('Member not found', 'error');
-        window.location.href = 'member_list.html';
+    // Update user UI elements
+    function updateUserUI(userData, email) {
+      const userAvatar = document.getElementById('user-avatar');
+      const userDisplayName = document.getElementById('user-display-name');
+      const dropdownUserName = document.getElementById('dropdown-user-name');
+      const dropdownUserEmail = document.getElementById('dropdown-user-email');
+
+      let displayName = 'User';
+      let fullName = 'User';
+
+      if (userData && userData.firstName) {
+        displayName = userData.firstName;
+        fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+      } else if (email) {
+        displayName = email.split('@')[0];
+        fullName = email;
+      }
+
+      // Update avatar with first letter
+      if (userAvatar) {
+        userAvatar.textContent = displayName.charAt(0).toUpperCase();
+      }
+
+      // Update display name
+      if (userDisplayName) {
+        userDisplayName.textContent = displayName;
+      }
+
+      // Update dropdown
+      if (dropdownUserName) {
+        dropdownUserName.textContent = fullName;
+      }
+      if (dropdownUserEmail) {
+        dropdownUserEmail.textContent = email || 'No email';
+      }
+    }
+
+    // Set active navigation item
+    function setActiveNavItem() {
+      const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        const pageName = item.getAttribute('data-page');
+        if (pageName === currentPage) {
+          item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+          item.classList.add('bg-blue-600', 'text-white');
+        } else {
+          item.classList.remove('bg-blue-600', 'text-white');
+          item.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+      });
+    }
+
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        initializeUserProfile(user);
+        setActiveNavItem();
+      } else {
+        window.location.href = 'auth.html';
+      }
+    });
+
+    // Set active nav item on page load
+    setActiveNavItem();
+
+    // Export for use in page-specific scripts
+    window.appGlobals = {
+      currentUser,
+      userData,
+      showToast,
+      showLoader,
+      hideLoader
+    };
+  </script>
+
+
+  <script id="data-script" type="module" data-tiramai="web-gen">
+    import { onAuthStateChanged, getAuth } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import {
+      collection, getDocs, doc, getDoc, deleteDoc, writeBatch, addDoc, updateDoc,
+      query, where, orderBy, limit, startAfter, Timestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+    import { auth, getDb } from "./scripts/firebase.js";
+    import { showToast, showLoader, hideLoader } from "./scripts/main.js";
+
+    const db = getDb();
+
+    // Global variables
+    let currentMember = null;
+    let currentTeams = [];
+    let currentRoles = [];
+    let teamsPageSize = 25;
+    let teamsCurrentPage = 0;
+    let rolesPageSize = 25;
+    let rolesCurrentPage = 0;
+    let filteredTeams = [];
+    let filteredRoles = [];
+    let currentTeamToRemove = null;
+    let currentRoleToRemove = null;
+
+    // Get member ID from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const memberId = urlParams.get('memberId');
+
+    if (!memberId) {
+      showToast('Member ID is required', 'error');
+      window.location.href = 'member_list.html';
+    }
+
+    // Authentication check
+    onAuthStateChanged(auth, user => {
+      if (!user) location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname + location.search);
+      else funInitialLoad();
+    });
+
+    // Utility functions
+    const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+    // Format date function
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } catch (error) {
+        return 'N/A';
+      }
+    }
+
+    // Load member details
+    async function funLoadMember() {
+      try {
+        const memberDoc = await getDoc(doc(db, 'members', memberId));
+        if (!memberDoc.exists()) {
+          showToast('Member not found', 'error');
+          window.location.href = 'member_list.html';
+          return null;
+        }
+
+        const memberData = { id: memberDoc.id, ...memberDoc.data() };
+        currentMember = memberData;
+
+        // Update UI
+        document.getElementById('member-name').textContent = memberData.name || 'N/A';
+        document.getElementById('member-email').textContent = memberData.email || 'N/A';
+        document.getElementById('member-created-date').textContent = formatDate(memberData.createdAt);
+
+        // Show content, hide skeleton
+        document.getElementById('member-info-skeleton').classList.add('hidden');
+        document.getElementById('member-info-content').classList.remove('hidden');
+
+        return memberData;
+      } catch (error) {
+        showToast('Failed to load member: ' + (error.message || 'Unknown error'), 'error');
         return null;
       }
-      
-      const memberData = { id: memberDoc.id, ...memberDoc.data() };
-      currentMember = memberData;
-      
-      // Update UI
-      document.getElementById('member-name').textContent = memberData.name || 'N/A';
-      document.getElementById('member-email').textContent = memberData.email || 'N/A';
-      document.getElementById('member-created-date').textContent = formatDate(memberData.createdAt);
-      
-      // Show content, hide skeleton
-      document.getElementById('member-info-skeleton').classList.add('hidden');
-      document.getElementById('member-info-content').classList.remove('hidden');
-      
-      return memberData;
-    } catch (error) {
-      showToast('Failed to load member: ' + (error.message || 'Unknown error'), 'error');
-      return null;
     }
-  }
 
-  // Load member teams
-  async function funLoadMemberTeams() {
-    try {
-      // Get team memberships for this member
-      const teamMembersQuery = query(
-        collection(db, 'teamMembers'),
-        where('memberId', '==', memberId),
-        orderBy('joinedAt', 'desc')
-      );
-      
-      const teamMembersSnapshot = await getDocs(teamMembersQuery);
-      const teamIds = teamMembersSnapshot.docs.map(doc => ({
-        teamId: doc.data().teamId,
-        joinedAt: doc.data().joinedAt,
-        teamMemberId: doc.id
-      }));
+    // Load member teams
+    async function funLoadMemberTeams() {
+      try {
+        // Get team memberships for this member
+        const teamMembersQuery = query(
+          collection(db, 'teamMembers'),
+          where('memberId', '==', memberId),
+          orderBy('joinedAt', 'desc')
+        );
 
-      if (teamIds.length === 0) {
+        const teamMembersSnapshot = await getDocs(teamMembersQuery);
+        const teamIds = teamMembersSnapshot.docs.map(doc => ({
+          teamId: doc.data().teamId,
+          joinedAt: doc.data().joinedAt,
+          teamMemberId: doc.id
+        }));
+
+        if (teamIds.length === 0) {
+          currentTeams = [];
+          funUpdateTeamsUI();
+          return;
+        }
+
+        // Get team details for each team ID
+        const teamsData = [];
+        for (const teamInfo of teamIds) {
+          try {
+            const teamDoc = await getDoc(doc(db, 'teams', teamInfo.teamId));
+            if (teamDoc.exists()) {
+              teamsData.push({
+                id: teamDoc.id,
+                ...teamDoc.data(),
+                joinedAt: teamInfo.joinedAt,
+                teamMemberId: teamInfo.teamMemberId
+              });
+            }
+          } catch (error) {
+            console.error('Error loading team:', teamInfo.teamId, error);
+          }
+        }
+
+        currentTeams = teamsData;
+        funUpdateTeamsUI();
+
+      } catch (error) {
+        console.error('Error loading member teams:', error);
+        showToast('Failed to load teams: ' + (error.message || 'Unknown error'), 'error');
         currentTeams = [];
         funUpdateTeamsUI();
-        return;
       }
-
-      // Get team details for each team ID
-      const teamsData = [];
-      for (const teamInfo of teamIds) {
-        try {
-          const teamDoc = await getDoc(doc(db, 'teams', teamInfo.teamId));
-          if (teamDoc.exists()) {
-            teamsData.push({
-              id: teamDoc.id,
-              ...teamDoc.data(),
-              joinedAt: teamInfo.joinedAt,
-              teamMemberId: teamInfo.teamMemberId
-            });
-          }
-        } catch (error) {
-          console.error('Error loading team:', teamInfo.teamId, error);
-        }
-      }
-
-      currentTeams = teamsData;
-      funUpdateTeamsUI();
-      
-    } catch (error) {
-      console.error('Error loading member teams:', error);
-      showToast('Failed to load teams: ' + (error.message || 'Unknown error'), 'error');
-      currentTeams = [];
-      funUpdateTeamsUI();
     }
-  }
 
-  // Load member roles
-  async function funLoadMemberRoles() {
-    try {
-      // Get role assignments for this member
-      const memberRolesQuery = query(
-        collection(db, 'memberRoles'),
-        where('memberId', '==', memberId),
-        orderBy('assignedAt', 'desc')
-      );
-      
-      const memberRolesSnapshot = await getDocs(memberRolesQuery);
-      const roleIds = memberRolesSnapshot.docs.map(doc => ({
-        roleId: doc.data().roleId,
-        assignedAt: doc.data().assignedAt,
-        memberRoleId: doc.id
-      }));
+    // Load member roles
+    async function funLoadMemberRoles() {
+      try {
+        // Get role assignments for this member
+        const memberRolesQuery = query(
+          collection(db, 'memberRoles'),
+          where('memberId', '==', memberId),
+          orderBy('assignedAt', 'desc')
+        );
 
-      if (roleIds.length === 0) {
+        const memberRolesSnapshot = await getDocs(memberRolesQuery);
+        const roleIds = memberRolesSnapshot.docs.map(doc => ({
+          roleId: doc.data().roleId,
+          assignedAt: doc.data().assignedAt,
+          memberRoleId: doc.id
+        }));
+
+        if (roleIds.length === 0) {
+          currentRoles = [];
+          funUpdateRolesUI();
+          return;
+        }
+
+        // Get role details for each role ID
+        const rolesData = [];
+        for (const roleInfo of roleIds) {
+          try {
+            const roleDoc = await getDoc(doc(db, 'roles', roleInfo.roleId));
+            if (roleDoc.exists()) {
+              rolesData.push({
+                id: roleDoc.id,
+                ...roleDoc.data(),
+                assignedAt: roleInfo.assignedAt,
+                memberRoleId: roleInfo.memberRoleId
+              });
+            }
+          } catch (error) {
+            console.error('Error loading role:', roleInfo.roleId, error);
+          }
+        }
+
+        currentRoles = rolesData;
+        funUpdateRolesUI();
+
+      } catch (error) {
+        console.error('Error loading member roles:', error);
+        showToast('Failed to load roles: ' + (error.message || 'Unknown error'), 'error');
         currentRoles = [];
         funUpdateRolesUI();
-        return;
       }
+    }
 
-      // Get role details for each role ID
-      const rolesData = [];
-      for (const roleInfo of roleIds) {
-        try {
-          const roleDoc = await getDoc(doc(db, 'roles', roleInfo.roleId));
-          if (roleDoc.exists()) {
-            rolesData.push({
-              id: roleDoc.id,
-              ...roleDoc.data(),
-              assignedAt: roleInfo.assignedAt,
-              memberRoleId: roleInfo.memberRoleId
-            });
-          }
-        } catch (error) {
-          console.error('Error loading role:', roleInfo.roleId, error);
-        }
+    // Update teams UI
+    function funUpdateTeamsUI() {
+      const teamsContent = document.getElementById('teams-content');
+      const teamsSkeleton = document.getElementById('teams-skeleton');
+      const teamsTableContainer = document.getElementById('teams-table-container');
+      const teamsEmptyState = document.getElementById('teams-empty-state');
+      const teamsCount = document.getElementById('teams-count');
+
+      // Hide skeleton, show content
+      teamsSkeleton.classList.add('hidden');
+      teamsContent.classList.remove('hidden');
+
+      // Update count
+      teamsCount.textContent = currentTeams.length;
+
+      if (currentTeams.length === 0) {
+        teamsTableContainer.classList.add('hidden');
+        teamsEmptyState.classList.remove('hidden');
+      } else {
+        teamsEmptyState.classList.add('hidden');
+        teamsTableContainer.classList.remove('hidden');
+
+        // Filter teams based on search
+        const searchTerm = document.getElementById('teams-search').value.toLowerCase();
+        filteredTeams = currentTeams.filter(team =>
+          team.name?.toLowerCase().includes(searchTerm)
+        );
+
+        funRenderTeamsList();
       }
-
-      currentRoles = rolesData;
-      funUpdateRolesUI();
-      
-    } catch (error) {
-      console.error('Error loading member roles:', error);
-      showToast('Failed to load roles: ' + (error.message || 'Unknown error'), 'error');
-      currentRoles = [];
-      funUpdateRolesUI();
     }
-  }
 
-  // Update teams UI
-  function funUpdateTeamsUI() {
-    const teamsContent = document.getElementById('teams-content');
-    const teamsSkeleton = document.getElementById('teams-skeleton');
-    const teamsTableContainer = document.getElementById('teams-table-container');
-    const teamsEmptyState = document.getElementById('teams-empty-state');
-    const teamsCount = document.getElementById('teams-count');
+    // Render teams list with pagination
+    function funRenderTeamsList() {
+      const teamsList = document.getElementById('teams-list');
+      const startIndex = teamsCurrentPage * teamsPageSize;
+      const endIndex = startIndex + teamsPageSize;
+      const pageTeams = filteredTeams.slice(startIndex, endIndex);
 
-    // Hide skeleton, show content
-    teamsSkeleton.classList.add('hidden');
-    teamsContent.classList.remove('hidden');
+      teamsList.innerHTML = '';
 
-    // Update count
-    teamsCount.textContent = currentTeams.length;
+      pageTeams.forEach(team => {
+        const teamItem = document.createElement('div');
+        teamItem.className = 'flex items-center justify-between p-3 border border-slate-200 rounded hover:bg-slate-50';
 
-    if (currentTeams.length === 0) {
-      teamsTableContainer.classList.add('hidden');
-      teamsEmptyState.classList.remove('hidden');
-    } else {
-      teamsEmptyState.classList.add('hidden');
-      teamsTableContainer.classList.remove('hidden');
-      
-      // Filter teams based on search
-      const searchTerm = document.getElementById('teams-search').value.toLowerCase();
-      filteredTeams = currentTeams.filter(team => 
-        team.name?.toLowerCase().includes(searchTerm)
-      );
-      
-      funRenderTeamsList();
-    }
-  }
-
-  // Render teams list with pagination
-  function funRenderTeamsList() {
-    const teamsList = document.getElementById('teams-list');
-    const startIndex = teamsCurrentPage * teamsPageSize;
-    const endIndex = startIndex + teamsPageSize;
-    const pageTeams = filteredTeams.slice(startIndex, endIndex);
-
-    teamsList.innerHTML = '';
-
-    pageTeams.forEach(team => {
-      const teamItem = document.createElement('div');
-      teamItem.className = 'flex items-center justify-between p-3 border border-slate-200 rounded hover:bg-slate-50';
-      
-      teamItem.innerHTML = `
+        teamItem.innerHTML = `
         <div class="flex-1">
           <button class="team-link text-left text-sm font-medium text-blue-600 hover:text-blue-700" data-team-id="${team.id}">
             ${team.name || 'N/A'}
@@ -951,85 +1051,85 @@
           Remove
         </button>
       `;
-      
-      teamsList.appendChild(teamItem);
-    });
 
-    // Update pagination
-    document.getElementById('teams-showing').textContent = Math.min(endIndex, filteredTeams.length);
-    document.getElementById('teams-total').textContent = filteredTeams.length;
-    
-    document.getElementById('teams-prev-btn').disabled = teamsCurrentPage === 0;
-    document.getElementById('teams-next-btn').disabled = endIndex >= filteredTeams.length;
-
-    // Add event listeners
-    teamsList.querySelectorAll('.team-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const teamId = e.target.dataset.teamId;
-        window.location.href = `team_detail.html?teamId=${teamId}`;
+        teamsList.appendChild(teamItem);
       });
-    });
 
-    teamsList.querySelectorAll('.remove-team-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const teamId = e.target.dataset.teamId;
-        const teamName = e.target.dataset.teamName;
-        const teamMemberId = e.target.dataset.teamMemberId;
-        funShowRemoveTeamModal(teamId, teamName, teamMemberId);
+      // Update pagination
+      document.getElementById('teams-showing').textContent = Math.min(endIndex, filteredTeams.length);
+      document.getElementById('teams-total').textContent = filteredTeams.length;
+
+      document.getElementById('teams-prev-btn').disabled = teamsCurrentPage === 0;
+      document.getElementById('teams-next-btn').disabled = endIndex >= filteredTeams.length;
+
+      // Add event listeners
+      teamsList.querySelectorAll('.team-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const teamId = e.target.dataset.teamId;
+          window.location.href = `team_detail.html?teamId=${teamId}`;
+        });
       });
-    });
 
-    // Initialize icons
-    lucide.createIcons();
-  }
+      teamsList.querySelectorAll('.remove-team-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const teamId = e.target.dataset.teamId;
+          const teamName = e.target.dataset.teamName;
+          const teamMemberId = e.target.dataset.teamMemberId;
+          funShowRemoveTeamModal(teamId, teamName, teamMemberId);
+        });
+      });
 
-  // Update roles UI
-  function funUpdateRolesUI() {
-    const rolesContent = document.getElementById('roles-content');
-    const rolesSkeleton = document.getElementById('roles-skeleton');
-    const rolesTableContainer = document.getElementById('roles-table-container');
-    const rolesEmptyState = document.getElementById('roles-empty-state');
-    const rolesCount = document.getElementById('roles-count');
-
-    // Hide skeleton, show content
-    rolesSkeleton.classList.add('hidden');
-    rolesContent.classList.remove('hidden');
-
-    // Update count
-    rolesCount.textContent = currentRoles.length;
-
-    if (currentRoles.length === 0) {
-      rolesTableContainer.classList.add('hidden');
-      rolesEmptyState.classList.remove('hidden');
-    } else {
-      rolesEmptyState.classList.add('hidden');
-      rolesTableContainer.classList.remove('hidden');
-      
-      // Filter roles based on search
-      const searchTerm = document.getElementById('roles-search').value.toLowerCase();
-      filteredRoles = currentRoles.filter(role => 
-        role.name?.toLowerCase().includes(searchTerm) || 
-        role.description?.toLowerCase().includes(searchTerm)
-      );
-      
-      funRenderRolesList();
+      // Initialize icons
+      lucide.createIcons();
     }
-  }
 
-  // Render roles list with pagination
-  function funRenderRolesList() {
-    const rolesList = document.getElementById('roles-list');
-    const startIndex = rolesCurrentPage * rolesPageSize;
-    const endIndex = startIndex + rolesPageSize;
-    const pageRoles = filteredRoles.slice(startIndex, endIndex);
+    // Update roles UI
+    function funUpdateRolesUI() {
+      const rolesContent = document.getElementById('roles-content');
+      const rolesSkeleton = document.getElementById('roles-skeleton');
+      const rolesTableContainer = document.getElementById('roles-table-container');
+      const rolesEmptyState = document.getElementById('roles-empty-state');
+      const rolesCount = document.getElementById('roles-count');
 
-    rolesList.innerHTML = '';
+      // Hide skeleton, show content
+      rolesSkeleton.classList.add('hidden');
+      rolesContent.classList.remove('hidden');
 
-    pageRoles.forEach(role => {
-      const roleItem = document.createElement('div');
-      roleItem.className = 'flex items-center justify-between p-3 border border-slate-200 rounded hover:bg-slate-50';
-      
-      roleItem.innerHTML = `
+      // Update count
+      rolesCount.textContent = currentRoles.length;
+
+      if (currentRoles.length === 0) {
+        rolesTableContainer.classList.add('hidden');
+        rolesEmptyState.classList.remove('hidden');
+      } else {
+        rolesEmptyState.classList.add('hidden');
+        rolesTableContainer.classList.remove('hidden');
+
+        // Filter roles based on search
+        const searchTerm = document.getElementById('roles-search').value.toLowerCase();
+        filteredRoles = currentRoles.filter(role =>
+          role.name?.toLowerCase().includes(searchTerm) ||
+          role.description?.toLowerCase().includes(searchTerm)
+        );
+
+        funRenderRolesList();
+      }
+    }
+
+    // Render roles list with pagination
+    function funRenderRolesList() {
+      const rolesList = document.getElementById('roles-list');
+      const startIndex = rolesCurrentPage * rolesPageSize;
+      const endIndex = startIndex + rolesPageSize;
+      const pageRoles = filteredRoles.slice(startIndex, endIndex);
+
+      rolesList.innerHTML = '';
+
+      pageRoles.forEach(role => {
+        const roleItem = document.createElement('div');
+        roleItem.className = 'flex items-center justify-between p-3 border border-slate-200 rounded hover:bg-slate-50';
+
+        roleItem.innerHTML = `
         <div class="flex-1">
           <button class="role-link text-left text-sm font-medium text-blue-600 hover:text-blue-700" data-role-id="${role.id}">
             ${role.name || 'N/A'}
@@ -1048,118 +1148,118 @@
           Remove
         </button>
       `;
-      
-      rolesList.appendChild(roleItem);
-    });
 
-    // Update pagination
-    document.getElementById('roles-showing').textContent = Math.min(endIndex, filteredRoles.length);
-    document.getElementById('roles-total').textContent = filteredRoles.length;
-    
-    document.getElementById('roles-prev-btn').disabled = rolesCurrentPage === 0;
-    document.getElementById('roles-next-btn').disabled = endIndex >= filteredRoles.length;
-
-    // Add event listeners
-    rolesList.querySelectorAll('.role-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const roleId = e.target.dataset.roleId;
-        window.location.href = `role_detail.html?roleId=${roleId}`;
+        rolesList.appendChild(roleItem);
       });
-    });
 
-    rolesList.querySelectorAll('.remove-role-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const roleId = e.target.dataset.roleId;
-        const roleName = e.target.dataset.roleName;
-        const memberRoleId = e.target.dataset.memberRoleId;
-        funShowRemoveRoleModal(roleId, roleName, memberRoleId);
+      // Update pagination
+      document.getElementById('roles-showing').textContent = Math.min(endIndex, filteredRoles.length);
+      document.getElementById('roles-total').textContent = filteredRoles.length;
+
+      document.getElementById('roles-prev-btn').disabled = rolesCurrentPage === 0;
+      document.getElementById('roles-next-btn').disabled = endIndex >= filteredRoles.length;
+
+      // Add event listeners
+      rolesList.querySelectorAll('.role-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const roleId = e.target.dataset.roleId;
+          window.location.href = `role_detail.html?roleId=${roleId}`;
+        });
       });
-    });
 
-    // Initialize icons
-    lucide.createIcons();
-  }
+      rolesList.querySelectorAll('.remove-role-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const roleId = e.target.dataset.roleId;
+          const roleName = e.target.dataset.roleName;
+          const memberRoleId = e.target.dataset.memberRoleId;
+          funShowRemoveRoleModal(roleId, roleName, memberRoleId);
+        });
+      });
 
-  // Load available teams for modal
-  async function funLoadAvailableTeams() {
-    try {
-      document.getElementById('teams-modal-loading').classList.remove('hidden');
-      document.getElementById('available-teams-list').innerHTML = '';
-      document.getElementById('no-available-teams').classList.add('hidden');
+      // Initialize icons
+      lucide.createIcons();
+    }
 
-      // Get all teams
-      const allTeamsSnapshot = await getDocs(query(collection(db, 'teams'), orderBy('name')));
-      const allTeams = allTeamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Load available teams for modal
+    async function funLoadAvailableTeams() {
+      try {
+        document.getElementById('teams-modal-loading').classList.remove('hidden');
+        document.getElementById('available-teams-list').innerHTML = '';
+        document.getElementById('no-available-teams').classList.add('hidden');
 
-      // Filter out teams the member is already part of
-      const currentTeamIds = currentTeams.map(team => team.id);
-      const availableTeams = allTeams.filter(team => !currentTeamIds.includes(team.id));
+        // Get all teams
+        const allTeamsSnapshot = await getDocs(query(collection(db, 'teams'), orderBy('name')));
+        const allTeams = allTeamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      document.getElementById('teams-modal-loading').classList.add('hidden');
+        // Filter out teams the member is already part of
+        const currentTeamIds = currentTeams.map(team => team.id);
+        const availableTeams = allTeams.filter(team => !currentTeamIds.includes(team.id));
 
-      if (availableTeams.length === 0) {
-        document.getElementById('no-available-teams').classList.remove('hidden');
-        return;
-      }
+        document.getElementById('teams-modal-loading').classList.add('hidden');
 
-      const availableTeamsList = document.getElementById('available-teams-list');
-      availableTeams.forEach(team => {
-        const teamItem = document.createElement('label');
-        teamItem.className = 'flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer';
-        
-        teamItem.innerHTML = `
+        if (availableTeams.length === 0) {
+          document.getElementById('no-available-teams').classList.remove('hidden');
+          return;
+        }
+
+        const availableTeamsList = document.getElementById('available-teams-list');
+        availableTeams.forEach(team => {
+          const teamItem = document.createElement('label');
+          teamItem.className = 'flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer';
+
+          teamItem.innerHTML = `
           <input type="checkbox" class="team-checkbox rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
                  value="${team.id}" data-team-name="${team.name}">
           <span class="text-sm text-slate-700">${team.name || 'N/A'}</span>
         `;
-        
-        availableTeamsList.appendChild(teamItem);
-      });
 
-      // Add search functionality
-      document.getElementById('teams-modal-search').addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        availableTeamsList.querySelectorAll('label').forEach(label => {
-          const teamName = label.textContent.toLowerCase();
-          label.style.display = teamName.includes(searchTerm) ? 'flex' : 'none';
+          availableTeamsList.appendChild(teamItem);
         });
-      });
 
-    } catch (error) {
-      console.error('Error loading available teams:', error);
-      document.getElementById('teams-modal-loading').classList.add('hidden');
-      showToast('Failed to load available teams: ' + (error.message || 'Unknown error'), 'error');
-    }
-  }
+        // Add search functionality
+        document.getElementById('teams-modal-search').addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          availableTeamsList.querySelectorAll('label').forEach(label => {
+            const teamName = label.textContent.toLowerCase();
+            label.style.display = teamName.includes(searchTerm) ? 'flex' : 'none';
+          });
+        });
 
-  // Load available roles for modal
-  async function funLoadAvailableRoles() {
-    try {
-      document.getElementById('roles-modal-loading').classList.remove('hidden');
-      document.getElementById('available-roles-list').innerHTML = '';
-      document.getElementById('no-available-roles').classList.add('hidden');
-
-      // Get all roles
-      const allRolesSnapshot = await getDocs(query(collection(db, 'roles'), orderBy('name')));
-      const allRoles = allRolesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      // Filter out roles already assigned to the member
-      const currentRoleIds = currentRoles.map(role => role.id);
-      const availableRoles = allRoles.filter(role => !currentRoleIds.includes(role.id));
-
-      document.getElementById('roles-modal-loading').classList.add('hidden');
-
-      if (availableRoles.length === 0) {
-        document.getElementById('no-available-roles').classList.remove('hidden');
-        return;
+      } catch (error) {
+        console.error('Error loading available teams:', error);
+        document.getElementById('teams-modal-loading').classList.add('hidden');
+        showToast('Failed to load available teams: ' + (error.message || 'Unknown error'), 'error');
       }
+    }
 
-      const availableRolesList = document.getElementById('available-roles-list');
-      availableRoles.forEach(role => {
-        const roleItem = document.createElement('label');
-        roleItem.className = 'flex items-start gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer';
-        
-        roleItem.innerHTML = `
+    // Load available roles for modal
+    async function funLoadAvailableRoles() {
+      try {
+        document.getElementById('roles-modal-loading').classList.remove('hidden');
+        document.getElementById('available-roles-list').innerHTML = '';
+        document.getElementById('no-available-roles').classList.add('hidden');
+
+        // Get all roles
+        const allRolesSnapshot = await getDocs(query(collection(db, 'roles'), orderBy('name')));
+        const allRoles = allRolesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        // Filter out roles already assigned to the member
+        const currentRoleIds = currentRoles.map(role => role.id);
+        const availableRoles = allRoles.filter(role => !currentRoleIds.includes(role.id));
+
+        document.getElementById('roles-modal-loading').classList.add('hidden');
+
+        if (availableRoles.length === 0) {
+          document.getElementById('no-available-roles').classList.remove('hidden');
+          return;
+        }
+
+        const availableRolesList = document.getElementById('available-roles-list');
+        availableRoles.forEach(role => {
+          const roleItem = document.createElement('label');
+          roleItem.className = 'flex items-start gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer';
+
+          roleItem.innerHTML = `
           <input type="checkbox" class="role-checkbox rounded border-slate-300 text-blue-600 focus:ring-blue-500 mt-1" 
                  value="${role.id}" data-role-name="${role.name}">
           <div class="flex-1">
@@ -1167,450 +1267,516 @@
             <div class="text-xs text-slate-600">${role.description || 'N/A'}</div>
           </div>
         `;
-        
-        availableRolesList.appendChild(roleItem);
-      });
 
-      // Add search functionality
-      document.getElementById('roles-modal-search').addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        availableRolesList.querySelectorAll('label').forEach(label => {
-          const roleText = label.textContent.toLowerCase();
-          label.style.display = roleText.includes(searchTerm) ? 'flex' : 'none';
+          availableRolesList.appendChild(roleItem);
         });
-      });
 
-    } catch (error) {
-      console.error('Error loading available roles:', error);
-      document.getElementById('roles-modal-loading').classList.add('hidden');
-      showToast('Failed to load available roles: ' + (error.message || 'Unknown error'), 'error');
-    }
-  }
-
-  // Show remove team modal
-  function funShowRemoveTeamModal(teamId, teamName, teamMemberId) {
-    currentTeamToRemove = { teamId, teamName, teamMemberId };
-    document.getElementById('remove-member-name-team').textContent = currentMember?.name || 'this member';
-    document.getElementById('remove-team-name').textContent = teamName || 'this team';
-    document.getElementById('remove-team-modal').classList.remove('hidden');
-  }
-
-  // Show remove role modal
-  function funShowRemoveRoleModal(roleId, roleName, memberRoleId) {
-    currentRoleToRemove = { roleId, roleName, memberRoleId };
-    document.getElementById('remove-member-name-role').textContent = currentMember?.name || 'this member';
-    document.getElementById('remove-role-name').textContent = roleName || 'this role';
-    document.getElementById('remove-role-modal').classList.remove('hidden');
-  }
-
-  // Save teams assignments
-  async function funSaveTeamsAssignments() {
-    try {
-      const selectedTeams = Array.from(document.querySelectorAll('.team-checkbox:checked')).map(cb => cb.value);
-      
-      if (selectedTeams.length === 0) {
-        showToast('Please select at least one team', 'warning');
-        return;
-      }
-
-      showLoader('Adding to teams...');
-
-      const batch = writeBatch(db);
-      const now = new Date().toISOString();
-
-      for (const teamId of selectedTeams) {
-        const teamMemberRef = doc(collection(db, 'teamMembers'));
-        batch.set(teamMemberRef, {
-          id: teamMemberRef.id,
-          teamId,
-          memberId,
-          joinedAt: now
+        // Add search functionality
+        document.getElementById('roles-modal-search').addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          availableRolesList.querySelectorAll('label').forEach(label => {
+            const roleText = label.textContent.toLowerCase();
+            label.style.display = roleText.includes(searchTerm) ? 'flex' : 'none';
+          });
         });
+
+      } catch (error) {
+        console.error('Error loading available roles:', error);
+        document.getElementById('roles-modal-loading').classList.add('hidden');
+        showToast('Failed to load available roles: ' + (error.message || 'Unknown error'), 'error');
       }
-
-      await batch.commit();
-
-      hideLoader();
-      showToast(`Successfully added to ${selectedTeams.length} team${selectedTeams.length === 1 ? '' : 's'}`, 'success');
-      
-      document.getElementById('add-teams-modal').classList.add('hidden');
-      
-      // Refresh teams list
-      await funLoadMemberTeams();
-
-    } catch (error) {
-      console.error('Error saving team assignments:', error);
-      hideLoader();
-      showToast('Failed to add to teams: ' + (error.message || 'Unknown error'), 'error');
-    }
-  }
-
-  // Save roles assignments
-  async function funSaveRolesAssignments() {
-    try {
-      const selectedRoles = Array.from(document.querySelectorAll('.role-checkbox:checked')).map(cb => cb.value);
-      
-      if (selectedRoles.length === 0) {
-        showToast('Please select at least one role', 'warning');
-        return;
-      }
-
-      showLoader('Adding to roles...');
-
-      const batch = writeBatch(db);
-      const now = new Date().toISOString();
-
-      for (const roleId of selectedRoles) {
-        const memberRoleRef = doc(collection(db, 'memberRoles'));
-        batch.set(memberRoleRef, {
-          id: memberRoleRef.id,
-          memberId,
-          roleId,
-          assignedAt: now
-        });
-      }
-
-      await batch.commit();
-
-      hideLoader();
-      showToast(`Successfully assigned ${selectedRoles.length} role${selectedRoles.length === 1 ? '' : 's'}`, 'success');
-      
-      document.getElementById('add-roles-modal').classList.add('hidden');
-      
-      // Refresh roles list
-      await funLoadMemberRoles();
-
-    } catch (error) {
-      console.error('Error saving role assignments:', error);
-      hideLoader();
-      showToast('Failed to assign roles: ' + (error.message || 'Unknown error'), 'error');
-    }
-  }
-
-  // Remove from team
-  async function funRemoveFromTeam() {
-    if (!currentTeamToRemove) return;
-
-    try {
-      showLoader('Removing from team...');
-
-      // Find and delete the teamMembers record
-      const teamMembersQuery = query(
-        collection(db, 'teamMembers'),
-        where('teamId', '==', currentTeamToRemove.teamId),
-        where('memberId', '==', memberId)
-      );
-
-      const teamMembersSnapshot = await getDocs(teamMembersQuery);
-      const batch = writeBatch(db);
-
-      teamMembersSnapshot.docs.forEach(docSnapshot => {
-        batch.delete(doc(db, 'teamMembers', docSnapshot.id));
-      });
-
-      await batch.commit();
-
-      hideLoader();
-      showToast('Successfully removed from team', 'success');
-      
-      document.getElementById('remove-team-modal').classList.add('hidden');
-      currentTeamToRemove = null;
-      
-      // Refresh teams list
-      await funLoadMemberTeams();
-
-    } catch (error) {
-      console.error('Error removing from team:', error);
-      hideLoader();
-      showToast('Failed to remove from team: ' + (error.message || 'Unknown error'), 'error');
-    }
-  }
-
-  // Remove from role
-  async function funRemoveFromRole() {
-    if (!currentRoleToRemove) return;
-
-    try {
-      showLoader('Removing from role...');
-
-      // Find and delete the memberRoles record
-      const memberRolesQuery = query(
-        collection(db, 'memberRoles'),
-        where('roleId', '==', currentRoleToRemove.roleId),
-        where('memberId', '==', memberId)
-      );
-
-      const memberRolesSnapshot = await getDocs(memberRolesQuery);
-      const batch = writeBatch(db);
-
-      memberRolesSnapshot.docs.forEach(docSnapshot => {
-        batch.delete(doc(db, 'memberRoles', docSnapshot.id));
-      });
-
-      await batch.commit();
-
-      hideLoader();
-      showToast('Successfully removed from role', 'success');
-      
-      document.getElementById('remove-role-modal').classList.add('hidden');
-      currentRoleToRemove = null;
-      
-      // Refresh roles list
-      await funLoadMemberRoles();
-
-    } catch (error) {
-      console.error('Error removing from role:', error);
-      hideLoader();
-      showToast('Failed to remove from role: ' + (error.message || 'Unknown error'), 'error');
-    }
-  }
-
-  // Delete member
-  async function funDeleteMember() {
-    if (!currentMember || !confirm('Are you sure you want to delete this member? This action cannot be undone.')) {
-      return;
     }
 
-    try {
-      showLoader('Deleting member...');
-
-      const batch = writeBatch(db);
-
-      // Delete member document
-      batch.delete(doc(db, 'members', memberId));
-
-      // Delete associated team memberships
-      const teamMembersQuery = query(collection(db, 'teamMembers'), where('memberId', '==', memberId));
-      const teamMembersSnapshot = await getDocs(teamMembersQuery);
-      teamMembersSnapshot.docs.forEach(docSnapshot => {
-        batch.delete(doc(db, 'teamMembers', docSnapshot.id));
-      });
-
-      // Delete associated role assignments
-      const memberRolesQuery = query(collection(db, 'memberRoles'), where('memberId', '==', memberId));
-      const memberRolesSnapshot = await getDocs(memberRolesQuery);
-      memberRolesSnapshot.docs.forEach(docSnapshot => {
-        batch.delete(doc(db, 'memberRoles', docSnapshot.id));
-      });
-
-      await batch.commit();
-
-      hideLoader();
-      showToast('Member deleted successfully', 'success');
-      
-      // Redirect to member list
-      setTimeout(() => {
-        window.location.href = 'member_list.html';
-      }, 1000);
-
-    } catch (error) {
-      console.error('Error deleting member:', error);
-      hideLoader();
-      showToast('Failed to delete member: ' + (error.message || 'Unknown error'), 'error');
+    // Show remove team modal
+    function funShowRemoveTeamModal(teamId, teamName, teamMemberId) {
+      currentTeamToRemove = { teamId, teamName, teamMemberId };
+      document.getElementById('remove-member-name-team').textContent = currentMember?.name || 'this member';
+      document.getElementById('remove-team-name').textContent = teamName || 'this team';
+      document.getElementById('remove-team-modal').classList.remove('hidden');
     }
-  }
 
-  // Initial load
-  async function funInitialLoad() {
-    try {
-      await yieldToFrame();
-
-      // Load member details first
-      const member = await funLoadMember();
-      if (!member) return;
-
-      // Load teams and roles in parallel
-      const [teamsResult, rolesResult] = await Promise.allSettled([
-        funLoadMemberTeams(),
-        funLoadMemberRoles()
-      ]);
-
-      if (teamsResult.status === 'rejected') {
-        console.error('Failed to load teams:', teamsResult.reason);
-      }
-      if (rolesResult.status === 'rejected') {
-        console.error('Failed to load roles:', rolesResult.reason);
-      }
-
-    } catch (error) {
-      console.error('Error in initial load:', error);
-      showToast('Failed to load page data', 'error');
+    // Show remove role modal
+    function funShowRemoveRoleModal(roleId, roleName, memberRoleId) {
+      currentRoleToRemove = { roleId, roleName, memberRoleId };
+      document.getElementById('remove-member-name-role').textContent = currentMember?.name || 'this member';
+      document.getElementById('remove-role-name').textContent = roleName || 'this role';
+      document.getElementById('remove-role-modal').classList.remove('hidden');
     }
-  }
 
-  // Event listeners
-  document.addEventListener('DOMContentLoaded', () => {
-    // Back button
-    document.getElementById('back-button')?.addEventListener('click', () => {
-      window.location.href = 'member_list.html';
-    });
+    // Save teams assignments
+    async function funSaveTeamsAssignments() {
+      try {
+        const selectedTeams = Array.from(document.querySelectorAll('.team-checkbox:checked')).map(cb => cb.value);
 
-    // Edit and delete buttons
-    document.getElementById('edit-member-btn')?.addEventListener('click', () => {
-      // Note: Edit functionality would typically open a modal or redirect
-      showToast('Edit functionality not implemented in this demo', 'info');
-    });
+        if (selectedTeams.length === 0) {
+          showToast('Please select at least one team', 'warning');
+          return;
+        }
 
-    document.getElementById('delete-member-btn')?.addEventListener('click', funDeleteMember);
+        showLoader('Adding to teams...');
 
-    // Teams section event listeners
-    document.getElementById('refresh-teams-btn')?.addEventListener('click', funLoadMemberTeams);
-    document.getElementById('add-to-teams-btn')?.addEventListener('click', () => {
-      funLoadAvailableTeams();
-      document.getElementById('add-teams-modal').classList.remove('hidden');
-    });
-    document.getElementById('add-to-teams-empty-btn')?.addEventListener('click', () => {
-      funLoadAvailableTeams();
-      document.getElementById('add-teams-modal').classList.remove('hidden');
-    });
+        const batch = writeBatch(db);
+        const now = new Date().toISOString();
 
-    // Teams search
-    document.getElementById('teams-search')?.addEventListener('input', () => {
-      teamsCurrentPage = 0;
-      funUpdateTeamsUI();
-    });
+        for (const teamId of selectedTeams) {
+          const teamMemberRef = doc(collection(db, 'teamMembers'));
+          batch.set(teamMemberRef, {
+            id: teamMemberRef.id,
+            teamId,
+            memberId,
+            joinedAt: now
+          });
+        }
 
-    // Teams pagination
-    document.getElementById('teams-prev-btn')?.addEventListener('click', () => {
-      if (teamsCurrentPage > 0) {
-        teamsCurrentPage--;
-        funRenderTeamsList();
-      }
-    });
+        await batch.commit();
 
-    document.getElementById('teams-next-btn')?.addEventListener('click', () => {
-      if ((teamsCurrentPage + 1) * teamsPageSize < filteredTeams.length) {
-        teamsCurrentPage++;
-        funRenderTeamsList();
-      }
-    });
+        hideLoader();
+        showToast(`Successfully added to ${selectedTeams.length} team${selectedTeams.length === 1 ? '' : 's'}`, 'success');
 
-    // Roles section event listeners
-    document.getElementById('refresh-roles-btn')?.addEventListener('click', funLoadMemberRoles);
-    document.getElementById('add-to-roles-btn')?.addEventListener('click', () => {
-      funLoadAvailableRoles();
-      document.getElementById('add-roles-modal').classList.remove('hidden');
-    });
-    document.getElementById('add-to-roles-empty-btn')?.addEventListener('click', () => {
-      funLoadAvailableRoles();
-      document.getElementById('add-roles-modal').classList.remove('hidden');
-    });
-
-    // Roles search
-    document.getElementById('roles-search')?.addEventListener('input', () => {
-      rolesCurrentPage = 0;
-      funUpdateRolesUI();
-    });
-
-    // Roles pagination
-    document.getElementById('roles-prev-btn')?.addEventListener('click', () => {
-      if (rolesCurrentPage > 0) {
-        rolesCurrentPage--;
-        funRenderRolesList();
-      }
-    });
-
-    document.getElementById('roles-next-btn')?.addEventListener('click', () => {
-      if ((rolesCurrentPage + 1) * rolesPageSize < filteredRoles.length) {
-        rolesCurrentPage++;
-        funRenderRolesList();
-      }
-    });
-
-    // Modal event listeners
-    // Add to Teams Modal
-    document.getElementById('close-add-teams-modal')?.addEventListener('click', () => {
-      document.getElementById('add-teams-modal').classList.add('hidden');
-    });
-    document.getElementById('cancel-add-teams')?.addEventListener('click', () => {
-      document.getElementById('add-teams-modal').classList.add('hidden');
-    });
-    document.getElementById('save-teams-assignments')?.addEventListener('click', funSaveTeamsAssignments);
-
-    // Select/Deselect all teams
-    document.getElementById('select-all-teams')?.addEventListener('change', (e) => {
-      document.querySelectorAll('.team-checkbox').forEach(cb => cb.checked = e.target.checked);
-    });
-    document.getElementById('deselect-all-teams')?.addEventListener('click', () => {
-      document.querySelectorAll('.team-checkbox').forEach(cb => cb.checked = false);
-      document.getElementById('select-all-teams').checked = false;
-    });
-
-    // Add to Roles Modal
-    document.getElementById('close-add-roles-modal')?.addEventListener('click', () => {
-      document.getElementById('add-roles-modal').classList.add('hidden');
-    });
-    document.getElementById('cancel-add-roles')?.addEventListener('click', () => {
-      document.getElementById('add-roles-modal').classList.add('hidden');
-    });
-    document.getElementById('save-roles-assignments')?.addEventListener('click', funSaveRolesAssignments);
-
-    // Select/Deselect all roles
-    document.getElementById('select-all-roles')?.addEventListener('change', (e) => {
-      document.querySelectorAll('.role-checkbox').forEach(cb => cb.checked = e.target.checked);
-    });
-    document.getElementById('deselect-all-roles')?.addEventListener('click', () => {
-      document.querySelectorAll('.role-checkbox').forEach(cb => cb.checked = false);
-      document.getElementById('select-all-roles').checked = false;
-    });
-
-    // Remove Team Modal
-    document.getElementById('close-remove-team-modal')?.addEventListener('click', () => {
-      document.getElementById('remove-team-modal').classList.add('hidden');
-    });
-    document.getElementById('cancel-remove-team')?.addEventListener('click', () => {
-      document.getElementById('remove-team-modal').classList.add('hidden');
-    });
-    document.getElementById('confirm-remove-team')?.addEventListener('click', funRemoveFromTeam);
-
-    // Remove Role Modal
-    document.getElementById('close-remove-role-modal')?.addEventListener('click', () => {
-      document.getElementById('remove-role-modal').classList.add('hidden');
-    });
-    document.getElementById('cancel-remove-role')?.addEventListener('click', () => {
-      document.getElementById('remove-role-modal').classList.add('hidden');
-    });
-    document.getElementById('confirm-remove-role')?.addEventListener('click', funRemoveFromRole);
-
-    // Close modals on backdrop click
-    document.getElementById('add-teams-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'add-teams-modal') {
         document.getElementById('add-teams-modal').classList.add('hidden');
-      }
-    });
 
-    document.getElementById('add-roles-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'add-roles-modal') {
+        // Refresh teams list
+        await funLoadMemberTeams();
+
+      } catch (error) {
+        console.error('Error saving team assignments:', error);
+        hideLoader();
+        showToast('Failed to add to teams: ' + (error.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Save roles assignments
+    async function funSaveRolesAssignments() {
+      try {
+        const selectedRoles = Array.from(document.querySelectorAll('.role-checkbox:checked')).map(cb => cb.value);
+
+        if (selectedRoles.length === 0) {
+          showToast('Please select at least one role', 'warning');
+          return;
+        }
+
+        showLoader('Adding to roles...');
+
+        const batch = writeBatch(db);
+        const now = new Date().toISOString();
+
+        for (const roleId of selectedRoles) {
+          const memberRoleRef = doc(collection(db, 'memberRoles'));
+          batch.set(memberRoleRef, {
+            id: memberRoleRef.id,
+            memberId,
+            roleId,
+            assignedAt: now
+          });
+        }
+
+        await batch.commit();
+
+        hideLoader();
+        showToast(`Successfully assigned ${selectedRoles.length} role${selectedRoles.length === 1 ? '' : 's'}`, 'success');
+
         document.getElementById('add-roles-modal').classList.add('hidden');
-      }
-    });
 
-    document.getElementById('remove-team-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'remove-team-modal') {
-        document.getElementById('remove-team-modal').classList.add('hidden');
-      }
-    });
+        // Refresh roles list
+        await funLoadMemberRoles();
 
-    document.getElementById('remove-role-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'remove-role-modal') {
-        document.getElementById('remove-role-modal').classList.add('hidden');
+      } catch (error) {
+        console.error('Error saving role assignments:', error);
+        hideLoader();
+        showToast('Failed to assign roles: ' + (error.message || 'Unknown error'), 'error');
       }
-    });
+    }
 
-    // ESC key to close modals
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('.fixed.inset-0').forEach(modal => {
-          modal.classList.add('hidden');
+    // Remove from team
+    async function funRemoveFromTeam() {
+      if (!currentTeamToRemove) return;
+
+      try {
+        showLoader('Removing from team...');
+
+        // Find and delete the teamMembers record
+        const teamMembersQuery = query(
+          collection(db, 'teamMembers'),
+          where('teamId', '==', currentTeamToRemove.teamId),
+          where('memberId', '==', memberId)
+        );
+
+        const teamMembersSnapshot = await getDocs(teamMembersQuery);
+        const batch = writeBatch(db);
+
+        teamMembersSnapshot.docs.forEach(docSnapshot => {
+          batch.delete(doc(db, 'teamMembers', docSnapshot.id));
         });
+
+        await batch.commit();
+
+        hideLoader();
+        showToast('Successfully removed from team', 'success');
+
+        document.getElementById('remove-team-modal').classList.add('hidden');
+        currentTeamToRemove = null;
+
+        // Refresh teams list
+        await funLoadMemberTeams();
+
+      } catch (error) {
+        console.error('Error removing from team:', error);
+        hideLoader();
+        showToast('Failed to remove from team: ' + (error.message || 'Unknown error'), 'error');
       }
+    }
+
+    // Remove from role
+    async function funRemoveFromRole() {
+      if (!currentRoleToRemove) return;
+
+      try {
+        showLoader('Removing from role...');
+
+        // Find and delete the memberRoles record
+        const memberRolesQuery = query(
+          collection(db, 'memberRoles'),
+          where('roleId', '==', currentRoleToRemove.roleId),
+          where('memberId', '==', memberId)
+        );
+
+        const memberRolesSnapshot = await getDocs(memberRolesQuery);
+        const batch = writeBatch(db);
+
+        memberRolesSnapshot.docs.forEach(docSnapshot => {
+          batch.delete(doc(db, 'memberRoles', docSnapshot.id));
+        });
+
+        await batch.commit();
+
+        hideLoader();
+        showToast('Successfully removed from role', 'success');
+
+        document.getElementById('remove-role-modal').classList.add('hidden');
+        currentRoleToRemove = null;
+
+        // Refresh roles list
+        await funLoadMemberRoles();
+
+      } catch (error) {
+        console.error('Error removing from role:', error);
+        hideLoader();
+        showToast('Failed to remove from role: ' + (error.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Delete member
+    async function funDeleteMember() {
+      if (!currentMember || !confirm('Are you sure you want to delete this member? This action cannot be undone.')) {
+        return;
+      }
+
+      try {
+        showLoader('Deleting member...');
+
+        const batch = writeBatch(db);
+
+        // Delete member document
+        batch.delete(doc(db, 'members', memberId));
+
+        // Delete associated team memberships
+        const teamMembersQuery = query(collection(db, 'teamMembers'), where('memberId', '==', memberId));
+        const teamMembersSnapshot = await getDocs(teamMembersQuery);
+        teamMembersSnapshot.docs.forEach(docSnapshot => {
+          batch.delete(doc(db, 'teamMembers', docSnapshot.id));
+        });
+
+        // Delete associated role assignments
+        const memberRolesQuery = query(collection(db, 'memberRoles'), where('memberId', '==', memberId));
+        const memberRolesSnapshot = await getDocs(memberRolesQuery);
+        memberRolesSnapshot.docs.forEach(docSnapshot => {
+          batch.delete(doc(db, 'memberRoles', docSnapshot.id));
+        });
+
+        await batch.commit();
+
+        hideLoader();
+        showToast('Member deleted successfully', 'success');
+
+        // Redirect to member list
+        setTimeout(() => {
+          window.location.href = 'member_list.html';
+        }, 1000);
+
+      } catch (error) {
+        console.error('Error deleting member:', error);
+        hideLoader();
+        showToast('Failed to delete member: ' + (error.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Initial load
+    async function funInitialLoad() {
+      try {
+        await yieldToFrame();
+
+        // Load member details first
+        const member = await funLoadMember();
+        if (!member) return;
+
+        // Load teams and roles in parallel
+        const [teamsResult, rolesResult] = await Promise.allSettled([
+          funLoadMemberTeams(),
+          funLoadMemberRoles()
+        ]);
+
+        if (teamsResult.status === 'rejected') {
+          console.error('Failed to load teams:', teamsResult.reason);
+        }
+        if (rolesResult.status === 'rejected') {
+          console.error('Failed to load roles:', rolesResult.reason);
+        }
+
+      } catch (error) {
+        console.error('Error in initial load:', error);
+        showToast('Failed to load page data', 'error');
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Back button
+      document.getElementById('back-button')?.addEventListener('click', () => {
+        window.location.href = 'member_list.html';
+      });
+
+      // Edit and delete buttons
+      /*
+      document.getElementById('edit-member-btn')?.addEventListener('click', () => {
+        // Note: Edit functionality would typically open a modal or redirect
+        showToast('Edit functionality not implemented in this demo', 'info');
+      });
+      */
+
+      // Open modal with current values
+      document.getElementById('edit-member-btn')?.addEventListener('click', () => {
+        if (!currentMember) {
+          showToast('Member data not loaded yet', 'warning');
+          return;
+        }
+        document.getElementById('edit-member-name').value = currentMember.name || '';
+        document.getElementById('edit-member-email').value = currentMember.email || '';
+        document.getElementById('edit-member-modal').classList.remove('hidden');
+      });
+
+      // Close modal handlers
+      document.getElementById('close-edit-member-modal')?.addEventListener('click', () => {
+        document.getElementById('edit-member-modal').classList.add('hidden');
+      });
+      document.getElementById('cancel-edit-member')?.addEventListener('click', () => {
+        document.getElementById('edit-member-modal').classList.add('hidden');
+      });
+
+      // Save changes
+      document.getElementById('save-edit-member')?.addEventListener('click', async () => {
+        try {
+          const newName = document.getElementById('edit-member-name').value;
+          const newEmail = document.getElementById('edit-member-email').value;
+
+          if (!newName.trim()) {
+            showToast('Name cannot be empty', 'warning');
+            return;
+          }
+          if (newEmail && !/^\S+@\S+\.\S+$/.test(newEmail)) {
+            showToast('Please enter a valid email', 'warning');
+            return;
+          }
+
+          showLoader('Saving changes...');
+          const memberRef = doc(db, 'members', memberId);
+          const payload = {
+            name: newName.trim(),
+            email: newEmail ? newEmail.trim() : '',
+            updatedAt: new Date().toISOString()
+          };
+
+          await updateDoc(memberRef, payload);
+
+          currentMember = { ...currentMember, ...payload };
+          document.getElementById('member-name').textContent = currentMember.name || 'N/A';
+          document.getElementById('member-email').textContent = currentMember.email || 'N/A';
+
+          showToast('Member updated successfully', 'success');
+          document.getElementById('edit-member-modal').classList.add('hidden');
+        } catch (error) {
+          console.error('Error updating member:', error);
+          if (error?.code === 'permission-denied') {
+            showToast('Permission denied: you are not allowed to edit this member.', 'error');
+          } else {
+            showToast('Failed to update member: ' + (error.message || 'Unknown error'), 'error');
+          }
+        } finally {
+          hideLoader();
+        }
+      });
+
+
+      document.getElementById('delete-member-btn')?.addEventListener('click', funDeleteMember);
+
+      // Teams section event listeners
+      document.getElementById('refresh-teams-btn')?.addEventListener('click', funLoadMemberTeams);
+      document.getElementById('add-to-teams-btn')?.addEventListener('click', () => {
+        funLoadAvailableTeams();
+        document.getElementById('add-teams-modal').classList.remove('hidden');
+      });
+      document.getElementById('add-to-teams-empty-btn')?.addEventListener('click', () => {
+        funLoadAvailableTeams();
+        document.getElementById('add-teams-modal').classList.remove('hidden');
+      });
+
+      // Teams search
+      document.getElementById('teams-search')?.addEventListener('input', () => {
+        teamsCurrentPage = 0;
+        funUpdateTeamsUI();
+      });
+
+      // Teams pagination
+      document.getElementById('teams-prev-btn')?.addEventListener('click', () => {
+        if (teamsCurrentPage > 0) {
+          teamsCurrentPage--;
+          funRenderTeamsList();
+        }
+      });
+
+      document.getElementById('teams-next-btn')?.addEventListener('click', () => {
+        if ((teamsCurrentPage + 1) * teamsPageSize < filteredTeams.length) {
+          teamsCurrentPage++;
+          funRenderTeamsList();
+        }
+      });
+
+      // Roles section event listeners
+      document.getElementById('refresh-roles-btn')?.addEventListener('click', funLoadMemberRoles);
+      document.getElementById('add-to-roles-btn')?.addEventListener('click', () => {
+        funLoadAvailableRoles();
+        document.getElementById('add-roles-modal').classList.remove('hidden');
+      });
+      document.getElementById('add-to-roles-empty-btn')?.addEventListener('click', () => {
+        funLoadAvailableRoles();
+        document.getElementById('add-roles-modal').classList.remove('hidden');
+      });
+
+      // Roles search
+      document.getElementById('roles-search')?.addEventListener('input', () => {
+        rolesCurrentPage = 0;
+        funUpdateRolesUI();
+      });
+
+      // Roles pagination
+      document.getElementById('roles-prev-btn')?.addEventListener('click', () => {
+        if (rolesCurrentPage > 0) {
+          rolesCurrentPage--;
+          funRenderRolesList();
+        }
+      });
+
+      document.getElementById('roles-next-btn')?.addEventListener('click', () => {
+        if ((rolesCurrentPage + 1) * rolesPageSize < filteredRoles.length) {
+          rolesCurrentPage++;
+          funRenderRolesList();
+        }
+      });
+
+      // Modal event listeners
+      // Add to Teams Modal
+      document.getElementById('close-add-teams-modal')?.addEventListener('click', () => {
+        document.getElementById('add-teams-modal').classList.add('hidden');
+      });
+      document.getElementById('cancel-add-teams')?.addEventListener('click', () => {
+        document.getElementById('add-teams-modal').classList.add('hidden');
+      });
+      document.getElementById('save-teams-assignments')?.addEventListener('click', funSaveTeamsAssignments);
+
+      // Select/Deselect all teams
+      document.getElementById('select-all-teams')?.addEventListener('change', (e) => {
+        document.querySelectorAll('.team-checkbox').forEach(cb => cb.checked = e.target.checked);
+      });
+      document.getElementById('deselect-all-teams')?.addEventListener('click', () => {
+        document.querySelectorAll('.team-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('select-all-teams').checked = false;
+      });
+
+      // Add to Roles Modal
+      document.getElementById('close-add-roles-modal')?.addEventListener('click', () => {
+        document.getElementById('add-roles-modal').classList.add('hidden');
+      });
+      document.getElementById('cancel-add-roles')?.addEventListener('click', () => {
+        document.getElementById('add-roles-modal').classList.add('hidden');
+      });
+      document.getElementById('save-roles-assignments')?.addEventListener('click', funSaveRolesAssignments);
+
+      // Select/Deselect all roles
+      document.getElementById('select-all-roles')?.addEventListener('change', (e) => {
+        document.querySelectorAll('.role-checkbox').forEach(cb => cb.checked = e.target.checked);
+      });
+      document.getElementById('deselect-all-roles')?.addEventListener('click', () => {
+        document.querySelectorAll('.role-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('select-all-roles').checked = false;
+      });
+
+      // Remove Team Modal
+      document.getElementById('close-remove-team-modal')?.addEventListener('click', () => {
+        document.getElementById('remove-team-modal').classList.add('hidden');
+      });
+      document.getElementById('cancel-remove-team')?.addEventListener('click', () => {
+        document.getElementById('remove-team-modal').classList.add('hidden');
+      });
+      document.getElementById('confirm-remove-team')?.addEventListener('click', funRemoveFromTeam);
+
+      // Remove Role Modal
+      document.getElementById('close-remove-role-modal')?.addEventListener('click', () => {
+        document.getElementById('remove-role-modal').classList.add('hidden');
+      });
+      document.getElementById('cancel-remove-role')?.addEventListener('click', () => {
+        document.getElementById('remove-role-modal').classList.add('hidden');
+      });
+      document.getElementById('confirm-remove-role')?.addEventListener('click', funRemoveFromRole);
+
+      // Close modals on backdrop click
+      document.getElementById('add-teams-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'add-teams-modal') {
+          document.getElementById('add-teams-modal').classList.add('hidden');
+        }
+      });
+
+      document.getElementById('add-roles-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'add-roles-modal') {
+          document.getElementById('add-roles-modal').classList.add('hidden');
+        }
+      });
+
+      document.getElementById('remove-team-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'remove-team-modal') {
+          document.getElementById('remove-team-modal').classList.add('hidden');
+        }
+      });
+
+      document.getElementById('remove-role-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'remove-role-modal') {
+          document.getElementById('remove-role-modal').classList.add('hidden');
+        }
+      });
+
+      // ESC key to close modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.fixed.inset-0').forEach(modal => {
+            modal.classList.add('hidden');
+          });
+        }
+      });
+
+      // Initialize icons
+      lucide.createIcons();
     });
 
-    // Initialize icons
-    lucide.createIcons();
-  });
+  </script>
 
-</script>
+</body>
 
-  </body>
 </html>
