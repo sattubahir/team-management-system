@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internal Team Management System</title>
+
+    <!-- Required: Main JS Script -->
+    <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+
+    <!-- Required: TailwindCSS -->
+    <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+
+    <!-- Required: Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+
+    <!-- Required: Favicon -->
+    <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen"/>
+
+    <!-- ECharts Support (for charts/graphs) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+
+    <!-- Markdown Support (for content rendering) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+    <script data-tiramai="web-gen">
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+            },
+            colors: {
+              'brand-primary': '#2563EB',
+              'brand-secondary': '#475569',
+              'brand-accent': '#059669',
+              'brand-surface': '#FFFFFF',
+              'brand-background': '#F8FAFC',
+              'brand-border': '#E2E8F0',
+              'brand-text-primary': '#0B1220',
+              'brand-text-secondary': '#111827'
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+    <!-- Top Navigation -->
+    <header class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+      <div class="flex items-center gap-4">
+        <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+          <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none"/>
+          <circle cx="120" cy="170" r="22" fill="#2563EB"/>
+          <circle cx="280" cy="170" r="22" fill="#2563EB"/>
+          <circle cx="200" cy="255" r="22" fill="#2563EB"/>
+          <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+          <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+          <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+          <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white"/>
+        </svg>
+        <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-toggle" class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <!-- User Profile Dropdown -->
+        <div class="relative">
+          <button id="user-profile-button" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold" id="user-avatar">
+              U
+            </div>
+            <span id="user-display-name" class="hidden sm:block">Loading...</span>
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
+            <div class="px-4 py-2 border-b border-slate-200">
+              <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
+              <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
+            </div>
+            <button id="sign-out-btn" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex pt-16">
+      <!-- Side Navigation -->
+      <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
+        <nav class="p-4 space-y-2">
+          <!-- Admin Dashboard -->
+          <a href="admin_dashboard.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="admin_dashboard">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span>Admin Dashboard</span>
+          </a>
+
+          <!-- Team Management -->
+          <div class="space-y-1">
+            <a href="team_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="team_list">
+              <i data-lucide="users" class="w-5 h-5"></i>
+              <span>Team List</span>
+            </a>
+          </div>
+
+          <!-- Member Management -->
+          <div class="space-y-1">
+            <a href="member_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="member_list">
+              <i data-lucide="user" class="w-5 h-5"></i>
+              <span>Member List</span>
+            </a>
+          </div>
+
+          <!-- Role Management -->
+          <div class="space-y-1">
+            <a href="role_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="role_list">
+              <i data-lucide="award" class="w-5 h-5"></i>
+              <span>Role List</span>
+            </a>
+          </div>
+        </nav>
+        
+        <!-- Footer -->
+        <div class="absolute bottom-4 left-0 right-0 px-4">
+          <div class="text-center text-xs text-slate-500 bg-white py-2">
+            Made with ❤️ by TiramAi
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile Overlay -->
+      <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+      <!-- Main Content -->
+      <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
+        
+<!-- Role List Page Content -->
+<div class="container mx-auto max-w-screen-xl px-4">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+      <div>
+        <h1 class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900 mb-2">Role Management</h1>
+        <p class="text-sm leading-[1.375rem] font-normal text-slate-600">Manage system roles and permissions</p>
+      </div>
+      <button id="btn-create-role" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Create Role
+      </button>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+      <div class="flex-1 relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <i data-lucide="search" class="h-4 w-4 text-slate-400"></i>
+        </div>
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search roles by name or description..."
+          class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+      <button id="btn-refresh" class="inline-flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-700 border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors" aria-label="Refresh roles">
+        <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Refresh</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Skeleton -->
+  <div id="loading-skeleton" class="hidden">
+    <div class="bg-white rounded-lg shadow border border-slate-200">
+      <div class="px-6 py-4 border-b border-slate-200">
+        <div class="h-6 bg-slate-200 rounded animate-pulse w-32"></div>
+      </div>
+      <div class="divide-y divide-slate-200">
+        <div class="px-6 py-4 flex items-center justify-between">
+          <div class="flex-1">
+            <div class="h-5 bg-slate-200 rounded animate-pulse w-48 mb-2"></div>
+            <div class="h-4 bg-slate-200 rounded animate-pulse w-96"></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="h-6 bg-slate-200 rounded animate-pulse w-8"></div>
+            <div class="h-8 bg-slate-200 rounded animate-pulse w-20"></div>
+          </div>
+        </div>
+        <div class="px-6 py-4 flex items-center justify-between">
+          <div class="flex-1">
+            <div class="h-5 bg-slate-200 rounded animate-pulse w-40 mb-2"></div>
+            <div class="h-4 bg-slate-200 rounded animate-pulse w-80"></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="h-6 bg-slate-200 rounded animate-pulse w-8"></div>
+            <div class="h-8 bg-slate-200 rounded animate-pulse w-20"></div>
+          </div>
+        </div>
+        <div class="px-6 py-4 flex items-center justify-between">
+          <div class="flex-1">
+            <div class="h-5 bg-slate-200 rounded animate-pulse w-36 mb-2"></div>
+            <div class="h-4 bg-slate-200 rounded animate-pulse w-72"></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="h-6 bg-slate-200 rounded animate-pulse w-8"></div>
+            <div class="h-8 bg-slate-200 rounded animate-pulse w-20"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roles Table/List -->
+  <div id="roles-container" class="bg-white rounded-lg shadow border border-slate-200">
+    <!-- Table Header -->
+    <div class="px-6 py-4 border-b border-slate-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl leading-7 font-semibold text-slate-900">Roles</h2>
+        <div class="flex items-center gap-4">
+          <button id="sort-name" class="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 focus:outline-none" aria-label="Sort by name">
+            <span>Name</span>
+            <i data-lucide="arrow-up-down" class="w-3 h-3"></i>
+          </button>
+          <button id="sort-members" class="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 focus:outline-none" aria-label="Sort by member count">
+            <span>Members</span>
+            <i data-lucide="arrow-up-down" class="w-3 h-3"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Content -->
+    <div id="roles-list" class="divide-y divide-slate-200">
+      <!-- Role items will be populated here -->
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div id="empty-state" class="hidden text-center py-12">
+    <div class="max-w-md mx-auto">
+      <div class="mb-4">
+        <i data-lucide="shield" class="w-12 h-12 text-slate-300 mx-auto"></i>
+      </div>
+      <h3 class="text-xl leading-7 font-semibold text-slate-900 mb-2">No Roles Found</h3>
+      <p class="text-sm leading-[1.375rem] font-normal text-slate-500 mb-6">Get started by creating your first role to organize team permissions.</p>
+      <button id="btn-create-role-empty" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Create First Role
+      </button>
+    </div>
+  </div>
+
+  <!-- No Search Results -->
+  <div id="no-results-state" class="hidden text-center py-12">
+    <div class="max-w-md mx-auto">
+      <div class="mb-4">
+        <i data-lucide="search" class="w-12 h-12 text-slate-300 mx-auto"></i>
+      </div>
+      <h3 class="text-xl leading-7 font-semibold text-slate-900 mb-2">No Results Found</h3>
+      <p class="text-sm leading-[1.375rem] font-normal text-slate-500">Try adjusting your search terms or clear the search to see all roles.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Create Role Modal -->
+<div id="create-role-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" role="dialog" aria-labelledby="create-role-title" aria-modal="true">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md">
+      <div class="px-6 py-4 border-b border-slate-200">
+        <h3 id="create-role-title" class="text-xl leading-7 font-semibold text-slate-900">Create New Role</h3>
+      </div>
+      
+      <form id="create-role-form" class="p-6 space-y-4">
+        <div class="space-y-2">
+          <label for="create-role-name" class="block text-sm font-medium text-slate-700">Role Name <span class="text-red-600">*</span></label>
+          <input
+            type="text"
+            id="create-role-name"
+            name="name"
+            required
+            placeholder="Enter role name"
+            class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+          <div id="create-role-name-error" class="text-xs text-red-600 hidden"></div>
+        </div>
+        
+        <div class="space-y-2">
+          <label for="create-role-description" class="block text-sm font-medium text-slate-700">Description <span class="text-red-600">*</span></label>
+          <textarea
+            id="create-role-description"
+            name="description"
+            required
+            rows="3"
+            placeholder="Enter role description"
+            class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+          ></textarea>
+          <div id="create-role-description-error" class="text-xs text-red-600 hidden"></div>
+        </div>
+      </form>
+      
+      <div class="px-6 py-4 bg-slate-50 rounded-b-xl flex justify-end gap-3">
+        <button id="btn-cancel-create" class="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded font-medium focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+          Cancel
+        </button>
+        <button id="btn-save-create" class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors">
+          Create Role
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Role Modal -->
+<div id="edit-role-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" role="dialog" aria-labelledby="edit-role-title" aria-modal="true">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md">
+      <div class="px-6 py-4 border-b border-slate-200">
+        <h3 id="edit-role-title" class="text-xl leading-7 font-semibold text-slate-900">Edit Role</h3>
+      </div>
+      
+      <form id="edit-role-form" class="p-6 space-y-4">
+        <div class="space-y-2">
+          <label for="edit-role-name" class="block text-sm font-medium text-slate-700">Role Name <span class="text-red-600">*</span></label>
+          <input
+            type="text"
+            id="edit-role-name"
+            name="name"
+            required
+            placeholder="Enter role name"
+            class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+          <div id="edit-role-name-error" class="text-xs text-red-600 hidden"></div>
+        </div>
+        
+        <div class="space-y-2">
+          <label for="edit-role-description" class="block text-sm font-medium text-slate-700">Description <span class="text-red-600">*</span></label>
+          <textarea
+            id="edit-role-description"
+            name="description"
+            required
+            rows="3"
+            placeholder="Enter role description"
+            class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+          ></textarea>
+          <div id="edit-role-description-error" class="text-xs text-red-600 hidden"></div>
+        </div>
+      </form>
+      
+      <div class="px-6 py-4 bg-slate-50 rounded-b-xl flex justify-end gap-3">
+        <button id="btn-cancel-edit" class="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded font-medium focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+          Cancel
+        </button>
+        <button id="btn-save-edit" class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors">
+          Update Role
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Role Modal -->
+<div id="delete-role-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" role="dialog" aria-labelledby="delete-role-title" aria-modal="true">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md">
+      <div class="px-6 py-4 border-b border-slate-200">
+        <h3 id="delete-role-title" class="text-xl leading-7 font-semibold text-slate-900">Delete Role</h3>
+      </div>
+      
+      <div class="p-6">
+        <div class="flex items-start gap-3 mb-4">
+          <div class="flex-shrink-0">
+            <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-500"></i>
+          </div>
+          <div>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-700 mb-2">
+              Are you sure you want to delete the role <strong id="delete-role-name"></strong>?
+            </p>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-600">
+              This action will affect <strong id="delete-member-count"></strong> member(s) currently assigned to this role. This action cannot be undone.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="px-6 py-4 bg-slate-50 rounded-b-xl flex justify-end gap-3">
+        <button id="btn-cancel-delete" class="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded font-medium focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+          Cancel
+        </button>
+        <button id="btn-confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors">
+          Delete Role
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </main>
+    </div>
+
+    <!-- Required: JavaScript -->
+    <script type="module" data-tiramai="web-gen">
+      import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+      import { auth, db, storage } from "./scripts/firebase.js";
+      import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+      import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Global variables
+      let currentUser = null;
+      let userData = null;
+
+      // Mobile menu functionality
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const mobileOverlay = document.getElementById('mobile-overlay');
+
+      mobileMenuToggle?.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        mobileOverlay.classList.toggle('hidden');
+      });
+
+      mobileOverlay?.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        mobileOverlay.classList.add('hidden');
+      });
+
+      // User profile dropdown functionality
+      const userProfileButton = document.getElementById('user-profile-button');
+      const userDropdown = document.getElementById('user-dropdown');
+
+      userProfileButton?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('hidden');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
+          userDropdown?.classList.add('hidden');
+        }
+      });
+
+      // Sign out functionality
+      document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
+        try {
+          showLoader('Signing out...');
+          await signOut(auth);
+          hideLoader();
+          window.location.href = 'auth.html';
+        } catch (error) {
+          hideLoader();
+          showToast('Failed to sign out: ' + error.message, 'error');
+        }
+      });
+
+      // Initialize user profile
+      async function initializeUserProfile(user) {
+        currentUser = user;
+        
+        try {
+          // Try to get user data from Firestore
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          if (userDoc.exists()) {
+            userData = userDoc.data();
+            updateUserUI(userData, user.email);
+          } else {
+            // Fallback to auth user data
+            updateUserUI(null, user.email);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          // Fallback to auth user data
+          updateUserUI(null, user.email);
+        }
+      }
+
+      // Update user UI elements
+      function updateUserUI(userData, email) {
+        const userAvatar = document.getElementById('user-avatar');
+        const userDisplayName = document.getElementById('user-display-name');
+        const dropdownUserName = document.getElementById('dropdown-user-name');
+        const dropdownUserEmail = document.getElementById('dropdown-user-email');
+
+        let displayName = 'User';
+        let fullName = 'User';
+
+        if (userData && userData.firstName) {
+          displayName = userData.firstName;
+          fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+        } else if (email) {
+          displayName = email.split('@')[0];
+          fullName = email;
+        }
+
+        // Update avatar with first letter
+        if (userAvatar) {
+          userAvatar.textContent = displayName.charAt(0).toUpperCase();
+        }
+
+        // Update display name
+        if (userDisplayName) {
+          userDisplayName.textContent = displayName;
+        }
+
+        // Update dropdown
+        if (dropdownUserName) {
+          dropdownUserName.textContent = fullName;
+        }
+        if (dropdownUserEmail) {
+          dropdownUserEmail.textContent = email || 'No email';
+        }
+      }
+
+      // Set active navigation item
+      function setActiveNavItem() {
+        const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
+        
+        document.querySelectorAll('.nav-item').forEach(item => {
+          const pageName = item.getAttribute('data-page');
+          if (pageName === currentPage) {
+            item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            item.classList.add('bg-blue-600', 'text-white');
+          } else {
+            item.classList.remove('bg-blue-600', 'text-white');
+            item.classList.add('text-slate-700', 'hover:bg-slate-100');
+          }
+        });
+      }
+
+      // Auth state observer
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          initializeUserProfile(user);
+          setActiveNavItem();
+        } else {
+          window.location.href = 'auth.html';
+        }
+      });
+
+      // Set active nav item on page load
+      setActiveNavItem();
+
+      // Export for use in page-specific scripts
+      window.appGlobals = {
+        currentUser,
+        userData,
+        showToast,
+        showLoader,
+        hideLoader
+      };
+    </script>
+
+    
+<script id="role-list-script" type="module" data-tiramai="web-gen">
+  // Import Firebase modules
+  import {
+    collection, getDocs, setDoc, addDoc, doc, getDoc, updateDoc, deleteDoc, writeBatch,
+    query, where, orderBy, limit, startAfter, onSnapshot, Timestamp,
+    getCountFromServer
+  } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+  import { auth, getDb } from "./scripts/firebase.js";
+  import { showToast, showLoader, hideLoader } from "./scripts/main.js";
+
+  // Initialize
+  const db = getDb();
+  let currentUser = null;
+  let rolesData = [];
+  let filteredRoles = [];
+  let sortDirection = { name: 'asc', members: 'desc' };
+  let currentSort = 'name';
+  let currentAbort;
+  let searchTimeout;
+
+  // DOM Elements
+  const elements = {
+    loadingSkeleton: document.getElementById('loading-skeleton'),
+    rolesContainer: document.getElementById('roles-container'),
+    rolesList: document.getElementById('roles-list'),
+    emptyState: document.getElementById('empty-state'),
+    noResultsState: document.getElementById('no-results-state'),
+    searchInput: document.getElementById('search-input'),
+    refreshBtn: document.getElementById('btn-refresh'),
+    createRoleBtn: document.getElementById('btn-create-role'),
+    createRoleEmptyBtn: document.getElementById('btn-create-role-empty'),
+    sortNameBtn: document.getElementById('sort-name'),
+    sortMembersBtn: document.getElementById('sort-members'),
+
+    // Modals
+    createModal: document.getElementById('create-role-modal'),
+    editModal: document.getElementById('edit-role-modal'),
+    deleteModal: document.getElementById('delete-role-modal'),
+
+    // Create Modal Elements
+    createForm: document.getElementById('create-role-form'),
+    createName: document.getElementById('create-role-name'),
+    createDescription: document.getElementById('create-role-description'),
+    createNameError: document.getElementById('create-role-name-error'),
+    createDescError: document.getElementById('create-role-description-error'),
+    cancelCreateBtn: document.getElementById('btn-cancel-create'),
+    saveCreateBtn: document.getElementById('btn-save-create'),
+
+    // Edit Modal Elements
+    editForm: document.getElementById('edit-role-form'),
+    editName: document.getElementById('edit-role-name'),
+    editDescription: document.getElementById('edit-role-description'),
+    editNameError: document.getElementById('edit-role-name-error'),
+    editDescError: document.getElementById('edit-role-description-error'),
+    cancelEditBtn: document.getElementById('btn-cancel-edit'),
+    saveEditBtn: document.getElementById('btn-save-edit'),
+
+    // Delete Modal Elements
+    deleteRoleName: document.getElementById('delete-role-name'),
+    deleteMemberCount: document.getElementById('delete-member-count'),
+    cancelDeleteBtn: document.getElementById('btn-cancel-delete'),
+    confirmDeleteBtn: document.getElementById('btn-confirm-delete')
+  };
+
+  let currentEditingRole = null;
+  let currentDeletingRole = null;
+
+  // Utility Functions
+  const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+  function createSemaphore(max = 2) {
+    const queue = [];
+    let active = 0;
+    const next = () => {
+      if (active >= max || queue.length === 0) return;
+      active++;
+      const { fn, res, rej } = queue.shift();
+      Promise.resolve()
+        .then(fn)
+        .then(v => res(v))
+        .catch(e => rej(e))
+        .finally(() => { active--; next(); });
+    };
+    return (fn) => new Promise((res, rej) => { queue.push({ fn, res, rej }); next(); });
+  }
+  const withLimit = createSemaphore(2);
+
+  // Abortable fetch function
+  async function funFetchRoles(buildQuery) {
+    if (currentAbort) currentAbort.abort();
+    currentAbort = new AbortController();
+    const signal = currentAbort.signal;
+
+    try {
+      const q = buildQuery();
+      const snapshot = await withLimit(() => getDocs(q));
+      
+      if (signal.aborted) return [];
+
+      return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt ? new Date(doc.data().createdAt) : new Date(),
+        updatedAt: doc.data().updatedAt ? new Date(doc.data().updatedAt) : new Date()
+      }));
+    } catch (err) {
+      if (signal.aborted) return [];
+      console.error('Error fetching roles:', err);
+      showToast(err?.message || "Failed to load roles", 'error');
+      return [];
+    }
+  }
+
+  // Get member count for roles
+  async function funGetMemberCounts(roleIds) {
+    if (!roleIds.length) return {};
+    
+    try {
+      const counts = {};
+      
+      // Process role IDs in batches to avoid overwhelming Firestore
+      const batchSize = 10;
+      for (let i = 0; i < roleIds.length; i += batchSize) {
+        const batch = roleIds.slice(i, i + batchSize);
+        
+        const countPromises = batch.map(roleId => 
+          withLimit(async () => {
+            const q = query(collection(db, 'memberRoles'), where('roleId', '==', roleId));
+            const countSnap = await getCountFromServer(q);
+            return { roleId, count: countSnap.data().count };
+          })
+        );
+
+        const batchResults = await Promise.all(countPromises);
+        batchResults.forEach(({ roleId, count }) => {
+          counts[roleId] = count || 0;
+        });
+
+        // Small yield between batches
+        if (i + batchSize < roleIds.length) {
+          await new Promise(r => setTimeout(r, 50));
+        }
+      }
+
+      return counts;
+    } catch (err) {
+      console.error('Error fetching member counts:', err);
+      return {};
+    }
+  }
+
+  // Load roles data
+  async function funLoadRoles(forceRefresh = false) {
+    try {
+      // Show skeleton only on initial load
+      if (!rolesData.length && !forceRefresh) {
+        elements.loadingSkeleton?.classList.remove('hidden');
+        elements.rolesContainer?.classList.add('hidden');
+      }
+
+      // Fetch roles
+      const roles = await funFetchRoles(() => 
+        query(collection(db, 'roles'), orderBy('name', 'asc'))
+      );
+
+      if (!roles.length) {
+        rolesData = [];
+        filteredRoles = [];
+        funUpdateUI();
+        return;
+      }
+
+      // Get member counts
+      const roleIds = roles.map(r => r.id);
+      const memberCounts = await funGetMemberCounts(roleIds);
+
+      // Combine data
+      rolesData = roles.map(role => ({
+        ...role,
+        memberCount: memberCounts[role.id] || 0
+      }));
+
+      // Apply current search and sort
+      funApplyFilters();
+      funUpdateUI();
+
+    } catch (err) {
+      console.error('Error loading roles:', err);
+      showToast('Failed to load roles', 'error');
+    } finally {
+      elements.loadingSkeleton?.classList.add('hidden');
+      elements.rolesContainer?.classList.remove('hidden');
+    }
+  }
+
+  // Apply search filters
+  function funApplyFilters() {
+    const searchTerm = elements.searchInput?.value.toLowerCase().trim() || '';
+    
+    if (!searchTerm) {
+      filteredRoles = [...rolesData];
+    } else {
+      filteredRoles = rolesData.filter(role => 
+        role.name?.toLowerCase().includes(searchTerm) ||
+        role.description?.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Apply sorting
+    funSortRoles(currentSort, sortDirection[currentSort]);
+  }
+
+  // Sort roles
+  function funSortRoles(field, direction) {
+    currentSort = field;
+    sortDirection[field] = direction;
+
+    filteredRoles.sort((a, b) => {
+      let aVal, bVal;
+      
+      if (field === 'name') {
+        aVal = (a.name || '').toLowerCase();
+        bVal = (b.name || '').toLowerCase();
+      } else if (field === 'members') {
+        aVal = a.memberCount || 0;
+        bVal = b.memberCount || 0;
+      }
+
+      if (direction === 'asc') {
+        return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+      } else {
+        return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+      }
+    });
+
+    // Update sort button indicators
+    funUpdateSortIndicators();
+  }
+
+  // Update sort button indicators
+  function funUpdateSortIndicators() {
+    elements.sortNameBtn?.querySelector('[data-lucide]')?.setAttribute('data-lucide', 
+      currentSort === 'name' ? (sortDirection.name === 'asc' ? 'arrow-up' : 'arrow-down') : 'arrow-up-down'
+    );
+    elements.sortMembersBtn?.querySelector('[data-lucide]')?.setAttribute('data-lucide',
+      currentSort === 'members' ? (sortDirection.members === 'asc' ? 'arrow-up' : 'arrow-down') : 'arrow-up-down'
+    );
+    
+    // Re-create icons
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Truncate description for display
+  function funTruncateDescription(description, maxLength = 120) {
+    if (!description) return 'N/A';
+    return description.length > maxLength ? description.substring(0, maxLength) + '...' : description;
+  }
+
+  // Format date
+  function funFormatDate(date) {
+    if (!date) return 'N/A';
+    try {
+      const d = date instanceof Date ? date : new Date(date);
+      return d.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    } catch {
+      return 'N/A';
+    }
+  }
+
+  // Render role item
+  function funRenderRoleItem(role) {
+    const memberText = role.memberCount === 1 ? 'member' : 'members';
+    
+    return `
+      <div class="px-6 py-4 hover:bg-slate-50 transition-colors">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start gap-3">
+              <div class="flex-1">
+                <h3 class="text-base leading-6 font-medium text-slate-900 mb-1 cursor-pointer hover:text-blue-600 transition-colors" onclick="funNavigateToRoleDetail('${role.id}')">
+                  ${role.name || 'N/A'}
+                </h3>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mb-2">
+                  ${funTruncateDescription(role.description)}
+                </p>
+                <div class="flex items-center gap-4 text-xs text-slate-500">
+                  <span class="flex items-center gap-1">
+                    <i data-lucide="users" class="w-3 h-3"></i>
+                    ${role.memberCount || 0} ${memberText}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i data-lucide="calendar" class="w-3 h-3"></i>
+                    Created ${funFormatDate(role.createdAt)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button 
+              onclick="funOpenEditModal('${role.id}')"
+              class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+              aria-label="Edit role"
+            >
+              <i data-lucide="edit-2" class="w-4 h-4"></i>
+            </button>
+            <button 
+              onclick="funOpenDeleteModal('${role.id}')"
+              class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+              aria-label="Delete role"
+            >
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+            <button 
+              onclick="funNavigateToRoleDetail('${role.id}')"
+              class="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+            >
+              View
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update UI
+  async function funUpdateUI() {
+    await yieldToFrame();
+
+    if (!rolesData.length) {
+      // Show empty state
+      elements.rolesContainer?.classList.add('hidden');
+      elements.emptyState?.classList.remove('hidden');
+      elements.noResultsState?.classList.add('hidden');
+      return;
+    }
+
+    if (!filteredRoles.length) {
+      // Show no results state
+      elements.rolesContainer?.classList.add('hidden');
+      elements.emptyState?.classList.add('hidden');
+      elements.noResultsState?.classList.remove('hidden');
+      return;
+    }
+
+    // Show roles
+    elements.rolesContainer?.classList.remove('hidden');
+    elements.emptyState?.classList.add('hidden');
+    elements.noResultsState?.classList.add('hidden');
+
+    if (elements.rolesList) {
+      elements.rolesList.innerHTML = filteredRoles.map(role => funRenderRoleItem(role)).join('');
+      
+      // Re-create icons for the new content
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+  }
+
+  // Navigation functions
+  window.funNavigateToRoleDetail = (roleId) => {
+    if (roleId) {
+      window.location.href = `role_detail.html?roleId=${encodeURIComponent(roleId)}`;
+    }
+  };
+
+  // Modal functions
+  function funShowModal(modal) {
+    modal?.classList.remove('hidden');
+    // Focus trap
+    const firstInput = modal?.querySelector('input, textarea, button');
+    firstInput?.focus();
+  }
+
+  function funHideModal(modal) {
+    modal?.classList.add('hidden');
+  }
+
+  // Create role modal
+  window.funOpenCreateModal = () => {
+    // Reset form
+    elements.createForm?.reset();
+    funClearValidationErrors('create');
+    funShowModal(elements.createModal);
+  };
+
+  // Edit role modal
+  window.funOpenEditModal = (roleId) => {
+    const role = rolesData.find(r => r.id === roleId);
+    if (!role) return;
+
+    currentEditingRole = role;
+    
+    // Populate form
+    if (elements.editName) elements.editName.value = role.name || '';
+    if (elements.editDescription) elements.editDescription.value = role.description || '';
+    
+    funClearValidationErrors('edit');
+    funShowModal(elements.editModal);
+  };
+
+  // Delete role modal
+  window.funOpenDeleteModal = (roleId) => {
+    const role = rolesData.find(r => r.id === roleId);
+    if (!role) return;
+
+    currentDeletingRole = role;
+    
+    // Populate modal
+    if (elements.deleteRoleName) elements.deleteRoleName.textContent = role.name || 'N/A';
+    if (elements.deleteMemberCount) elements.deleteMemberCount.textContent = role.memberCount || 0;
+    
+    funShowModal(elements.deleteModal);
+  };
+
+  // Validation functions
+  function funClearValidationErrors(type) {
+    const prefix = type === 'create' ? 'create' : 'edit';
+    const nameError = document.getElementById(`${prefix}-role-name-error`);
+    const descError = document.getElementById(`${prefix}-role-description-error`);
+    
+    nameError?.classList.add('hidden');
+    descError?.classList.add('hidden');
+    nameError && (nameError.textContent = '');
+    descError && (descError.textContent = '');
+  }
+
+  function funShowValidationError(type, field, message) {
+    const prefix = type === 'create' ? 'create' : 'edit';
+    const errorElement = document.getElementById(`${prefix}-role-${field}-error`);
+    
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.classList.remove('hidden');
+    }
+  }
+
+  async function funValidateRoleName(name, currentRoleId = null) {
+    if (!name || !name.trim()) {
+      return 'Role name is required';
+    }
+
+    if (name.trim().length < 2) {
+      return 'Role name must be at least 2 characters long';
+    }
+
+    if (name.trim().length > 50) {
+      return 'Role name must be less than 50 characters';
+    }
+
+    // Check uniqueness
+    try {
+      const q = query(collection(db, 'roles'), where('name', '==', name.trim()));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+        const existingRole = snapshot.docs[0];
+        if (!currentRoleId || existingRole.id !== currentRoleId) {
+          return 'A role with this name already exists';
+        }
+      }
+    } catch (err) {
+      console.error('Error validating role name:', err);
+      return 'Unable to validate role name. Please try again.';
+    }
+
+    return null;
+  }
+
+  function funValidateDescription(description) {
+    if (!description || !description.trim()) {
+      return 'Description is required';
+    }
+
+    if (description.trim().length < 10) {
+      return 'Description must be at least 10 characters long';
+    }
+
+    if (description.trim().length > 500) {
+      return 'Description must be less than 500 characters';
+    }
+
+    return null;
+  }
+
+  // Create role
+  async function funCreateRole(formData) {
+    try {
+      showLoader('Creating role...');
+
+      const roleData = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      await addDoc(collection(db, 'roles'), roleData);
+      
+      hideLoader();
+      showToast('Role created successfully', 'success');
+      
+      funHideModal(elements.createModal);
+      await funLoadRoles(true);
+
+    } catch (err) {
+      hideLoader();
+      console.error('Error creating role:', err);
+      showToast(err?.message || 'Failed to create role', 'error');
+    }
+  }
+
+  // Update role
+  async function funUpdateRole(roleId, formData) {
+    try {
+      showLoader('Updating role...');
+
+      const roleData = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        updatedAt: new Date().toISOString()
+      };
+
+      const roleRef = doc(db, 'roles', roleId);
+      await updateDoc(roleRef, roleData);
+      
+      hideLoader();
+      showToast('Role updated successfully', 'success');
+      
+      funHideModal(elements.editModal);
+      await funLoadRoles(true);
+
+    } catch (err) {
+      hideLoader();
+      console.error('Error updating role:', err);
+      showToast(err?.message || 'Failed to update role', 'error');
+    }
+  }
+
+  // Delete role
+  async function funDeleteRole(roleId) {
+    try {
+      showLoader('Deleting role...');
+
+      // Use batch to ensure consistency
+      const batch = writeBatch(db);
+      
+      // Delete the role
+      const roleRef = doc(db, 'roles', roleId);
+      batch.delete(roleRef);
+      
+      // Delete all member role assignments
+      const memberRolesQuery = query(collection(db, 'memberRoles'), where('roleId', '==', roleId));
+      const memberRolesSnapshot = await getDocs(memberRolesQuery);
+      
+      memberRolesSnapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+      
+      hideLoader();
+      showToast('Role deleted successfully', 'success');
+      
+      funHideModal(elements.deleteModal);
+      await funLoadRoles(true);
+
+    } catch (err) {
+      hideLoader();
+      console.error('Error deleting role:', err);
+      showToast(err?.message || 'Failed to delete role', 'error');
+    }
+  }
+
+  // Event Listeners
+  function funSetupEventListeners() {
+    // Create role buttons
+    elements.createRoleBtn?.addEventListener('click', funOpenCreateModal);
+    elements.createRoleEmptyBtn?.addEventListener('click', funOpenCreateModal);
+
+    // Refresh button
+    elements.refreshBtn?.addEventListener('click', () => funLoadRoles(true));
+
+    // Search input with debounce
+    elements.searchInput?.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        funApplyFilters();
+        funUpdateUI();
+      }, 300);
+    });
+
+    // Sort buttons
+    elements.sortNameBtn?.addEventListener('click', () => {
+      const newDirection = currentSort === 'name' ? 
+        (sortDirection.name === 'asc' ? 'desc' : 'asc') : 'asc';
+      funSortRoles('name', newDirection);
+      funUpdateUI();
+    });
+
+    elements.sortMembersBtn?.addEventListener('click', () => {
+      const newDirection = currentSort === 'members' ? 
+        (sortDirection.members === 'asc' ? 'desc' : 'asc') : 'desc';
+      funSortRoles('members', newDirection);
+      funUpdateUI();
+    });
+
+    // Create modal events
+    elements.cancelCreateBtn?.addEventListener('click', () => {
+      funHideModal(elements.createModal);
+    });
+
+    elements.createModal?.addEventListener('click', (e) => {
+      if (e.target === elements.createModal) {
+        funHideModal(elements.createModal);
+      }
+    });
+
+    elements.saveCreateBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        name: elements.createName?.value || '',
+        description: elements.createDescription?.value || ''
+      };
+
+      funClearValidationErrors('create');
+
+      // Validate
+      const nameError = await funValidateRoleName(formData.name);
+      const descError = funValidateDescription(formData.description);
+
+      let hasErrors = false;
+
+      if (nameError) {
+        funShowValidationError('create', 'name', nameError);
+        hasErrors = true;
+      }
+
+      if (descError) {
+        funShowValidationError('create', 'description', descError);
+        hasErrors = true;
+      }
+
+      if (!hasErrors) {
+        await funCreateRole(formData);
+      }
+    });
+
+    // Edit modal events
+    elements.cancelEditBtn?.addEventListener('click', () => {
+      funHideModal(elements.editModal);
+    });
+
+    elements.editModal?.addEventListener('click', (e) => {
+      if (e.target === elements.editModal) {
+        funHideModal(elements.editModal);
+      }
+    });
+
+    elements.saveEditBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      if (!currentEditingRole) return;
+
+      const formData = {
+        name: elements.editName?.value || '',
+        description: elements.editDescription?.value || ''
+      };
+
+      funClearValidationErrors('edit');
+
+      // Validate
+      const nameError = await funValidateRoleName(formData.name, currentEditingRole.id);
+      const descError = funValidateDescription(formData.description);
+
+      let hasErrors = false;
+
+      if (nameError) {
+        funShowValidationError('edit', 'name', nameError);
+        hasErrors = true;
+      }
+
+      if (descError) {
+        funShowValidationError('edit', 'description', descError);
+        hasErrors = true;
+      }
+
+      if (!hasErrors) {
+        await funUpdateRole(currentEditingRole.id, formData);
+      }
+    });
+
+    // Delete modal events
+    elements.cancelDeleteBtn?.addEventListener('click', () => {
+      funHideModal(elements.deleteModal);
+    });
+
+    elements.deleteModal?.addEventListener('click', (e) => {
+      if (e.target === elements.deleteModal) {
+        funHideModal(elements.deleteModal);
+      }
+    });
+
+    elements.confirmDeleteBtn?.addEventListener('click', async () => {
+      if (currentDeletingRole) {
+        await funDeleteRole(currentDeletingRole.id);
+      }
+    });
+
+    // Keyboard events for modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!elements.createModal?.classList.contains('hidden')) {
+          funHideModal(elements.createModal);
+        } else if (!elements.editModal?.classList.contains('hidden')) {
+          funHideModal(elements.editModal);
+        } else if (!elements.deleteModal?.classList.contains('hidden')) {
+          funHideModal(elements.deleteModal);
+        }
+      }
+    });
+
+    // Real-time validation for create form
+    elements.createName?.addEventListener('blur', async () => {
+      const name = elements.createName.value;
+      if (name.trim()) {
+        const error = await funValidateRoleName(name);
+        if (error) {
+          funShowValidationError('create', 'name', error);
+        } else {
+          document.getElementById('create-role-name-error')?.classList.add('hidden');
+        }
+      }
+    });
+
+    elements.createDescription?.addEventListener('blur', () => {
+      const description = elements.createDescription?.value;
+      if (description?.trim()) {
+        const error = funValidateDescription(description);
+        if (error) {
+          funShowValidationError('create', 'description', error);
+        } else {
+          document.getElementById('create-role-description-error')?.classList.add('hidden');
+        }
+      }
+    });
+
+    // Real-time validation for edit form
+    elements.editName?.addEventListener('blur', async () => {
+      const name = elements.editName?.value;
+      if (name?.trim() && currentEditingRole) {
+        const error = await funValidateRoleName(name, currentEditingRole.id);
+        if (error) {
+          funShowValidationError('edit', 'name', error);
+        } else {
+          document.getElementById('edit-role-name-error')?.classList.add('hidden');
+        }
+      }
+    });
+
+    elements.editDescription?.addEventListener('blur', () => {
+      const description = elements.editDescription?.value;
+      if (description?.trim()) {
+        const error = funValidateDescription(description);
+        if (error) {
+          funShowValidationError('edit', 'description', error);
+        } else {
+          document.getElementById('edit-role-description-error')?.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  // Initialize
+  async function funInitialize() {
+    // Auth check
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = "auth.html?redirect=" + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      currentUser = user;
+    });
+
+    // Setup event listeners
+    funSetupEventListeners();
+
+    // Load initial data
+    await funLoadRoles();
+
+    // Initialize icons
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Make functions globally available for onclick handlers
+  window.funOpenCreateModal = funOpenCreateModal;
+  window.funOpenEditModal = funOpenEditModal;
+  window.funOpenDeleteModal = funOpenDeleteModal;
+  window.funNavigateToRoleDetail = funNavigateToRoleDetail;
+
+  // Start the app
+  funInitialize().catch(err => {
+    console.error('Failed to initialize role list page:', err);
+    showToast('Failed to load page', 'error');
+  });
+</script>
+
+  </body>
+</html>

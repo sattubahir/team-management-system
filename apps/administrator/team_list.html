@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Team Management System</title>
+
+  <!-- Required: Main JS Script -->
+  <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+
+  <!-- Required: TailwindCSS -->
+  <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+
+  <!-- Required: Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+
+  <!-- Required: Favicon -->
+  <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen" />
+
+  <!-- ECharts Support (for charts/graphs) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+
+  <!-- Markdown Support (for content rendering) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+  <script data-tiramai="web-gen">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+          },
+          colors: {
+            'brand-primary': '#2563EB',
+            'brand-secondary': '#475569',
+            'brand-accent': '#059669',
+            'brand-surface': '#FFFFFF',
+            'brand-background': '#F8FAFC',
+            'brand-border': '#E2E8F0',
+            'brand-text-primary': '#0B1220',
+            'brand-text-secondary': '#111827'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+  <!-- Top Navigation -->
+  <header
+    class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+    <div class="flex items-center gap-4">
+      <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+        <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none" />
+        <circle cx="120" cy="170" r="22" fill="#2563EB" />
+        <circle cx="280" cy="170" r="22" fill="#2563EB" />
+        <circle cx="200" cy="255" r="22" fill="#2563EB" />
+        <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white" />
+      </svg>
+      <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
+      <!-- Mobile Menu Toggle -->
+      <button id="mobile-menu-toggle"
+        class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <button id="user-profile-button"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <div
+            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold"
+            id="user-avatar">
+            U
+          </div>
+          <span id="user-display-name" class="hidden sm:block">Loading...</span>
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="user-dropdown"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
+          <div class="px-4 py-2 border-b border-slate-200">
+            <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
+            <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
+          </div>
+          <button id="sign-out-btn"
+            class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex pt-16">
+    <!-- Side Navigation -->
+    <aside id="sidebar"
+      class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
+      <nav class="p-4 space-y-2">
+        <!-- Admin Dashboard -->
+        <a href="admin_dashboard.html"
+          class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          data-page="admin_dashboard">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span>Admin Dashboard</span>
+        </a>
+
+        <!-- Team Management -->
+        <div class="space-y-1">
+          <a href="team_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="team_list">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span>Team List</span>
+          </a>
+        </div>
+
+        <!-- Member Management -->
+        <div class="space-y-1">
+          <a href="member_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="member_list">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span>Member List</span>
+          </a>
+        </div>
+
+        <!-- Role Management -->
+        <div class="space-y-1">
+          <a href="role_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="role_list">
+            <i data-lucide="award" class="w-5 h-5"></i>
+            <span>Role List</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="absolute bottom-4 left-0 right-0 px-4">
+        <div class="text-center text-xs text-slate-500 bg-white py-2">
+          Made with ❤️ by TiramAi
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+    <!-- Main Content -->
+    <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
+
+      <!-- Team List Page -->
+      <div class="space-y-6">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900">Teams</h1>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mt-1">Manage your organization's teams</p>
+          </div>
+          <button id="btn-create-team"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Create Team
+          </button>
+        </div>
+
+        <!-- Search and Actions Bar -->
+        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div class="relative flex-1 max-w-md">
+            <i data-lucide="search"
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input type="text" id="search-input" placeholder="Search teams..."
+              class="w-full pl-10 pr-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-refresh"
+              class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 px-3 py-2 rounded hover:bg-slate-100 transition-colors"
+              aria-label="Refresh teams">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Teams Table/List Container -->
+        <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+          <!-- Loading Skeleton -->
+          <div id="teams-skeleton" class="hidden">
+            <div class="p-6 space-y-4">
+              <div class="animate-pulse space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="h-4 bg-slate-200 rounded w-32"></div>
+                  <div class="h-4 bg-slate-200 rounded w-20"></div>
+                </div>
+                <div class="space-y-2">
+                  <div class="h-4 bg-slate-200 rounded w-full"></div>
+                  <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                  <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="hidden text-center py-12 px-6">
+            <div class="mx-auto w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+              <i data-lucide="users" class="w-12 h-12 text-slate-400"></i>
+            </div>
+            <h3 class="text-lg leading-[1.625rem] font-medium text-slate-900 mb-2">No teams yet</h3>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-500 mb-6">Create your first team to get started
+              with organizing your members.</p>
+            <button id="btn-create-first-team"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              Create First Team
+            </button>
+          </div>
+
+          <!-- No Search Results -->
+          <div id="no-results-state" class="hidden text-center py-12 px-6">
+            <div class="mx-auto w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+              <i data-lucide="search" class="w-12 h-12 text-slate-400"></i>
+            </div>
+            <h3 class="text-lg leading-[1.625rem] font-medium text-slate-900 mb-2">No teams found</h3>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-500">Try adjusting your search terms.</p>
+          </div>
+
+          <!-- Teams Table (Desktop) -->
+          <div id="teams-table" class="hidden md:block">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th class="px-6 py-3 text-left">
+                      <button id="sort-by-name"
+                        class="flex items-center gap-1 text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 transition-colors">
+                        Team Name
+                        <i data-lucide="chevron-up" class="w-3 h-3 sort-icon opacity-0"></i>
+                      </button>
+                    </th>
+                    <th class="px-6 py-3 text-left">
+                      <button id="sort-by-members"
+                        class="flex items-center gap-1 text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 transition-colors">
+                        Members
+                        <i data-lucide="chevron-up" class="w-3 h-3 sort-icon opacity-0"></i>
+                      </button>
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Created
+                    </th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-700 uppercase tracking-wider">Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="teams-table-body" class="bg-white divide-y divide-slate-200">
+                  <!-- Team rows will be inserted here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Teams List (Mobile) -->
+          <div id="teams-list" class="md:hidden">
+            <div id="teams-list-container" class="divide-y divide-slate-200">
+              <!-- Team cards will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination-container" class="hidden flex items-center justify-between">
+          <div class="text-sm text-slate-600">
+            Showing <span id="pagination-start">0</span> to <span id="pagination-end">0</span> of <span
+              id="pagination-total">0</span> teams
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-prev-page"
+              class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled>
+              Previous
+            </button>
+            <span id="current-page" class="px-3 py-1 text-sm font-medium">1</span>
+            <button id="btn-next-page"
+              class="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled>
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Team Modal -->
+      <div id="create-team-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md">
+            <div class="px-6 py-4 border-b border-slate-200">
+              <h2 class="text-xl leading-7 font-semibold text-slate-900">Create New Team</h2>
+              <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mt-1">Add a new team to your organization
+              </p>
+            </div>
+            <form id="create-team-form" class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label for="create-team-name" class="block text-sm font-medium text-slate-700 mb-2">Team Name
+                    *</label>
+                  <input type="text" id="create-team-name" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    placeholder="Enter team name">
+                  <div id="create-team-name-error" class="hidden text-sm text-red-600 mt-1"></div>
+                </div>
+              </div>
+              <div class="flex gap-3 mt-6 pt-4 border-t border-slate-200">
+                <button type="button" id="create-team-cancel"
+                  class="flex-1 px-4 py-2 border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" id="create-team-submit"
+                  class="flex-1 px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                  Create Team
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Team Modal -->
+      <div id="edit-team-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md">
+            <div class="px-6 py-4 border-b border-slate-200">
+              <h2 class="text-xl leading-7 font-semibold text-slate-900">Edit Team</h2>
+              <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mt-1">Update team information</p>
+            </div>
+            <form id="edit-team-form" class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label for="edit-team-name" class="block text-sm font-medium text-slate-700 mb-2">Team Name *</label>
+                  <input type="text" id="edit-team-name" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    placeholder="Enter team name">
+                  <div id="edit-team-name-error" class="hidden text-sm text-red-600 mt-1"></div>
+                </div>
+              </div>
+              <div class="flex gap-3 mt-6 pt-4 border-t border-slate-200">
+                <button type="button" id="edit-team-cancel"
+                  class="flex-1 px-4 py-2 border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" id="edit-team-submit"
+                  class="flex-1 px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Team Modal -->
+      <div id="delete-team-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md">
+            <div class="px-6 py-4 border-b border-slate-200">
+              <h2 class="text-xl leading-7 font-semibold text-red-600">Delete Team</h2>
+              <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mt-1">This action cannot be undone</p>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start gap-3 mb-4">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-slate-900 mb-1">
+                    Are you sure you want to delete "<span id="delete-team-name" class="font-semibold">Team
+                      Name</span>"?
+                  </p>
+                  <p class="text-sm text-slate-600">
+                    This team has <span id="delete-team-member-count" class="font-medium">0</span> member(s).
+                    Deleting this team will remove all team memberships but will not delete the members themselves.
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-3 mt-6 pt-4 border-t border-slate-200">
+                <button type="button" id="delete-team-cancel"
+                  class="flex-1 px-4 py-2 border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+                  Cancel
+                </button>
+                <button type="button" id="delete-team-confirm"
+                  class="flex-1 px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                  Delete Team
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Required: JavaScript -->
+  <script type="module" data-tiramai="web-gen">
+    import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+    import { auth, db, storage } from "./scripts/firebase.js";
+    import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Global variables
+    let currentUser = null;
+    let userData = null;
+
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+
+    mobileMenuToggle?.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      mobileOverlay.classList.toggle('hidden');
+    });
+
+    mobileOverlay?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      mobileOverlay.classList.add('hidden');
+    });
+
+    // User profile dropdown functionality
+    const userProfileButton = document.getElementById('user-profile-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    userProfileButton?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
+        userDropdown?.classList.add('hidden');
+      }
+    });
+
+    // Sign out functionality
+    document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
+      try {
+        showLoader('Signing out...');
+        await signOut(auth);
+        hideLoader();
+        window.location.href = 'auth.html';
+      } catch (error) {
+        hideLoader();
+        showToast('Failed to sign out: ' + error.message, 'error');
+      }
+    });
+
+    // Initialize user profile
+    async function initializeUserProfile(user) {
+      currentUser = user;
+
+      try {
+        // Try to get user data from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          userData = userDoc.data();
+          updateUserUI(userData, user.email);
+        } else {
+          // Fallback to auth user data
+          updateUserUI(null, user.email);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Fallback to auth user data
+        updateUserUI(null, user.email);
+      }
+    }
+
+    // Update user UI elements
+    function updateUserUI(userData, email) {
+      const userAvatar = document.getElementById('user-avatar');
+      const userDisplayName = document.getElementById('user-display-name');
+      const dropdownUserName = document.getElementById('dropdown-user-name');
+      const dropdownUserEmail = document.getElementById('dropdown-user-email');
+
+      let displayName = 'User';
+      let fullName = 'User';
+
+      if (userData && userData.firstName) {
+        displayName = userData.firstName;
+        fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+      } else if (email) {
+        displayName = email.split('@')[0];
+        fullName = email;
+      }
+
+      // Update avatar with first letter
+      if (userAvatar) {
+        userAvatar.textContent = displayName.charAt(0).toUpperCase();
+      }
+
+      // Update display name
+      if (userDisplayName) {
+        userDisplayName.textContent = displayName;
+      }
+
+      // Update dropdown
+      if (dropdownUserName) {
+        dropdownUserName.textContent = fullName;
+      }
+      if (dropdownUserEmail) {
+        dropdownUserEmail.textContent = email || 'No email';
+      }
+    }
+
+    // Set active navigation item
+    function setActiveNavItem() {
+      const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        const pageName = item.getAttribute('data-page');
+        if (pageName === currentPage) {
+          item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+          item.classList.add('bg-blue-600', 'text-white');
+        } else {
+          item.classList.remove('bg-blue-600', 'text-white');
+          item.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+      });
+    }
+
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        initializeUserProfile(user);
+        setActiveNavItem();
+      } else {
+        window.location.href = 'auth.html';
+      }
+    });
+
+    // Set active nav item on page load
+    setActiveNavItem();
+
+    // Export for use in page-specific scripts
+    window.appGlobals = {
+      currentUser,
+      userData,
+      showToast,
+      showLoader,
+      hideLoader
+    };
+  </script>
+
+
+  <script id="data-script" type="module" data-tiramai="web-gen">
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import {
+      collection, getDocs, setDoc, addDoc, doc, getDoc, updateDoc, deleteDoc, writeBatch,
+      query, where, orderBy, limit, startAfter, onSnapshot, Timestamp,
+      getCountFromServer
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    import { auth, getDb } from "./scripts/firebase.js";
+    import { showToast, showLoader, hideLoader } from "./scripts/main.js";
+
+    const db = getDb();
+
+    // State management
+    let currentUser = null;
+    let teams = [];
+    let filteredTeams = [];
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let totalTeams = 0;
+    let searchQuery = '';
+    let sortField = 'name';
+    let sortDirection = 'asc';
+    let currentEditTeamId = null;
+    let currentDeleteTeamId = null;
+
+    // Concurrency limiter
+    function createSemaphore(max = 2) {
+      const queue = [];
+      let active = 0;
+      const next = () => {
+        if (active >= max || queue.length === 0) return;
+        active++;
+        const { fn, res, rej } = queue.shift();
+        Promise.resolve()
+          .then(fn)
+          .then(v => res(v))
+          .catch(e => rej(e))
+          .finally(() => { active--; next(); });
+      };
+      return (fn) => new Promise((res, rej) => { queue.push({ fn, res, rej }); next(); });
+    }
+    const withLimit = createSemaphore(2);
+
+    // AbortController for search
+    let currentAbort;
+
+    // Utility function to yield to frame
+    const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+    // Initialize page
+    async function funInitializePage() {
+      try {
+        await funLoadTeams();
+        funSetupEventListeners();
+        lucide.createIcons();
+      } catch (error) {
+        console.error('Error initializing page:', error);
+        showToast('Failed to initialize page: ' + (error?.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Load teams with member counts
+    async function funLoadTeams(forceRefresh = false) {
+      if (currentAbort) currentAbort.abort();
+      currentAbort = new AbortController();
+      const signal = currentAbort.signal;
+
+      try {
+        funShowSkeleton();
+
+        // Load teams and member counts concurrently but limited
+        const [teamsResult, totalCountResult] = await Promise.all([
+          withLimit(() => funFetchTeamsWithPagination()),
+          withLimit(() => funGetTotalTeamCount())
+        ]);
+
+        if (signal.aborted) return;
+
+        teams = teamsResult.teams || [];
+        totalTeams = totalCountResult || 0;
+
+        // Get member counts for each team
+        if (teams.length > 0) {
+          await funEnrichTeamsWithMemberCounts(teams);
+        }
+
+        if (signal.aborted) return;
+
+        funApplyFiltersAndSort();
+        await yieldToFrame();
+        funRenderTeams();
+        funUpdatePagination();
+
+      } catch (error) {
+        if (signal.aborted) return;
+        console.error('Error loading teams:', error);
+        showToast('Failed to load teams: ' + (error?.message || 'Unknown error'), 'error');
+        funHideSkeleton();
+        funShowEmptyState();
+      }
+    }
+
+    // Fetch teams with pagination
+    async function funFetchTeamsWithPagination() {
+      try {
+        const teamsRef = collection(db, 'teams');
+        let q = query(teamsRef, orderBy('createdAt', 'desc'), limit(100)); // Load more initially for client-side sorting/filtering
+
+        const snapshot = await getDocs(q);
+        const teams = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          memberCount: 0 // Will be populated later
+        }));
+
+        return { teams };
+      } catch (error) {
+        console.error('Error fetching teams:', error);
+        throw error;
+      }
+    }
+
+    // Get total team count
+    async function funGetTotalTeamCount() {
+      try {
+        const teamsRef = collection(db, 'teams');
+        const snapshot = await getCountFromServer(teamsRef);
+        return snapshot.data().count;
+      } catch (error) {
+        console.error('Error getting team count:', error);
+        return 0;
+      }
+    }
+
+    // Enrich teams with member counts
+    async function funEnrichTeamsWithMemberCounts(teamsToEnrich) {
+      try {
+        const memberCountPromises = teamsToEnrich.map(team =>
+          withLimit(async () => {
+            try {
+              const teamMembersRef = collection(db, 'teamMembers');
+              const q = query(teamMembersRef, where('teamId', '==', team.id));
+              const snapshot = await getCountFromServer(q);
+              return { teamId: team.id, count: snapshot.data().count };
+            } catch (error) {
+              console.error(`Error getting member count for team ${team.id}:`, error);
+              return { teamId: team.id, count: 0 };
+            }
+          })
+        );
+
+        const memberCounts = await Promise.all(memberCountPromises);
+
+        // Update teams with member counts
+        memberCounts.forEach(({ teamId, count }) => {
+          const team = teamsToEnrich.find(t => t.id === teamId);
+          if (team) {
+            team.memberCount = count || 0;
+          }
+        });
+      } catch (error) {
+        console.error('Error enriching teams with member counts:', error);
+      }
+    }
+
+    // Apply filters and sorting
+    function funApplyFiltersAndSort() {
+      filteredTeams = teams.filter(team => {
+        if (!team || !team.name) return false;
+
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          return team.name.toLowerCase().includes(query);
+        }
+        return true;
+      });
+
+      // Sort teams
+      filteredTeams.sort((a, b) => {
+        let aVal, bVal;
+
+        if (sortField === 'name') {
+          aVal = (a.name || '').toLowerCase();
+          bVal = (b.name || '').toLowerCase();
+        } else if (sortField === 'members') {
+          aVal = a.memberCount || 0;
+          bVal = b.memberCount || 0;
+        } else {
+          aVal = a.createdAt || '';
+          bVal = b.createdAt || '';
+        }
+
+        if (sortDirection === 'asc') {
+          return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        } else {
+          return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+        }
+      });
+    }
+
+    // Render teams
+    /*
+    function funRenderTeams() {
+      funHideSkeleton();
+      
+      if (filteredTeams.length === 0) {
+        if (searchQuery) {
+          funShowNoResultsState();
+        } else {
+          funShowEmptyState();
+        }
+        return;
+      }
+    
+      // Calculate pagination
+      
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, filteredTeams.length);
+      const paginatedTeams = filteredTeams.slice(startIndex, endIndex);
+    
+      // Show the appropriate container
+      const tableContainer = document.getElementById('teams-table');
+      const listContainer = document.getElementById('teams-list');
+      
+      tableContainer?.classList.remove('hidden');
+      listContainer?.classList.remove('hidden');
+      
+      funHideAllStates();
+    
+      // Render table (desktop)
+      funRenderTable(paginatedTeams);
+      
+      // Render list (mobile)
+      funRenderList(paginatedTeams);
+    
+      lucide.createIcons();
+    }
+    */
+    // Render teams
+    function funRenderTeams() {
+      funHideSkeleton();
+
+      if (!Array.isArray(filteredTeams) || filteredTeams.length === 0) {
+        if (searchQuery) {
+          funShowNoResultsState();
+        } else {
+          funShowEmptyState();
+        }
+        return;
+      }
+
+      // Calculate pagination
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, filteredTeams.length);
+      const paginatedTeams = filteredTeams.slice(startIndex, endIndex);
+
+      // Hide all state containers first (so we start from a clean slate)
+      funHideAllStates();
+
+      // Show the appropriate container(s)
+      const tableContainer = document.getElementById('teams-table');
+      const listContainer = document.getElementById('teams-list');
+
+      tableContainer?.classList.remove('hidden');
+      listContainer?.classList.remove('hidden');
+
+      // Render table (desktop)
+      funRenderTable(paginatedTeams);
+
+      // Render list (mobile)
+      funRenderList(paginatedTeams);
+
+      // Update pagination UI after rendering
+      funUpdatePagination();
+
+      // Re-initialize icons for the newly injected markup
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    // Render table for desktop
+    function funRenderTable(teamsToRender) {
+      const tbody = document.getElementById('teams-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = teamsToRender.map(team => `
+    <tr class="hover:bg-slate-50">
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
+            ${(team.name || 'T').charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <button 
+              class="text-sm font-medium text-blue-600 hover:text-blue-700 text-left"
+              onclick="funNavigateToTeamDetail('${team.id}')"
+            >
+              ${funEscapeHtml(team.name || 'N/A')}
+            </button>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+        <div class="flex items-center gap-1">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          ${team.memberCount || 0}
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+        ${team.createdAt ? funFormatDate(team.createdAt) : 'N/A'}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div class="flex items-center justify-end gap-2">
+          <button 
+            class="text-blue-600 hover:text-blue-700 p-1 rounded hover:bg-blue-50"
+            onclick="funNavigateToTeamDetail('${team.id}')"
+            title="View team"
+          >
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+          <button 
+            class="text-slate-600 hover:text-slate-700 p-1 rounded hover:bg-slate-50"
+            onclick="funOpenEditModal('${team.id}')"
+            title="Edit team"
+          >
+            <i data-lucide="edit" class="w-4 h-4"></i>
+          </button>
+          <button 
+            class="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50"
+            onclick="funOpenDeleteModal('${team.id}')"
+            title="Delete team"
+          >
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+    }
+
+    // Render list for mobile
+    function funRenderList(teamsToRender) {
+      const container = document.getElementById('teams-list-container');
+      if (!container) return;
+
+      container.innerHTML = teamsToRender.map(team => `
+    <div class="p-4">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center flex-1 min-w-0">
+          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 flex-shrink-0">
+            ${(team.name || 'T').charAt(0).toUpperCase()}
+          </div>
+          <div class="flex-1 min-w-0">
+            <button 
+              class="text-base font-medium text-blue-600 hover:text-blue-700 text-left truncate block w-full"
+              onclick="funNavigateToTeamDetail('${team.id}')"
+            >
+              ${funEscapeHtml(team.name || 'N/A')}
+            </button>
+            <div class="flex items-center gap-4 text-sm text-slate-600 mt-1">
+              <div class="flex items-center gap-1">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                ${team.memberCount || 0} members
+              </div>
+              <div>
+                Created ${team.createdAt ? funFormatDate(team.createdAt) : 'N/A'}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 ml-2 flex-shrink-0">
+          <button 
+            class="text-blue-600 hover:text-blue-700 p-2 rounded hover:bg-blue-50"
+            onclick="funNavigateToTeamDetail('${team.id}')"
+            title="View team"
+          >
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+          <button 
+            class="text-slate-600 hover:text-slate-700 p-2 rounded hover:bg-slate-50"
+            onclick="funOpenEditModal('${team.id}')"
+            title="Edit team"
+          >
+            <i data-lucide="edit" class="w-4 h-4"></i>
+          </button>
+          <button 
+            class="text-red-600 hover:text-red-700 p-2 rounded hover:bg-red-50"
+            onclick="funOpenDeleteModal('${team.id}')"
+            title="Delete team"
+          >
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+    }
+
+    // Navigation
+    function funNavigateToTeamDetail(teamId) {
+      if (teamId) {
+        window.location.href = `team_detail.html?teamId=${encodeURIComponent(teamId)}`;
+      }
+    }
+
+    // Update pagination
+    function funUpdatePagination() {
+      const totalItems = filteredTeams.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const startIndex = (currentPage - 1) * itemsPerPage + 1;
+      const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+
+      // Update pagination info
+      const startSpan = document.getElementById('pagination-start');
+      const endSpan = document.getElementById('pagination-end');
+      const totalSpan = document.getElementById('pagination-total');
+      const currentPageSpan = document.getElementById('current-page');
+
+      if (startSpan) startSpan.textContent = totalItems > 0 ? startIndex : 0;
+      if (endSpan) endSpan.textContent = endIndex;
+      if (totalSpan) totalSpan.textContent = totalItems;
+      if (currentPageSpan) currentPageSpan.textContent = currentPage;
+
+      // Update pagination buttons
+      const prevBtn = document.getElementById('btn-prev-page');
+      const nextBtn = document.getElementById('btn-next-page');
+
+      if (prevBtn) {
+        prevBtn.disabled = currentPage <= 1;
+      }
+      if (nextBtn) {
+        nextBtn.disabled = currentPage >= totalPages;
+      }
+
+      // Show/hide pagination container
+      const paginationContainer = document.getElementById('pagination-container');
+      if (paginationContainer) {
+        if (totalItems > itemsPerPage) {
+          paginationContainer.classList.remove('hidden');
+        } else {
+          paginationContainer.classList.add('hidden');
+        }
+      }
+    }
+
+    // State management functions
+    function funShowSkeleton() {
+      const skeleton = document.getElementById('teams-skeleton');
+      skeleton?.classList.remove('hidden');
+      funHideAllStates();
+    }
+
+    function funHideSkeleton() {
+      const skeleton = document.getElementById('teams-skeleton');
+      skeleton?.classList.add('hidden');
+    }
+
+    function funShowEmptyState() {
+      funHideAllStates();
+      const emptyState = document.getElementById('empty-state');
+      emptyState?.classList.remove('hidden');
+    }
+
+    function funShowNoResultsState() {
+      funHideAllStates();
+      const noResultsState = document.getElementById('no-results-state');
+      noResultsState?.classList.remove('hidden');
+    }
+
+    function funHideAllStates() {
+      document.getElementById('teams-table')?.classList.add('hidden');
+      document.getElementById('teams-list')?.classList.add('hidden');
+      document.getElementById('empty-state')?.classList.add('hidden');
+      document.getElementById('no-results-state')?.classList.add('hidden');
+    }
+
+    // Modal functions
+    function funOpenCreateModal() {
+      const modal = document.getElementById('create-team-modal');
+      const nameInput = document.getElementById('create-team-name');
+
+      if (modal && nameInput) {
+        // Reset form
+        document.getElementById('create-team-form')?.reset();
+        funHideError('create-team-name-error');
+
+        modal.classList.remove('hidden');
+        nameInput.focus();
+      }
+    }
+
+    function funCloseCreateModal() {
+      const modal = document.getElementById('create-team-modal');
+      modal?.classList.add('hidden');
+    }
+
+    async function funOpenEditModal(teamId) {
+      currentEditTeamId = teamId;
+      const team = teams.find(t => t.id === teamId);
+
+      if (!team) {
+        showToast('Team not found', 'error');
+        return;
+      }
+
+      const modal = document.getElementById('edit-team-modal');
+      const nameInput = document.getElementById('edit-team-name');
+
+      if (modal && nameInput) {
+        // Populate form
+        nameInput.value = team.name || '';
+        funHideError('edit-team-name-error');
+
+        modal.classList.remove('hidden');
+        nameInput.focus();
+      }
+    }
+
+    function funCloseEditModal() {
+      const modal = document.getElementById('edit-team-modal');
+      modal?.classList.add('hidden');
+      currentEditTeamId = null;
+    }
+
+    async function funOpenDeleteModal(teamId) {
+      currentDeleteTeamId = teamId;
+      const team = teams.find(t => t.id === teamId);
+
+      if (!team) {
+        showToast('Team not found', 'error');
+        return;
+      }
+
+      const modal = document.getElementById('delete-team-modal');
+      const teamNameSpan = document.getElementById('delete-team-name');
+      const memberCountSpan = document.getElementById('delete-team-member-count');
+
+      if (modal && teamNameSpan && memberCountSpan) {
+        teamNameSpan.textContent = team.name || 'N/A';
+        memberCountSpan.textContent = team.memberCount || 0;
+
+        modal.classList.remove('hidden');
+      }
+    }
+
+    function funCloseDeleteModal() {
+      const modal = document.getElementById('delete-team-modal');
+      modal?.classList.add('hidden');
+      currentDeleteTeamId = null;
+    }
+
+    // CRUD operations
+    async function funCreateTeam(teamData) {
+      try {
+        showLoader('Creating team...');
+
+        // Check for uniqueness
+        const isUnique = await funCheckTeamNameUniqueness(teamData.name);
+        if (!isUnique) {
+          funShowError('create-team-name-error', 'A team with this name already exists');
+          hideLoader();
+          return;
+        }
+
+        const now = new Date().toISOString();
+        const newTeam = {
+          name: teamData.name.trim(),
+          createdAt: now,
+          updatedAt: now
+        };
+
+        const teamsRef = collection(db, 'teams');
+        await addDoc(teamsRef, newTeam);
+
+        hideLoader();
+        showToast('Team created successfully!', 'success');
+        funCloseCreateModal();
+        await funLoadTeams(true);
+
+      } catch (error) {
+        hideLoader();
+        console.error('Error creating team:', error);
+        showToast('Failed to create team: ' + (error?.message || 'Unknown error'), 'error');
+      }
+    }
+
+    async function funUpdateTeam(teamId, teamData) {
+      try {
+        showLoader('Updating team...');
+
+        // Check for uniqueness (excluding current team)
+        const isUnique = await funCheckTeamNameUniqueness(teamData.name, teamId);
+        if (!isUnique) {
+          funShowError('edit-team-name-error', 'A team with this name already exists');
+          hideLoader();
+          return;
+        }
+
+        const teamRef = doc(db, 'teams', teamId);
+        await updateDoc(teamRef, {
+          name: teamData.name.trim(),
+          updatedAt: new Date().toISOString()
+        });
+
+        hideLoader();
+        showToast('Team updated successfully!', 'success');
+        funCloseEditModal();
+        await funLoadTeams(true);
+
+      } catch (error) {
+        hideLoader();
+        console.error('Error updating team:', error);
+        showToast('Failed to update team: ' + (error?.message || 'Unknown error'), 'error');
+      }
+    }
+
+    async function funDeleteTeam(teamId) {
+      try {
+        showLoader('Deleting team...');
+
+        // Delete team and all associated team memberships
+        const batch = writeBatch(db);
+
+        // Delete the team
+        const teamRef = doc(db, 'teams', teamId);
+        batch.delete(teamRef);
+
+        // Delete all team memberships
+        const teamMembersRef = collection(db, 'teamMembers');
+        const teamMembersQuery = query(teamMembersRef, where('teamId', '==', teamId));
+        const teamMembersSnapshot = await getDocs(teamMembersQuery);
+
+        teamMembersSnapshot.docs.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+
+        hideLoader();
+        showToast('Team deleted successfully!', 'success');
+        funCloseDeleteModal();
+        await funLoadTeams(true);
+
+      } catch (error) {
+        hideLoader();
+        console.error('Error deleting team:', error);
+        showToast('Failed to delete team: ' + (error?.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Validation
+    async function funCheckTeamNameUniqueness(name, excludeId = null) {
+      try {
+        if (!name || !name.trim()) return false;
+
+        const teamsRef = collection(db, 'teams');
+        const q = query(teamsRef, where('name', '==', name.trim()));
+        const snapshot = await getDocs(q);
+
+        if (excludeId) {
+          return snapshot.docs.every(doc => doc.id === excludeId);
+        }
+
+        return snapshot.empty;
+      } catch (error) {
+        console.error('Error checking team name uniqueness:', error);
+        return false;
+      }
+    }
+
+    // Error handling
+    function funShowError(errorId, message) {
+      const errorEl = document.getElementById(errorId);
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+      }
+    }
+
+    function funHideError(errorId) {
+      const errorEl = document.getElementById(errorId);
+      if (errorEl) {
+        errorEl.classList.add('hidden');
+      }
+    }
+
+    // Utility functions
+    function funEscapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function funFormatDate(dateString) {
+      if (!dateString) return 'N/A';
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } catch (error) {
+        return 'N/A';
+      }
+    }
+
+    // Debounce function
+    function funDebounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Event listeners setup
+    function funSetupEventListeners() {
+      // Search functionality
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        const debouncedSearch = funDebounce((query) => {
+          searchQuery = query.toLowerCase().trim();
+          currentPage = 1;
+          funApplyFiltersAndSort();
+          funRenderTeams();
+          funUpdatePagination();
+        }, 300);
+
+        searchInput.addEventListener('input', (e) => {
+          debouncedSearch(e.target.value);
+        });
+      }
+
+      // Refresh button
+      document.getElementById('btn-refresh')?.addEventListener('click', () => {
+        funLoadTeams(true);
+      });
+
+      // Create team buttons
+      document.getElementById('btn-create-team')?.addEventListener('click', funOpenCreateModal);
+      document.getElementById('btn-create-first-team')?.addEventListener('click', funOpenCreateModal);
+
+      // Sort buttons
+      document.getElementById('sort-by-name')?.addEventListener('click', () => funHandleSort('name'));
+      document.getElementById('sort-by-members')?.addEventListener('click', () => funHandleSort('members'));
+
+      // Pagination
+      document.getElementById('btn-prev-page')?.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          funRenderTeams();
+          funUpdatePagination();
+        }
+      });
+
+      document.getElementById('btn-next-page')?.addEventListener('click', () => {
+        const totalPages = Math.ceil(filteredTeams.length / itemsPerPage);
+        if (currentPage < totalPages) {
+          currentPage++;
+          funRenderTeams();
+          funUpdatePagination();
+        }
+      });
+
+      // Create team modal
+      document.getElementById('create-team-cancel')?.addEventListener('click', funCloseCreateModal);
+      document.getElementById('create-team-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const name = document.getElementById('create-team-name')?.value?.trim();
+
+        if (!name) {
+          funShowError('create-team-name-error', 'Team name is required');
+          return;
+        }
+
+        await funCreateTeam({ name });
+      });
+
+      // Edit team modal
+      document.getElementById('edit-team-cancel')?.addEventListener('click', funCloseEditModal);
+      document.getElementById('edit-team-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentEditTeamId) return;
+
+        const name = document.getElementById('edit-team-name')?.value?.trim();
+
+        if (!name) {
+          funShowError('edit-team-name-error', 'Team name is required');
+          return;
+        }
+
+        await funUpdateTeam(currentEditTeamId, { name });
+      });
+
+      // Delete team modal
+      document.getElementById('delete-team-cancel')?.addEventListener('click', funCloseDeleteModal);
+      document.getElementById('delete-team-confirm')?.addEventListener('click', async () => {
+        if (currentDeleteTeamId) {
+          await funDeleteTeam(currentDeleteTeamId);
+        }
+      });
+
+      // Modal backdrop clicks
+      document.getElementById('create-team-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'create-team-modal') {
+          funCloseCreateModal();
+        }
+      });
+
+      document.getElementById('edit-team-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'edit-team-modal') {
+          funCloseEditModal();
+        }
+      });
+
+      document.getElementById('delete-team-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'delete-team-modal') {
+          funCloseDeleteModal();
+        }
+      });
+
+      // ESC key to close modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          funCloseCreateModal();
+          funCloseEditModal();
+          funCloseDeleteModal();
+        }
+      });
+    }
+
+    // Sort handling
+    function funHandleSort(field) {
+      if (sortField === field) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDirection = 'asc';
+      }
+
+      // Update sort icons
+      document.querySelectorAll('.sort-icon').forEach(icon => {
+        icon.classList.add('opacity-0');
+        icon.setAttribute('data-lucide', 'chevron-up');
+      });
+
+      const currentButton = document.getElementById(`sort-by-${field}`);
+      const currentIcon = currentButton?.querySelector('.sort-icon');
+      if (currentIcon) {
+        currentIcon.classList.remove('opacity-0');
+        currentIcon.setAttribute('data-lucide', sortDirection === 'asc' ? 'chevron-up' : 'chevron-down');
+      }
+
+      currentPage = 1;
+      funApplyFiltersAndSort();
+      funRenderTeams();
+      funUpdatePagination();
+      lucide.createIcons();
+    }
+
+    // Make functions global for onclick handlers
+    window.funNavigateToTeamDetail = funNavigateToTeamDetail;
+    window.funOpenEditModal = funOpenEditModal;
+    window.funOpenDeleteModal = funOpenDeleteModal;
+
+    // Auth check and initialization
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "auth.html?redirect=" + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      currentUser = user;
+      funInitializePage();
+    });
+  </script>
+
+</body>
+
+</html>

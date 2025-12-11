@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Team Management System</title>
+
+  <!-- Required: Main JS Script -->
+  <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+
+  <!-- Required: TailwindCSS -->
+  <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+
+  <!-- Required: Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+
+  <!-- Required: Favicon -->
+  <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen" />
+
+  <!-- ECharts Support (for charts/graphs) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+
+  <!-- Markdown Support (for content rendering) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+  <script data-tiramai="web-gen">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+          },
+          colors: {
+            'brand-primary': '#2563EB',
+            'brand-secondary': '#475569',
+            'brand-accent': '#059669',
+            'brand-surface': '#FFFFFF',
+            'brand-background': '#F8FAFC',
+            'brand-border': '#E2E8F0',
+            'brand-text-primary': '#0B1220',
+            'brand-text-secondary': '#111827'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+  <!-- Top Navigation -->
+  <header
+    class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+    <div class="flex items-center gap-4">
+      <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+        <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none" />
+        <circle cx="120" cy="170" r="22" fill="#2563EB" />
+        <circle cx="280" cy="170" r="22" fill="#2563EB" />
+        <circle cx="200" cy="255" r="22" fill="#2563EB" />
+        <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white" />
+      </svg>
+      <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
+      <!-- Mobile Menu Toggle -->
+      <button id="mobile-menu-toggle"
+        class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <button id="user-profile-button"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <div
+            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold"
+            id="user-avatar">
+            U
+          </div>
+          <span id="user-display-name" class="hidden sm:block">Loading...</span>
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="user-dropdown"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
+          <div class="px-4 py-2 border-b border-slate-200">
+            <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
+            <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
+          </div>
+          <button id="sign-out-btn"
+            class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex pt-16">
+    <!-- Side Navigation -->
+    <aside id="sidebar"
+      class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
+      <nav class="p-4 space-y-2">
+        <!-- Admin Dashboard -->
+        <a href="admin_dashboard.html"
+          class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          data-page="admin_dashboard">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span>Admin Dashboard</span>
+        </a>
+
+        <!-- Team Management -->
+        <div class="space-y-1">
+          <a href="team_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="team_list">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span>Team List</span>
+          </a>
+        </div>
+
+        <!-- Member Management -->
+        <div class="space-y-1">
+          <a href="member_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="member_list">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span>Member List</span>
+          </a>
+        </div>
+
+        <!-- Role Management -->
+        <div class="space-y-1">
+          <a href="role_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="role_list">
+            <i data-lucide="award" class="w-5 h-5"></i>
+            <span>Role List</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="absolute bottom-4 left-0 right-0 px-4">
+        <div class="text-center text-xs text-slate-500 bg-white py-2">
+          Made with ❤️ by TiramAi
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+    <!-- Main Content -->
+    <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
+
+      <!-- Member List Page -->
+      <div class="container mx-auto max-w-screen-xl">
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900">Member List</h1>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mt-1">Manage all team members from one
+              central location</p>
+          </div>
+          <button id="btn-create-member"
+            class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Create Member
+          </button>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+              <label for="search-input" class="block text-sm font-medium text-slate-700 mb-2">Search Members</label>
+              <div class="relative">
+                <i data-lucide="search"
+                  class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                <input type="text" id="search-input" placeholder="Search by name or email..."
+                  class="w-full pl-10 pr-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+            </div>
+            <div class="flex items-end gap-2">
+              <button id="btn-refresh"
+                class="px-3 py-2 text-slate-500 hover:text-slate-700 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Refresh members list">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Members Table -->
+        <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+          <!-- Table Header -->
+          <div class="border-b border-slate-200 bg-slate-50 px-6 py-3">
+            <h3 class="text-lg leading-7 font-semibold text-slate-900">All Members</h3>
+          </div>
+
+          <!-- Loading Skeleton -->
+          <div id="members-skeleton" class="hidden">
+            <div class="divide-y divide-slate-200">
+              <!-- Repeat for skeleton rows -->
+              <div class="px-6 py-4 animate-pulse">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+                    <div>
+                      <div class="w-32 h-4 bg-slate-200 rounded mb-2"></div>
+                      <div class="w-48 h-3 bg-slate-200 rounded"></div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-6">
+                    <div class="w-12 h-4 bg-slate-200 rounded"></div>
+                    <div class="w-12 h-4 bg-slate-200 rounded"></div>
+                    <div class="w-20 h-8 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Repeat skeleton row 4 more times -->
+              <div class="px-6 py-4 animate-pulse">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+                    <div>
+                      <div class="w-28 h-4 bg-slate-200 rounded mb-2"></div>
+                      <div class="w-40 h-3 bg-slate-200 rounded"></div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-6">
+                    <div class="w-12 h-4 bg-slate-200 rounded"></div>
+                    <div class="w-12 h-4 bg-slate-200 rounded"></div>
+                    <div class="w-20 h-8 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-6 py-4 animate-pulse">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+                    <div>
+                      <div class="w-36 h-4 bg-slate-200 rounded mb-2"></div>
+                      <div class="w-52 h-3 bg-slate-200 rounded"></div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-6">
+                    <div class="w-12 h-4 bg-slate-200 rounded"></div>
+                    <div class="w-12 h-4 bg-slate-200 rounded"></div>
+                    <div class="w-20 h-8 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Content -->
+          <div id="members-table-container">
+            <!-- Desktop Table -->
+            <div class="hidden md:block">
+              <table class="min-w-full">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 cursor-pointer hover:bg-slate-100"
+                      id="sort-name">
+                      <div class="flex items-center gap-2">
+                        Name
+                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                      </div>
+                    </th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700">Email</th>
+                    <th
+                      class="px-6 py-3 text-center text-sm font-medium text-slate-700 cursor-pointer hover:bg-slate-100"
+                      id="sort-teams">
+                      <div class="flex items-center justify-center gap-2">
+                        Teams
+                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                      </div>
+                    </th>
+                    <th
+                      class="px-6 py-3 text-center text-sm font-medium text-slate-700 cursor-pointer hover:bg-slate-100"
+                      id="sort-roles">
+                      <div class="flex items-center justify-center gap-2">
+                        Roles
+                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                      </div>
+                    </th>
+                    <th class="px-6 py-3 text-center text-sm font-medium text-slate-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="members-table-body" class="bg-white divide-y divide-slate-200">
+                  <!-- Members will be populated here -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden" id="members-cards-container">
+              <!-- Mobile member cards will be populated here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-12 px-6">
+              <div class="flex flex-col items-center">
+                <i data-lucide="users" class="w-12 h-12 text-slate-300 mb-4"></i>
+                <h3 class="text-lg font-medium text-slate-900 mb-2">No members found</h3>
+                <p class="text-sm text-slate-500 mb-6">Get started by creating your first team member.</p>
+                <button id="btn-create-first-member"
+                  class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-flex items-center gap-2">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  Create Member
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Member Modal -->
+      <div id="create-member-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl w-full max-w-md" role="dialog" aria-labelledby="create-modal-title">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 id="create-modal-title" class="text-xl font-semibold text-slate-900">Create New Member</h2>
+                <button id="close-create-modal" class="text-slate-400 hover:text-slate-600 focus:outline-none"
+                  aria-label="Close">
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <form id="create-member-form" class="space-y-4">
+                <div>
+                  <label for="create-member-name" class="block text-sm font-medium text-slate-700 mb-2">Member Name
+                    *</label>
+                  <input type="text" id="create-member-name" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter member name">
+                  <span class="text-sm text-red-600 hidden" id="create-name-error"></span>
+                </div>
+
+                <div>
+                  <label for="create-member-email" class="block text-sm font-medium text-slate-700 mb-2">Email Address
+                    *</label>
+                  <input type="email" id="create-member-email" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter email address">
+                  <span class="text-sm text-red-600 hidden" id="create-email-error"></span>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                  <button type="button" id="cancel-create"
+                    class="px-4 py-2 text-slate-700 bg-white border border-slate-200 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Cancel
+                  </button>
+                  <button type="submit" id="save-create"
+                    class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                    disabled>
+                    Create Member
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Member Modal -->
+      <div id="edit-member-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl w-full max-w-md" role="dialog" aria-labelledby="edit-modal-title">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 id="edit-modal-title" class="text-xl font-semibold text-slate-900">Edit Member</h2>
+                <button id="close-edit-modal" class="text-slate-400 hover:text-slate-600 focus:outline-none"
+                  aria-label="Close">
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <form id="edit-member-form" class="space-y-4">
+                <div>
+                  <label for="edit-member-name" class="block text-sm font-medium text-slate-700 mb-2">Member Name
+                    *</label>
+                  <input type="text" id="edit-member-name" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter member name">
+                  <span class="text-sm text-red-600 hidden" id="edit-name-error"></span>
+                </div>
+
+                <div>
+                  <label for="edit-member-email" class="block text-sm font-medium text-slate-700 mb-2">Email Address
+                    *</label>
+                  <input type="email" id="edit-member-email" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter email address">
+                  <span class="text-sm text-red-600 hidden" id="edit-email-error"></span>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                  <button type="button" id="cancel-edit"
+                    class="px-4 py-2 text-slate-700 bg-white border border-slate-200 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Cancel
+                  </button>
+                  <button type="submit" id="save-edit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                    disabled>
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div id="delete-member-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl w-full max-w-md" role="dialog" aria-labelledby="delete-modal-title">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 id="delete-modal-title" class="text-xl font-semibold text-slate-900">Delete Member</h2>
+                <button id="close-delete-modal" class="text-slate-400 hover:text-slate-600 focus:outline-none"
+                  aria-label="Close">
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded">
+                  <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                  <p class="text-sm text-red-700">This action cannot be undone.</p>
+                </div>
+
+                <div>
+                  <p class="text-sm text-slate-700 mb-4">Are you sure you want to delete <strong
+                      id="delete-member-name"></strong>?</p>
+                  <div class="bg-slate-50 p-3 rounded border">
+                    <p class="text-xs text-slate-600 mb-2">This will also remove the member from:</p>
+                    <ul class="text-xs text-slate-600 space-y-1">
+                      <li id="delete-teams-info">• <span id="delete-teams-count">0</span> teams</li>
+                      <li id="delete-roles-info">• <span id="delete-roles-count">0</span> roles</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                  <button type="button" id="cancel-delete"
+                    class="px-4 py-2 text-slate-700 bg-white border border-slate-200 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Cancel
+                  </button>
+                  <button type="button" id="confirm-delete"
+                    class="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Delete Member
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Required: JavaScript -->
+  <script type="module" data-tiramai="web-gen">
+    import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+    import { auth, db, storage } from "./scripts/firebase.js";
+    import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Global variables
+    let currentUser = null;
+    let userData = null;
+
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+
+    mobileMenuToggle?.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      mobileOverlay.classList.toggle('hidden');
+    });
+
+    mobileOverlay?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      mobileOverlay.classList.add('hidden');
+    });
+
+    // User profile dropdown functionality
+    const userProfileButton = document.getElementById('user-profile-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    userProfileButton?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
+        userDropdown?.classList.add('hidden');
+      }
+    });
+
+    // Sign out functionality
+    document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
+      try {
+        showLoader('Signing out...');
+        await signOut(auth);
+        hideLoader();
+        window.location.href = 'auth.html';
+      } catch (error) {
+        hideLoader();
+        showToast('Failed to sign out: ' + error.message, 'error');
+      }
+    });
+
+    // Initialize user profile
+    async function initializeUserProfile(user) {
+      currentUser = user;
+
+      try {
+        // Try to get user data from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          userData = userDoc.data();
+          updateUserUI(userData, user.email);
+        } else {
+          // Fallback to auth user data
+          updateUserUI(null, user.email);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Fallback to auth user data
+        updateUserUI(null, user.email);
+      }
+    }
+
+    // Update user UI elements
+    function updateUserUI(userData, email) {
+      const userAvatar = document.getElementById('user-avatar');
+      const userDisplayName = document.getElementById('user-display-name');
+      const dropdownUserName = document.getElementById('dropdown-user-name');
+      const dropdownUserEmail = document.getElementById('dropdown-user-email');
+
+      let displayName = 'User';
+      let fullName = 'User';
+
+      if (userData && userData.firstName) {
+        displayName = userData.firstName;
+        fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+      } else if (email) {
+        displayName = email.split('@')[0];
+        fullName = email;
+      }
+
+      // Update avatar with first letter
+      if (userAvatar) {
+        userAvatar.textContent = displayName.charAt(0).toUpperCase();
+      }
+
+      // Update display name
+      if (userDisplayName) {
+        userDisplayName.textContent = displayName;
+      }
+
+      // Update dropdown
+      if (dropdownUserName) {
+        dropdownUserName.textContent = fullName;
+      }
+      if (dropdownUserEmail) {
+        dropdownUserEmail.textContent = email || 'No email';
+      }
+    }
+
+    // Set active navigation item
+    function setActiveNavItem() {
+      const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        const pageName = item.getAttribute('data-page');
+        if (pageName === currentPage) {
+          item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+          item.classList.add('bg-blue-600', 'text-white');
+        } else {
+          item.classList.remove('bg-blue-600', 'text-white');
+          item.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+      });
+    }
+
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        initializeUserProfile(user);
+        setActiveNavItem();
+      } else {
+        window.location.href = 'auth.html';
+      }
+    });
+
+    // Set active nav item on page load
+    setActiveNavItem();
+
+    // Export for use in page-specific scripts
+    window.appGlobals = {
+      currentUser,
+      userData,
+      showToast,
+      showLoader,
+      hideLoader
+    };
+  </script>
+
+
+  <script id="data-script" type="module" data-tiramai="web-gen">
+    // Import Firebase modules
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import {
+      collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc,
+      query, where, orderBy, limit, getCountFromServer, Timestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+    import { auth, getDb } from "./scripts/firebase.js";
+    import { showToast, showLoader, hideLoader } from "./scripts/main.js";
+
+    // Initialize database
+    const db = getDb();
+
+    // Global state
+    let currentUser = null;
+    let allMembers = [];
+    let filteredMembers = [];
+    let currentSortBy = 'name';
+    let currentSortOrder = 'asc';
+    let editingMemberId = null;
+    let deletingMemberData = null;
+
+    // Auth state check
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname);
+      } else {
+        currentUser = user;
+        funInitialLoad();
+      }
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Initial load function
+    async function funInitialLoad() {
+      await funLoadMembers();
+      funSetupEventListeners();
+    }
+
+    // Load members with team and role counts
+    async function funLoadMembers() {
+      try {
+        // Show skeleton
+        document.getElementById('members-skeleton').classList.remove('hidden');
+        document.getElementById('members-table-container').classList.add('hidden');
+
+        // Get all members
+        const membersRef = collection(db, 'members');
+        const membersQuery = query(membersRef, orderBy('name'));
+        const membersSnapshot = await getDocs(membersQuery);
+
+        if (membersSnapshot.empty) {
+          funShowEmptyState();
+          return;
+        }
+
+        // Process members data
+        allMembers = [];
+
+        for (const memberDoc of membersSnapshot.docs) {
+          const memberData = { id: memberDoc.id, ...memberDoc.data() };
+
+          // Get team count for this member
+          const teamMembersRef = collection(db, 'teamMembers');
+          const teamQuery = query(teamMembersRef, where('memberId', '==', memberDoc.id));
+          const teamCount = await getCountFromServer(teamQuery);
+
+          // Get role count for this member  
+          const memberRolesRef = collection(db, 'memberRoles');
+          const roleQuery = query(memberRolesRef, where('memberId', '==', memberDoc.id));
+          const roleCount = await getCountFromServer(roleQuery);
+
+          memberData.teamsCount = teamCount.data().count || 0;
+          memberData.rolesCount = roleCount.data().count || 0;
+
+          allMembers.push(memberData);
+        }
+
+        filteredMembers = [...allMembers];
+        funRenderMembers();
+
+      } catch (error) {
+        console.error('Error loading members:', error);
+        showToast('Failed to load members: ' + (error?.message || 'Unknown error'), 'error');
+        funShowEmptyState();
+      } finally {
+        // Hide skeleton
+        document.getElementById('members-skeleton').classList.add('hidden');
+        document.getElementById('members-table-container').classList.remove('hidden');
+      }
+    }
+
+    // Show empty state
+    function funShowEmptyState() {
+      document.getElementById('members-table-container').classList.add('hidden');
+      document.getElementById('empty-state').classList.remove('hidden');
+      document.getElementById('members-skeleton').classList.add('hidden');
+    }
+
+    // Render members table and cards
+    function funRenderMembers() {
+      if (!filteredMembers || filteredMembers.length === 0) {
+        funShowEmptyState();
+        return;
+      }
+
+      document.getElementById('empty-state').classList.add('hidden');
+      document.getElementById('members-table-container').classList.remove('hidden');
+
+      // Render desktop table
+      const tableBody = document.getElementById('members-table-body');
+      tableBody.innerHTML = '';
+
+      // Render mobile cards
+      const cardsContainer = document.getElementById('members-cards-container');
+      cardsContainer.innerHTML = '';
+
+      filteredMembers.forEach(member => {
+        // Desktop table row
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50';
+        row.innerHTML = `
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+              ${(member.name || 'N/A').charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div class="text-sm font-medium text-slate-900">${member.name || 'N/A'}</div>
+              <div class="text-xs text-slate-500">Member since ${new Date(member.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-sm text-slate-700">${member.email || 'N/A'}</td>
+        <td class="px-6 py-4 text-center">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${member.teamsCount > 0 ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600'}">
+            ${member.teamsCount}
+          </span>
+        </td>
+        <td class="px-6 py-4 text-center">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${member.rolesCount > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+            ${member.rolesCount}
+          </span>
+        </td>
+        <td class="px-6 py-4">
+          <div class="flex items-center justify-center gap-2">
+            <button onclick="funViewMember('${member.id}')" class="text-blue-600 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1" title="View details">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+            <button onclick="funOpenEditModal('${member.id}')" class="text-slate-600 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 rounded p-1" title="Edit member">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </button>
+            <button onclick="funOpenDeleteModal('${member.id}')" class="text-red-600 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 rounded p-1" title="Delete member">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </td>
+      `;
+        tableBody.appendChild(row);
+
+        // Mobile card
+        const card = document.createElement('div');
+        card.className = 'border-b border-slate-200 p-4';
+        card.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+              ${(member.name || 'N/A').charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div class="text-sm font-medium text-slate-900">${member.name || 'N/A'}</div>
+              <div class="text-xs text-slate-500">${member.email || 'N/A'}</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex gap-4 text-xs">
+            <span class="text-slate-600">Teams: <span class="font-medium">${member.teamsCount}</span></span>
+            <span class="text-slate-600">Roles: <span class="font-medium">${member.rolesCount}</span></span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="funViewMember('${member.id}')" class="text-blue-600 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+            <button onclick="funOpenEditModal('${member.id}')" class="text-slate-600 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 rounded p-1">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </button>
+            <button onclick="funOpenDeleteModal('${member.id}')" class="text-red-600 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 rounded p-1">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `;
+        cardsContainer.appendChild(card);
+      });
+
+      // Re-initialize icons
+      lucide.createIcons();
+    }
+
+    // Search functionality
+    function funFilterMembers(searchTerm) {
+      if (!searchTerm || searchTerm.trim() === '') {
+        filteredMembers = [...allMembers];
+      } else {
+        const term = searchTerm.toLowerCase().trim();
+        filteredMembers = allMembers.filter(member =>
+          (member.name || '').toLowerCase().includes(term) ||
+          (member.email || '').toLowerCase().includes(term)
+        );
+      }
+
+      funApplySort();
+      funRenderMembers();
+    }
+
+    // Sorting functionality
+    function funSortMembers(sortBy) {
+      if (currentSortBy === sortBy) {
+        currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortBy = sortBy;
+        currentSortOrder = 'asc';
+      }
+
+      funApplySort();
+      funRenderMembers();
+    }
+
+    function funApplySort() {
+      filteredMembers.sort((a, b) => {
+        let aVal, bVal;
+
+        switch (currentSortBy) {
+          case 'name':
+            aVal = (a.name || '').toLowerCase();
+            bVal = (b.name || '').toLowerCase();
+            break;
+          case 'teams':
+            aVal = a.teamsCount || 0;
+            bVal = b.teamsCount || 0;
+            break;
+          case 'roles':
+            aVal = a.rolesCount || 0;
+            bVal = b.rolesCount || 0;
+            break;
+          default:
+            return 0;
+        }
+
+        if (aVal < bVal) return currentSortOrder === 'asc' ? -1 : 1;
+        if (aVal > bVal) return currentSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    // Navigation functions
+    window.funViewMember = function (memberId) {
+      window.location.href = `member_detail.html?memberId=${memberId}`;
+    };
+
+    // Create member modal functions
+    function funOpenCreateModal() {
+      document.getElementById('create-member-modal').classList.remove('hidden');
+      document.getElementById('create-member-name').focus();
+      funClearCreateErrors(); // 👈 this will enable the button + hide old errors -changes i made
+
+    }
+
+    function funCloseCreateModal() {
+      document.getElementById('create-member-modal').classList.add('hidden');
+      document.getElementById('create-member-form').reset();
+      funClearCreateErrors();
+    }
+
+    function funClearCreateErrors() {
+      document.getElementById('create-name-error').classList.add('hidden');
+      document.getElementById('create-email-error').classList.add('hidden');
+      document.getElementById('save-create').disabled = false;
+    }
+
+    // Edit member modal functions
+    window.funOpenEditModal = function (memberId) {
+      const member = allMembers.find(m => m.id === memberId);
+      if (!member) return;
+
+      editingMemberId = memberId;
+      document.getElementById('edit-member-name').value = member.name || '';
+      document.getElementById('edit-member-email').value = member.email || '';
+      document.getElementById('edit-member-modal').classList.remove('hidden');
+      document.getElementById('edit-member-name').focus();
+    };
+
+    function funCloseEditModal() {
+      editingMemberId = null;
+      document.getElementById('edit-member-modal').classList.add('hidden');
+      document.getElementById('edit-member-form').reset();
+      funClearEditErrors();
+    }
+
+    function funClearEditErrors() {
+      document.getElementById('edit-name-error').classList.add('hidden');
+      document.getElementById('edit-email-error').classList.add('hidden');
+      document.getElementById('save-edit').disabled = false;
+    }
+
+    // Delete member modal functions
+    window.funOpenDeleteModal = async function (memberId) {
+      try {
+        const member = allMembers.find(m => m.id === memberId);
+        if (!member) return;
+
+        deletingMemberData = member;
+        document.getElementById('delete-member-name').textContent = member.name || 'Unknown Member';
+        document.getElementById('delete-teams-count').textContent = member.teamsCount || 0;
+        document.getElementById('delete-roles-count').textContent = member.rolesCount || 0;
+
+        document.getElementById('delete-member-modal').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error opening delete modal:', error);
+        showToast('Failed to open delete confirmation', 'error');
+      }
+    };
+
+    function funCloseDeleteModal() {
+      deletingMemberData = null;
+      document.getElementById('delete-member-modal').classList.add('hidden');
+    }
+
+    // Validation functions
+    async function funValidateUniqueName(name, excludeId = null) {
+      if (!name || name.trim() === '') return { valid: false, error: 'Name is required' };
+
+      const trimmedName = name.trim();
+      const existing = allMembers.find(m =>
+        m.name?.toLowerCase() === trimmedName.toLowerCase() &&
+        m.id !== excludeId
+      );
+
+      if (existing) {
+        return { valid: false, error: 'A member with this name already exists' };
+      }
+
+      return { valid: true };
+    }
+
+    function funValidateEmail(email) {
+      if (!email || email.trim() === '') return { valid: false, error: 'Email is required' };
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        return { valid: false, error: 'Please enter a valid email address' };
+      }
+
+      return { valid: true };
+    }
+
+    // Create member function
+    async function funCreateMember(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('create-member-name').value?.trim();
+      const email = document.getElementById('create-member-email').value?.trim();
+
+      // Clear previous errors
+      funClearCreateErrors();
+
+      // Validate inputs
+      const nameValidation = await funValidateUniqueName(name);
+      const emailValidation = funValidateEmail(email);
+
+      let hasErrors = false;
+
+      if (!nameValidation.valid) {
+        document.getElementById('create-name-error').textContent = nameValidation.error;
+        document.getElementById('create-name-error').classList.remove('hidden');
+        hasErrors = true;
+      }
+
+      if (!emailValidation.valid) {
+        document.getElementById('create-email-error').textContent = emailValidation.error;
+        document.getElementById('create-email-error').classList.remove('hidden');
+        hasErrors = true;
+      }
+
+      if (hasErrors) return;
+
+      try {
+        document.getElementById('save-create').disabled = true;
+        showLoader('Creating member...');
+
+        const memberData = {
+          name,
+          email,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+
+        await addDoc(collection(db, 'members'), memberData);
+
+        hideLoader();
+        showToast('Member created successfully', 'success');
+        funCloseCreateModal();
+        await funLoadMembers();
+
+      } catch (error) {
+        console.error('Error creating member:', error);
+        hideLoader();
+        showToast('Failed to create member: ' + (error?.message || 'Unknown error'), 'error');
+        document.getElementById('save-create').disabled = false;
+      }
+    }
+
+    // Edit member function
+    async function funEditMember(event) {
+      event.preventDefault();
+      if (!editingMemberId) return;
+
+      const name = document.getElementById('edit-member-name').value?.trim();
+      const email = document.getElementById('edit-member-email').value?.trim();
+
+      // Clear previous errors
+      funClearEditErrors();
+
+      // Validate inputs
+      const nameValidation = await funValidateUniqueName(name, editingMemberId);
+      const emailValidation = funValidateEmail(email);
+
+      let hasErrors = false;
+
+      if (!nameValidation.valid) {
+        document.getElementById('edit-name-error').textContent = nameValidation.error;
+        document.getElementById('edit-name-error').classList.remove('hidden');
+        hasErrors = true;
+      }
+
+      if (!emailValidation.valid) {
+        document.getElementById('edit-email-error').textContent = emailValidation.error;
+        document.getElementById('edit-email-error').classList.remove('hidden');
+        hasErrors = true;
+      }
+
+      if (hasErrors) return;
+
+      try {
+        document.getElementById('save-edit').disabled = true;
+        showLoader('Updating member...');
+
+        const memberRef = doc(db, 'members', editingMemberId);
+        await updateDoc(memberRef, {
+          name,
+          email,
+          updatedAt: new Date().toISOString()
+        });
+
+        hideLoader();
+        showToast('Member updated successfully', 'success');
+        funCloseEditModal();
+        await funLoadMembers();
+
+      } catch (error) {
+        console.error('Error updating member:', error);
+        hideLoader();
+        showToast('Failed to update member: ' + (error?.message || 'Unknown error'), 'error');
+        document.getElementById('save-edit').disabled = false;
+      }
+    }
+
+    // Delete member function
+    async function funDeleteMember() {
+      if (!deletingMemberData) return;
+
+      try {
+        showLoader('Deleting member...');
+
+        const memberRef = doc(db, 'members', deletingMemberData.id);
+
+        // Delete from teamMembers
+        const teamMembersRef = collection(db, 'teamMembers');
+        const teamQuery = query(teamMembersRef, where('memberId', '==', deletingMemberData.id));
+        const teamSnapshot = await getDocs(teamQuery);
+
+        for (const doc of teamSnapshot.docs) {
+          await deleteDoc(doc.ref);
+        }
+
+        // Delete from memberRoles
+        const memberRolesRef = collection(db, 'memberRoles');
+        const roleQuery = query(memberRolesRef, where('memberId', '==', deletingMemberData.id));
+        const roleSnapshot = await getDocs(roleQuery);
+
+        for (const doc of roleSnapshot.docs) {
+          await deleteDoc(doc.ref);
+        }
+
+        // Delete the member
+        await deleteDoc(memberRef);
+
+        hideLoader();
+        showToast('Member deleted successfully', 'success');
+        funCloseDeleteModal();
+        await funLoadMembers();
+
+      } catch (error) {
+        console.error('Error deleting member:', error);
+        hideLoader();
+        showToast('Failed to delete member: ' + (error?.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Setup event listeners
+    function funSetupEventListeners() {
+      // Create member buttons
+      document.getElementById('btn-create-member')?.addEventListener('click', funOpenCreateModal);
+      document.getElementById('btn-create-first-member')?.addEventListener('click', funOpenCreateModal);
+
+      // Create modal events
+      document.getElementById('close-create-modal')?.addEventListener('click', funCloseCreateModal);
+      document.getElementById('cancel-create')?.addEventListener('click', funCloseCreateModal);
+      document.getElementById('create-member-form')?.addEventListener('submit', funCreateMember);
+
+      // Edit modal events
+      document.getElementById('close-edit-modal')?.addEventListener('click', funCloseEditModal);
+      document.getElementById('cancel-edit')?.addEventListener('click', funCloseEditModal);
+      document.getElementById('edit-member-form')?.addEventListener('submit', funEditMember);
+
+      // Delete modal events
+      document.getElementById('close-delete-modal')?.addEventListener('click', funCloseDeleteModal);
+      document.getElementById('cancel-delete')?.addEventListener('click', funCloseDeleteModal);
+      document.getElementById('confirm-delete')?.addEventListener('click', funDeleteMember);
+
+      // Search functionality
+      let searchTimeout;
+      document.getElementById('search-input')?.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          funFilterMembers(e.target.value);
+        }, 300);
+      });
+
+      // Sort functionality
+      document.getElementById('sort-name')?.addEventListener('click', () => funSortMembers('name'));
+      document.getElementById('sort-teams')?.addEventListener('click', () => funSortMembers('teams'));
+      document.getElementById('sort-roles')?.addEventListener('click', () => funSortMembers('roles'));
+
+      // Refresh button
+      document.getElementById('btn-refresh')?.addEventListener('click', () => funLoadMembers());
+
+      // Modal backdrop clicks
+      document.getElementById('create-member-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'create-member-modal') funCloseCreateModal();
+      });
+
+      document.getElementById('edit-member-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'edit-member-modal') funCloseEditModal();
+      });
+
+      document.getElementById('delete-member-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'delete-member-modal') funCloseDeleteModal();
+      });
+
+      // ESC key handlers
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (!document.getElementById('create-member-modal').classList.contains('hidden')) {
+            funCloseCreateModal();
+          } else if (!document.getElementById('edit-member-modal').classList.contains('hidden')) {
+            funCloseEditModal();
+          } else if (!document.getElementById('delete-member-modal').classList.contains('hidden')) {
+            funCloseDeleteModal();
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Team Management System</title>
+
+  <!-- Required: Main JS Script -->
+  <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+
+  <!-- Required: TailwindCSS -->
+  <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+
+  <!-- Required: Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+
+  <!-- Required: Favicon -->
+  <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen" />
+
+  <!-- ECharts Support (for charts/graphs) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+
+  <!-- Markdown Support (for content rendering) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+  <style data-tiramai="web-gen">
+    .logo-svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .dropdown-hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+    }
+
+    .dropdown-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900">
+  <!-- Top Navigation -->
+  <header
+    class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+    <div class="flex items-center gap-4">
+      <div class="logo-svg">
+        <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Main circle (organization/company) -->
+          <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none" />
+          <!-- Three interconnected team dots (team members) -->
+          <circle cx="120" cy="170" r="22" fill="#2563EB" />
+          <circle cx="280" cy="170" r="22" fill="#2563EB" />
+          <circle cx="200" cy="255" r="22" fill="#2563EB" />
+          <!-- Connectors (lines between members) -->
+          <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+          <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+          <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+          <!-- Add a central square "panel" (management/system guideline) -->
+          <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white" />
+        </svg>
+      </div>
+      <span class="text-xl leading-8 font-semibold text-slate-900">Internal Team Management System</span>
+      <!-- Mobile menu button -->
+      <button id="mobile-menu-btn"
+        class="md:hidden p-2 rounded hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <button id="user-profile-btn"
+          class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+            <span id="user-initials">U</span>
+          </div>
+          <span id="user-name" class="hidden md:block text-sm font-medium text-slate-700">Loading...</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="user-dropdown"
+          class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 dropdown-hidden transition-all duration-200 ease-out">
+          <div class="py-3 px-4 border-b border-slate-200">
+            <p id="dropdown-name" class="text-sm font-medium text-slate-900">Loading...</p>
+            <p id="dropdown-email" class="text-xs text-slate-500">Loading...</p>
+            <p id="dropdown-role" class="text-xs text-slate-400 mt-1">Team Member</p>
+          </div>
+          <div class="py-2">
+            <button id="sign-out-btn"
+              class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex pt-16">
+    <!-- Side Navigation -->
+    <aside id="sidebar"
+      class="fixed left-0 top-16 w-64 bg-white border-r border-slate-200 h-[calc(100vh-4rem)] overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-20">
+      <nav class="p-4 space-y-2">
+        <!-- Team Portal Navigation Item -->
+        <a href="team_portal.html" id="nav-team_portal"
+          class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-200">
+          <i data-lucide="users" class="w-5 h-5"></i>
+          <span>Team Portal</span>
+        </a>
+      </nav>
+
+      <!-- Made with love footer -->
+      <div class="absolute bottom-6 left-0 right-0 text-center text-xs text-slate-500 bg-white px-4">
+        Made with ❤️ by TiramAi
+      </div>
+    </aside>
+
+    <!-- Mobile Overlay -->
+    <div id="sidebar-overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 opacity-0 invisible md:hidden transition-all duration-300"></div>
+
+    <!-- Main Content -->
+    <main id="pageContent" class="flex-1 md:ml-64 p-6 overflow-y-auto min-h-[calc(100vh-4rem)]">
+
+      <!-- Team Portal Page Content -->
+      <div class="container mx-auto max-w-screen-xl px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+          <h1 class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900 mb-3">Modern Business System Teams</h1>
+          <p class="text-base leading-6 font-normal text-slate-600 max-w-3xl">
+            Explore our organizational structure and team members. This portal provides a comprehensive view of all
+            teams, their roles, and assigned members to help you understand our collaborative framework.
+          </p>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div class="bg-white rounded-lg border border-slate-200 p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs leading-[1.125rem] font-normal text-slate-500 uppercase tracking-wide">Total Teams</p>
+                <p id="team-count" class="text-2xl leading-8 font-semibold text-slate-900">-</p>
+              </div>
+              <div class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg border border-slate-200 p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs leading-[1.125rem] font-normal text-slate-500 uppercase tracking-wide">Total Roles</p>
+                <p id="role-count" class="text-2xl leading-8 font-semibold text-slate-900">-</p>
+              </div>
+              <div class="w-8 h-8 bg-emerald-50 rounded-full flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-4 h-4 text-emerald-600"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg border border-slate-200 p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs leading-[1.125rem] font-normal text-slate-500 uppercase tracking-wide">Team Members
+                </p>
+                <p id="member-count" class="text-2xl leading-8 font-semibold text-slate-900">-</p>
+              </div>
+              <div class="w-8 h-8 bg-amber-50 rounded-full flex items-center justify-center">
+                <i data-lucide="user-check" class="w-4 h-4 text-amber-600"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Refresh Button -->
+        <div class="mb-6 flex justify-end">
+          <button id="btn-refresh"
+            class="inline-flex items-center gap-2 px-3 py-2 text-sm leading-[1.375rem] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg border border-slate-200 transition-colors duration-200"
+            aria-label="Refresh teams data">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>Refresh</span>
+          </button>
+        </div>
+
+        <!-- Teams Container -->
+        <div id="teams-container" class="space-y-6">
+          <!-- Loading Skeleton -->
+          <div id="loading-skeleton" class="space-y-6">
+            <div class="bg-white rounded-lg border border-slate-200 p-6 animate-pulse">
+              <div class="h-6 bg-slate-200 rounded mb-4 w-48"></div>
+              <div class="space-y-4">
+                <div class="border border-slate-100 rounded-lg p-4">
+                  <div class="h-5 bg-slate-200 rounded mb-2 w-32"></div>
+                  <div class="h-4 bg-slate-100 rounded mb-3 w-full"></div>
+                  <div class="flex gap-2">
+                    <div class="h-6 bg-slate-100 rounded-full w-20"></div>
+                    <div class="h-6 bg-slate-100 rounded-full w-24"></div>
+                  </div>
+                </div>
+                <div class="border border-slate-100 rounded-lg p-4">
+                  <div class="h-5 bg-slate-200 rounded mb-2 w-40"></div>
+                  <div class="h-4 bg-slate-100 rounded mb-3 w-full"></div>
+                  <div class="flex gap-2">
+                    <div class="h-6 bg-slate-100 rounded-full w-16"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg border border-slate-200 p-6 animate-pulse">
+              <div class="h-6 bg-slate-200 rounded mb-4 w-40"></div>
+              <div class="space-y-4">
+                <div class="border border-slate-100 rounded-lg p-4">
+                  <div class="h-5 bg-slate-200 rounded mb-2 w-36"></div>
+                  <div class="h-4 bg-slate-100 rounded mb-3 w-full"></div>
+                  <div class="flex gap-2">
+                    <div class="h-6 bg-slate-100 rounded-full w-28"></div>
+                    <div class="h-6 bg-slate-100 rounded-full w-20"></div>
+                    <div class="h-6 bg-slate-100 rounded-full w-24"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="hidden text-center py-12">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="users" class="w-8 h-8 text-slate-400"></i>
+            </div>
+            <h3 class="text-lg leading-[1.625rem] font-medium text-slate-900 mb-2">No Teams Found</h3>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-500 max-w-md mx-auto">
+              There are currently no teams set up in the system. Teams and their roles will appear here once they are
+              created.
+            </p>
+          </div>
+
+          <!-- Error State -->
+          <div id="error-state" class="hidden text-center py-12">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i>
+            </div>
+            <h3 class="text-lg leading-[1.625rem] font-medium text-slate-900 mb-2">Unable to Load Teams</h3>
+            <p class="text-sm leading-[1.375rem] font-normal text-slate-500 max-w-md mx-auto mb-4">
+              We encountered an error while loading the team information. Please try refreshing the page.
+            </p>
+            <button id="btn-retry"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              Try Again
+            </button>
+          </div>
+
+          <!-- Teams Content (populated by JS) -->
+          <div id="teams-content" class="hidden space-y-6"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Required: JavaScript -->
+  <script type="module" data-tiramai="web-gen">
+    import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+    import { auth, db, storage } from "./scripts/firebase.js";
+    import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // DOM Elements
+    const userProfileBtn = document.getElementById('user-profile-btn');
+    const userDropdown = document.getElementById('user-dropdown');
+    const userInitials = document.getElementById('user-initials');
+    const userName = document.getElementById('user-name');
+    const dropdownName = document.getElementById('dropdown-name');
+    const dropdownEmail = document.getElementById('dropdown-email');
+    const dropdownRole = document.getElementById('dropdown-role');
+    const signOutBtn = document.getElementById('sign-out-btn');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    // Mobile menu toggle
+    let sidebarOpen = false;
+
+    function toggleSidebar() {
+      sidebarOpen = !sidebarOpen;
+      if (sidebarOpen) {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('opacity-0', 'invisible');
+        sidebarOverlay.classList.add('opacity-100', 'visible');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('opacity-0', 'invisible');
+        sidebarOverlay.classList.remove('opacity-100', 'visible');
+      }
+    }
+
+    mobileMenuBtn?.addEventListener('click', toggleSidebar);
+    sidebarOverlay?.addEventListener('click', toggleSidebar);
+
+    // Profile dropdown toggle
+    let dropdownOpen = false;
+
+    function toggleDropdown() {
+      dropdownOpen = !dropdownOpen;
+      if (dropdownOpen) {
+        userDropdown.classList.remove('dropdown-hidden');
+        userDropdown.classList.add('dropdown-visible');
+      } else {
+        userDropdown.classList.add('dropdown-hidden');
+        userDropdown.classList.remove('dropdown-visible');
+      }
+    }
+
+    userProfileBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (dropdownOpen && !userDropdown.contains(e.target) && !userProfileBtn.contains(e.target)) {
+        toggleDropdown();
+      }
+    });
+
+    // Auth state management
+    function updateUserProfile(user, userData = null) {
+      const email = user.email || 'user@example.com';
+      const firstName = userData?.firstName || '';
+      const lastName = userData?.lastName || '';
+      const fullName = firstName && lastName ? `${firstName} ${lastName}` : email.split('@')[0];
+
+      // Update initials
+      const initials = firstName && lastName
+        ? `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
+        : email.charAt(0).toUpperCase();
+
+      userInitials.textContent = initials;
+      userName.textContent = fullName;
+      dropdownName.textContent = fullName;
+      dropdownEmail.textContent = email;
+    }
+
+    // Sign out handler
+    signOutBtn?.addEventListener('click', async () => {
+      try {
+        showLoader();
+        await signOut(auth);
+        showToast('Signed out successfully', 'success');
+        window.location.href = 'auth.html';
+      } catch (error) {
+        console.error('Sign out error:', error);
+        showToast('Error signing out', 'error');
+      } finally {
+        hideLoader();
+      }
+    });
+
+    // Navigation active state
+    function setActiveNav() {
+      const currentPage = window.location.pathname.split('/').pop() || 'team_portal.html';
+      const navItems = document.querySelectorAll('.nav-item');
+
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href.includes(currentPage)) {
+          item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+          item.classList.add('bg-blue-50', 'text-blue-700', 'border-r-2', 'border-blue-600');
+        } else {
+          item.classList.add('text-slate-700', 'hover:bg-slate-100');
+          item.classList.remove('bg-blue-50', 'text-blue-700', 'border-r-2', 'border-blue-600');
+        }
+      });
+    }
+
+    // Initialize auth listener
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          // Try to get user data from Firestore
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          const userData = userDoc.exists() ? userDoc.data() : null;
+
+          updateUserProfile(user, userData);
+          setActiveNav();
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          // Fallback to auth data only
+          updateUserProfile(user);
+          setActiveNav();
+        }
+      } else {
+        // Redirect to auth page if not logged in
+        window.location.href = 'auth.html';
+      }
+    });
+
+    // Set active navigation on page load
+    document.addEventListener('DOMContentLoaded', setActiveNav);
+  </script>
+
+
+  <script id="data-script" type="module" data-tiramai="web-gen">
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import {
+      collection, getDocs, query, orderBy, where,
+      getCountFromServer, limit
+    } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+    import { auth, getDb } from './scripts/firebase.js';
+    import { showToast, showLoader, hideLoader } from './scripts/main.js';
+
+    const db = getDb();
+
+    // DOM Elements
+    const teamsContainer = document.getElementById('teams-container');
+    const teamsContent = document.getElementById('teams-content');
+    const loadingSkeleton = document.getElementById('loading-skeleton');
+    const emptyState = document.getElementById('empty-state');
+    const errorState = document.getElementById('error-state');
+    const teamCountEl = document.getElementById('team-count');
+    const roleCountEl = document.getElementById('role-count');
+    const memberCountEl = document.getElementById('member-count');
+    const refreshBtn = document.getElementById('btn-refresh');
+    const retryBtn = document.getElementById('btn-retry');
+
+    // State management
+    /*
+    let currentAbort;
+    let teams = [];
+    let roles = [];
+    let members = [];
+    let teamMembers = [];
+    let memberRoles = [];
+
+    // Initialize Lucide icons after DOM load
+    /*
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+    */
+
+    // Abortable fetch function
+    /*
+    async function abortableFetch(fetchFn) {
+      if (currentAbort) currentAbort.abort();
+      currentAbort = new AbortController();
+      const signal = currentAbort.signal;
+
+      try {
+        const result = await fetchFn();
+        if (signal.aborted) return null;
+        return result;
+      } catch (error) {
+        if (signal.aborted) return null;
+        throw error;
+      }
+    }
+    */
+
+    // State management -> Added For Load team Dada in Team Member Portal
+    let teams = [];
+    let roles = [];
+    let members = [];
+    let teamMembers = [];
+    let memberRoles = [];
+
+    // Initialize Lucide icons after DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+
+
+    // Concurrency limiter
+    function createSemaphore(max = 2) {
+      const queue = [];
+      let active = 0;
+      const next = () => {
+        if (active >= max || queue.length === 0) return;
+        active++;
+        const { fn, res, rej } = queue.shift();
+        Promise.resolve()
+          .then(fn)
+          .then(v => res(v))
+          .catch(e => rej(e))
+          .finally(() => { active--; next(); });
+      };
+      return (fn) => new Promise((res, rej) => { queue.push({ fn, res, rej }); next(); });
+    }
+
+    const withLimit = createSemaphore(2);
+
+    // Yield to prevent main thread blocking
+    const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+    // Load teams data
+    /*
+    async function funLoadTeams() {
+      return abortableFetch(async () => {
+        const teamsQuery = query(collection(db, 'teams'), orderBy('name'), limit(50));
+        const snapshot = await getDocs(teamsQuery);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      });
+    }
+      */
+    async function funLoadTeams() {
+      const teamsQuery = query(collection(db, 'teams'), orderBy('name'), limit(50));
+      const snapshot = await getDocs(teamsQuery);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+
+    // Load roles data
+    /*
+    async function funLoadRoles() {
+      return abortableFetch(async () => {
+        const rolesQuery = query(collection(db, 'roles'), orderBy('name'), limit(100));
+        const snapshot = await getDocs(rolesQuery);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      });
+    }
+      */
+    async function funLoadRoles() {
+      const rolesQuery = query(collection(db, 'roles'), orderBy('name'), limit(100));
+      const snapshot = await getDocs(rolesQuery);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+
+    // Load members data
+    /*
+    async function funLoadMembers() {
+      return abortableFetch(async () => {
+        const membersQuery = query(collection(db, 'members'), orderBy('name'), limit(200));
+        const snapshot = await getDocs(membersQuery);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      });
+    }
+      */
+    async function funLoadMembers() {
+      const membersQuery = query(collection(db, 'members'), orderBy('name'), limit(200));
+      const snapshot = await getDocs(membersQuery);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+
+    // Load team members relationships
+    /*
+    async function funLoadTeamMembers() {
+      return abortableFetch(async () => {
+        const teamMembersQuery = query(collection(db, 'teamMembers'), limit(500));
+        const snapshot = await getDocs(teamMembersQuery);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      });
+    }
+      */
+    async function funLoadTeamMembers() {
+      const teamMembersQuery = query(collection(db, 'teamMembers'), limit(500));
+      const snapshot = await getDocs(teamMembersQuery);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+
+    // Load member roles relationships
+    /*
+    async function funLoadMemberRoles() {
+      return abortableFetch(async () => {
+        const memberRolesQuery = query(collection(db, 'memberRoles'), limit(500));
+        const snapshot = await getDocs(memberRolesQuery);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      });
+    }
+      */
+    async function funLoadMemberRoles() {
+      const memberRolesQuery = query(collection(db, 'memberRoles'), limit(500));
+      const snapshot = await getDocs(memberRolesQuery);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+
+    // Get statistics counts
+    async function funLoadCounts() {
+      const results = await Promise.all([
+        withLimit(() => getCountFromServer(collection(db, 'teams'))),
+        withLimit(() => getCountFromServer(collection(db, 'roles'))),
+        withLimit(() => getCountFromServer(collection(db, 'members')))
+      ]);
+
+      return {
+        teamCount: results[0]?.data()?.count || 0,
+        roleCount: results[1]?.data()?.count || 0,
+        memberCount: results[2]?.data()?.count || 0
+      };
+    }
+
+    // Data processing in chunks to avoid blocking main thread
+    async function funProcessTeamData() {
+      const processedTeams = [];
+
+      for (let i = 0; i < teams.length; i++) {
+        const team = teams[i];
+
+        // Get team members
+        const teamMemberIds = teamMembers
+          .filter(tm => tm?.teamId === team.id)
+          .map(tm => tm?.memberId)
+          .filter(Boolean);
+
+        const teamMembersData = members.filter(m => teamMemberIds.includes(m?.id));
+
+        // Get roles for team members
+        const teamRoleIds = memberRoles
+          .filter(mr => teamMemberIds.includes(mr?.memberId))
+          .map(mr => mr?.roleId)
+          .filter(Boolean);
+
+        const teamRolesData = roles.filter(r => teamRoleIds.includes(r?.id));
+
+        // Group members by role
+        const rolesWithMembers = teamRolesData.map(role => {
+          const roleMembers = memberRoles
+            .filter(mr => mr?.roleId === role.id && teamMemberIds.includes(mr?.memberId))
+            .map(mr => teamMembersData.find(m => m?.id === mr?.memberId))
+            .filter(Boolean);
+
+          return {
+            ...role,
+            members: roleMembers
+          };
+        });
+
+        processedTeams.push({
+          ...team,
+          roles: rolesWithMembers
+        });
+
+        // Yield every 5 teams to prevent blocking
+        if (i % 5 === 0) {
+          await yieldToFrame();
+        }
+      }
+
+      return processedTeams;
+    }
+
+    // Render team card
+    function funRenderTeamCard(team) {
+      const hasRoles = team.roles && team.roles.length > 0;
+      const totalMembers = hasRoles ? team.roles.reduce((sum, role) => sum + (role.members?.length || 0), 0) : 0;
+
+      return `
+    <div class="bg-white rounded-lg border border-slate-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl leading-7 font-semibold text-slate-900">${team.name || 'Unnamed Team'}</h2>
+        <div class="flex items-center gap-4 text-sm leading-[1.375rem] font-normal text-slate-500">
+          <span class="flex items-center gap-1">
+            <i data-lucide="briefcase" class="w-4 h-4"></i>
+            ${team.roles?.length || 0} roles
+          </span>
+          <span class="flex items-center gap-1">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            ${totalMembers} members
+          </span>
+        </div>
+      </div>
+      
+      ${hasRoles ? `
+        <div class="space-y-4">
+          ${team.roles.map(role => funRenderRoleCard(role)).join('')}
+        </div>
+      ` : `
+        <div class="text-center py-8 border-2 border-dashed border-slate-200 rounded-lg">
+          <i data-lucide="briefcase" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+          <p class="text-sm leading-[1.375rem] font-normal text-slate-500">No roles assigned to this team</p>
+        </div>
+      `}
+    </div>
+  `;
+    }
+
+    // Render role card
+    function funRenderRoleCard(role) {
+      const hasMembers = role.members && role.members.length > 0;
+
+      return `
+    <div class="border border-slate-100 rounded-lg p-4 hover:bg-slate-50 transition-colors duration-200">
+      <div class="mb-3">
+        <h3 class="text-lg leading-[1.625rem] font-medium text-slate-900 mb-1">${role.name || 'Unnamed Role'}</h3>
+        <p class="text-sm leading-[1.375rem] font-normal text-slate-600">${role.description || 'No description available'}</p>
+      </div>
+      
+      ${hasMembers ? `
+        <div class="flex flex-wrap gap-2">
+          ${role.members.map(member => `
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs leading-[1.125rem] font-medium bg-blue-50 text-blue-700">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5"></span>
+              ${member.name || member.email || 'Unknown Member'}
+            </span>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="text-xs leading-[1.125rem] font-normal text-slate-400 italic">No members assigned</div>
+      `}
+    </div>
+  `;
+    }
+
+    // Update statistics display
+    function funUpdateStats(counts) {
+      teamCountEl.textContent = counts.teamCount?.toLocaleString() || '0';
+      roleCountEl.textContent = counts.roleCount?.toLocaleString() || '0';
+      memberCountEl.textContent = counts.memberCount?.toLocaleString() || '0';
+    }
+
+    // Show loading state
+    function funShowLoading() {
+      loadingSkeleton.classList.remove('hidden');
+      teamsContent.classList.add('hidden');
+      emptyState.classList.add('hidden');
+      errorState.classList.add('hidden');
+    }
+
+    // Show content state
+    function funShowContent() {
+      loadingSkeleton.classList.add('hidden');
+      teamsContent.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      errorState.classList.add('hidden');
+    }
+
+    // Show empty state
+    function funShowEmpty() {
+      loadingSkeleton.classList.add('hidden');
+      teamsContent.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      errorState.classList.add('hidden');
+    }
+
+    // Show error state
+    function funShowError() {
+      loadingSkeleton.classList.add('hidden');
+      teamsContent.classList.add('hidden');
+      emptyState.classList.add('hidden');
+      errorState.classList.remove('hidden');
+    }
+
+    // Main data loading function
+    async function funInitialLoad(forceRefresh = false) {
+      try {
+        if (!forceRefresh) {
+          funShowLoading();
+        }
+
+        // Load all data concurrently but limited
+        const [teamsData, rolesData, membersData, teamMembersData, memberRolesData, counts] = await Promise.all([
+          withLimit(() => funLoadTeams()),
+          withLimit(() => funLoadRoles()),
+          withLimit(() => funLoadMembers()),
+          withLimit(() => funLoadTeamMembers()),
+          withLimit(() => funLoadMemberRoles()),
+          withLimit(() => funLoadCounts())
+        ]);
+
+        // Check if any requests were aborted
+        if (!teamsData || !rolesData || !membersData || !teamMembersData || !memberRolesData || !counts) {
+          return; // Request was aborted
+        }
+
+        // Update global state
+        teams = teamsData;
+        roles = rolesData;
+        members = membersData;
+        teamMembers = teamMembersData;
+        memberRoles = memberRolesData;
+
+        // Update statistics
+        funUpdateStats(counts);
+
+        // Process data
+        await yieldToFrame();
+        const processedTeams = await funProcessTeamData();
+
+        if (processedTeams.length === 0) {
+          funShowEmpty();
+          return;
+        }
+
+        // Render teams
+        await yieldToFrame();
+        teamsContent.innerHTML = processedTeams.map(team => funRenderTeamCard(team)).join('');
+
+        // Re-initialize icons for newly rendered content
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+
+        funShowContent();
+
+        if (forceRefresh) {
+          showToast('Teams data refreshed successfully', 'success');
+        }
+
+      } catch (error) {
+        console.error('Error loading teams data:', error);
+        funShowError();
+        if (!forceRefresh) {
+          showToast(error?.message || 'Failed to load teams data', 'error');
+        }
+      }
+    }
+
+    // Event listeners
+    refreshBtn?.addEventListener('click', () => {
+      funInitialLoad(true);
+    });
+
+    retryBtn?.addEventListener('click', () => {
+      funInitialLoad(false);
+    });
+
+    // Auth state management
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
+
+      // Initialize page load
+      funInitialLoad(false);
+    });
+  </script>
+
+</body>
+
+</html>

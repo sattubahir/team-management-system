@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Team Management System</title>
+
+  <!-- Required: Main JS Script -->
+  <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+
+  <!-- Required: TailwindCSS -->
+  <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+
+  <!-- Required: Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+
+  <!-- Required: Favicon -->
+  <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen" />
+
+  <!-- ECharts Support (for charts/graphs) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+
+  <!-- Markdown Support (for content rendering) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+  <script data-tiramai="web-gen">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+          },
+          colors: {
+            'brand-primary': '#2563EB',
+            'brand-secondary': '#475569',
+            'brand-accent': '#059669',
+            'brand-surface': '#FFFFFF',
+            'brand-background': '#F8FAFC',
+            'brand-border': '#E2E8F0',
+            'brand-text-primary': '#0B1220',
+            'brand-text-secondary': '#111827'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+  <!-- Top Navigation -->
+  <header
+    class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+    <div class="flex items-center gap-4">
+      <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+        <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none" />
+        <circle cx="120" cy="170" r="22" fill="#2563EB" />
+        <circle cx="280" cy="170" r="22" fill="#2563EB" />
+        <circle cx="200" cy="255" r="22" fill="#2563EB" />
+        <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round" />
+        <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white" />
+      </svg>
+      <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
+      <!-- Mobile Menu Toggle -->
+      <button id="mobile-menu-toggle"
+        class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <button id="user-profile-button"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <div
+            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold"
+            id="user-avatar">
+            U
+          </div>
+          <span id="user-display-name" class="hidden sm:block">Loading...</span>
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="user-dropdown"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
+          <div class="px-4 py-2 border-b border-slate-200">
+            <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
+            <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
+          </div>
+          <button id="sign-out-btn"
+            class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex pt-16">
+    <!-- Side Navigation -->
+    <aside id="sidebar"
+      class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
+      <nav class="p-4 space-y-2">
+        <!-- Admin Dashboard -->
+        <a href="admin_dashboard.html"
+          class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          data-page="admin_dashboard">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span>Admin Dashboard</span>
+        </a>
+
+        <!-- Team Management -->
+        <div class="space-y-1">
+          <a href="team_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="team_list">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span>Team List</span>
+          </a>
+        </div>
+
+        <!-- Member Management -->
+        <div class="space-y-1">
+          <a href="member_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="member_list">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span>Member List</span>
+          </a>
+        </div>
+
+        <!-- Role Management -->
+        <div class="space-y-1">
+          <a href="role_list.html"
+            class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            data-page="role_list">
+            <i data-lucide="award" class="w-5 h-5"></i>
+            <span>Role List</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="absolute bottom-4 left-0 right-0 px-4">
+        <div class="text-center text-xs text-slate-500 bg-white py-2">
+          Made with ❤️ by TiramAi
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+    <!-- Main Content -->
+    <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
+
+      <!-- Admin Dashboard Content -->
+      <div class="max-w-screen-xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900 mb-2">Admin Dashboard</h1>
+          <p class="text-sm leading-[1.375rem] font-normal text-slate-600">Comprehensive overview of your organizational
+            structure and management functions</p>
+        </div>
+
+        <!-- Dashboard Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <!-- Teams Card -->
+          <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i data-lucide="users" class="w-6 h-6 text-blue-600"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl leading-7 font-semibold text-slate-900">Teams</h3>
+                  <p class="text-xs leading-[1.125rem] font-normal text-slate-500">Organizational units</p>
+                </div>
+              </div>
+              <button id="btn-refresh-teams"
+                class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 transition-colors p-1 rounded"
+                aria-label="Refresh teams data">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Teams Count Display -->
+            <div class="mb-4">
+              <div id="teams-skeleton" class="animate-pulse">
+                <div class="h-8 bg-slate-200 rounded w-16 mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-32"></div>
+              </div>
+              <div id="teams-content" class="hidden">
+                <div class="text-2xl leading-8 font-semibold text-slate-900 mb-1" id="teams-total">0</div>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600">Total teams in organization</p>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <button id="btn-manage-teams"
+              class="w-full px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+              Manage Teams
+            </button>
+          </div>
+
+          <!-- Members Card -->
+          <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <i data-lucide="user" class="w-6 h-6 text-emerald-600"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl leading-7 font-semibold text-slate-900">Members</h3>
+                  <p class="text-xs leading-[1.125rem] font-normal text-slate-500">Organization members</p>
+                </div>
+              </div>
+              <button id="btn-refresh-members"
+                class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 transition-colors p-1 rounded"
+                aria-label="Refresh members data">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Members Count Display -->
+            <div class="mb-4">
+              <div id="members-skeleton" class="animate-pulse">
+                <div class="h-8 bg-slate-200 rounded w-16 mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-32 mb-3"></div>
+                <div class="h-3 bg-slate-200 rounded w-24"></div>
+              </div>
+              <div id="members-content" class="hidden">
+                <div class="text-2xl leading-8 font-semibold text-slate-900 mb-1" id="members-total">0</div>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mb-3">Total members in organization</p>
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                  <span class="text-xs leading-[1.125rem] font-normal text-slate-500" id="unassigned-members">0
+                    unassigned</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <button id="btn-manage-members"
+              class="w-full px-4 py-2 bg-emerald-600 text-white rounded font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors">
+              Manage Members
+            </button>
+          </div>
+
+          <!-- Roles Card -->
+          <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i data-lucide="award" class="w-6 h-6 text-purple-600"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl leading-7 font-semibold text-slate-900">Roles</h3>
+                  <p class="text-xs leading-[1.125rem] font-normal text-slate-500">Available positions</p>
+                </div>
+              </div>
+              <button id="btn-refresh-roles"
+                class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 transition-colors p-1 rounded"
+                aria-label="Refresh roles data">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Roles Count Display -->
+            <div class="mb-4">
+              <div id="roles-skeleton" class="animate-pulse">
+                <div class="h-8 bg-slate-200 rounded w-16 mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-32 mb-3"></div>
+                <div class="h-3 bg-slate-200 rounded w-24"></div>
+              </div>
+              <div id="roles-content" class="hidden">
+                <div class="text-2xl leading-8 font-semibold text-slate-900 mb-1" id="roles-total">0</div>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600 mb-3">Total roles defined</p>
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                  <span class="text-xs leading-[1.125rem] font-normal text-slate-500" id="unassigned-roles">0
+                    unassigned</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <button id="btn-manage-roles"
+              class="w-full px-4 py-2 bg-purple-600 text-white rounded font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+              Manage Roles
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Stats Summary -->
+        <div class="mt-8 bg-white rounded-lg shadow border border-slate-200 p-6">
+          <h2 class="text-2xl leading-8 font-semibold text-slate-900 mb-4">Organization Overview</h2>
+
+          <div id="overview-skeleton" class="animate-pulse">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="text-center p-4 bg-slate-50 rounded">
+                <div class="h-6 bg-slate-200 rounded w-16 mx-auto mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-20 mx-auto"></div>
+              </div>
+              <div class="text-center p-4 bg-slate-50 rounded">
+                <div class="h-6 bg-slate-200 rounded w-16 mx-auto mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-20 mx-auto"></div>
+              </div>
+              <div class="text-center p-4 bg-slate-50 rounded">
+                <div class="h-6 bg-slate-200 rounded w-16 mx-auto mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-20 mx-auto"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="overview-content" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="text-center p-4 bg-slate-50 rounded">
+                <div class="text-lg leading-[1.625rem] font-medium text-slate-900" id="avg-team-size">N/A</div>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600">Avg Team Size</p>
+              </div>
+              <div class="text-center p-4 bg-slate-50 rounded">
+                <div class="text-lg leading-[1.625rem] font-medium text-slate-900" id="roles-per-member">N/A</div>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600">Avg Roles per Member</p>
+              </div>
+              <div class="text-center p-4 bg-slate-50 rounded">
+                <div class="text-lg leading-[1.625rem] font-medium text-slate-900" id="assignment-rate">N/A</div>
+                <p class="text-sm leading-[1.375rem] font-normal text-slate-600">Assignment Rate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Required: JavaScript -->
+  <script type="module" data-tiramai="web-gen">
+    import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+    import { auth, db, storage } from "./scripts/firebase.js";
+    import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Global variables
+    let currentUser = null;
+    let userData = null;
+
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+
+    mobileMenuToggle?.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      mobileOverlay.classList.toggle('hidden');
+    });
+
+    mobileOverlay?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      mobileOverlay.classList.add('hidden');
+    });
+
+    // User profile dropdown functionality
+    const userProfileButton = document.getElementById('user-profile-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    userProfileButton?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
+        userDropdown?.classList.add('hidden');
+      }
+    });
+
+    // Sign out functionality
+    document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
+      try {
+        showLoader('Signing out...');
+        await signOut(auth);
+        hideLoader();
+        window.location.href = 'auth.html';
+      } catch (error) {
+        hideLoader();
+        showToast('Failed to sign out: ' + error.message, 'error');
+      }
+    });
+
+    // Initialize user profile
+    async function initializeUserProfile(user) {
+      currentUser = user;
+
+      try {
+        // Try to get user data from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          userData = userDoc.data();
+          updateUserUI(userData, user.email);
+        } else {
+          // Fallback to auth user data
+          updateUserUI(null, user.email);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Fallback to auth user data
+        updateUserUI(null, user.email);
+      }
+    }
+
+    // Update user UI elements
+    function updateUserUI(userData, email) {
+      const userAvatar = document.getElementById('user-avatar');
+      const userDisplayName = document.getElementById('user-display-name');
+      const dropdownUserName = document.getElementById('dropdown-user-name');
+      const dropdownUserEmail = document.getElementById('dropdown-user-email');
+
+      let displayName = 'User';
+      let fullName = 'User';
+
+      if (userData && userData.firstName) {
+        displayName = userData.firstName;
+        fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+      } else if (email) {
+        displayName = email.split('@')[0];
+        fullName = email;
+      }
+
+      // Update avatar with first letter
+      if (userAvatar) {
+        userAvatar.textContent = displayName.charAt(0).toUpperCase();
+      }
+
+      // Update display name
+      if (userDisplayName) {
+        userDisplayName.textContent = displayName;
+      }
+
+      // Update dropdown
+      if (dropdownUserName) {
+        dropdownUserName.textContent = fullName;
+      }
+      if (dropdownUserEmail) {
+        dropdownUserEmail.textContent = email || 'No email';
+      }
+    }
+
+    // Set active navigation item
+    function setActiveNavItem() {
+      const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        const pageName = item.getAttribute('data-page');
+        if (pageName === currentPage) {
+          item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+          item.classList.add('bg-blue-600', 'text-white');
+        } else {
+          item.classList.remove('bg-blue-600', 'text-white');
+          item.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+      });
+    }
+
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        initializeUserProfile(user);
+        setActiveNavItem();
+      } else {
+        window.location.href = 'auth.html';
+      }
+    });
+
+    // Set active nav item on page load
+    setActiveNavItem();
+
+    // Export for use in page-specific scripts
+    window.appGlobals = {
+      currentUser,
+      userData,
+      showToast,
+      showLoader,
+      hideLoader
+    };
+  </script>
+
+
+  <script id="data-script" type="module" data-tiramai="web-gen">
+    import {
+      collection,
+      getDocs,
+      getCountFromServer,
+      query,
+      where,
+      Timestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+    import { auth, getDb } from "./scripts/firebase.js";
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+    import { showToast, showLoader, hideLoader } from "./scripts/main.js";
+
+    const db = getDb();
+
+    // Auth protection
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname);
+      } else {
+        funInitialLoad();
+      }
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Current abort controller for managing concurrent requests
+    let currentAbort;
+
+    // Concurrency limiter
+    function createSemaphore(max = 2) {
+      const queue = [];
+      let active = 0;
+      const next = () => {
+        if (active >= max || queue.length === 0) return;
+        active++;
+        const { fn, res, rej } = queue.shift();
+        Promise.resolve()
+          .then(fn)
+          .then(v => res(v))
+          .catch(e => rej(e))
+          .finally(() => { active--; next(); });
+      };
+      return (fn) => new Promise((res, rej) => { queue.push({ fn, res, rej }); next(); });
+    }
+
+    const withLimit = createSemaphore(2);
+
+    // Yield to frame utility
+    const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+    // Dashboard data state
+    let dashboardData = {
+      teams: { count: 0, loaded: false },
+      members: { count: 0, unassigned: 0, loaded: false },
+      roles: { count: 0, unassigned: 0, loaded: false }
+    };
+
+    // Load dashboard data with abort controller
+    async function funLoadDashboardData(forceRefresh = false) {
+      if (currentAbort) currentAbort.abort();
+      currentAbort = new AbortController();
+      const signal = currentAbort.signal;
+
+      try {
+        // Show skeletons
+        if (forceRefresh) {
+          funShowSkeletons();
+        }
+
+        // Load data with concurrency limit
+        const results = await Promise.all([
+          withLimit(() => funGetTeamsCount(signal)),
+          withLimit(() => funGetMembersData(signal)),
+          withLimit(() => funGetRolesData(signal))
+        ]);
+
+        if (signal.aborted) return;
+
+        // Update dashboard data
+        dashboardData.teams = { count: results[0] || 0, loaded: true };
+        dashboardData.members = results[1] || { count: 0, unassigned: 0, loaded: true };
+        dashboardData.roles = results[2] || { count: 0, unassigned: 0, loaded: true };
+
+        // Yield to frame before updating UI
+        await yieldToFrame();
+
+        // Update UI
+        funUpdateDashboardUI();
+
+      } catch (error) {
+        if (signal.aborted) return;
+        console.error('Error loading dashboard data:', error);
+        showToast(error?.message || "Failed to load dashboard data", 'error');
+        funShowErrorState();
+      }
+    }
+
+    // Get teams count using getCountFromServer
+    async function funGetTeamsCount(signal) {
+      try {
+        const teamsRef = collection(db, 'teams');
+        const snapshot = await getCountFromServer(teamsRef);
+
+        if (signal?.aborted) return 0;
+        return snapshot.data().count || 0;
+      } catch (error) {
+        console.error('Error getting teams count:', error);
+        throw error;
+      }
+    }
+
+    // Get members data with unassigned count
+    async function funGetMembersData(signal) {
+      try {
+        // Get total members count
+        const membersRef = collection(db, 'members');
+        const totalSnapshot = await getCountFromServer(membersRef);
+
+        if (signal?.aborted) return { count: 0, unassigned: 0, loaded: true };
+
+        const totalCount = totalSnapshot.data().count || 0;
+
+        // Get assigned members count from teamMembers collection
+        const teamMembersRef = collection(db, 'teamMembers');
+        const assignedSnapshot = await getCountFromServer(teamMembersRef);
+
+        if (signal?.aborted) return { count: 0, unassigned: 0, loaded: true };
+
+        const assignedCount = assignedSnapshot.data().count || 0;
+
+        // Calculate unassigned (this is a simplification - in reality, we'd need to count unique memberIds)
+        const unassignedCount = Math.max(0, totalCount - assignedCount);
+
+        return {
+          count: totalCount,
+          unassigned: unassignedCount,
+          loaded: true
+        };
+      } catch (error) {
+        console.error('Error getting members data:', error);
+        throw error;
+      }
+    }
+
+    // Get roles data with unassigned count
+    async function funGetRolesData(signal) {
+      try {
+        // Get total roles count
+        const rolesRef = collection(db, 'roles');
+        const totalSnapshot = await getCountFromServer(rolesRef);
+
+        if (signal?.aborted) return { count: 0, unassigned: 0, loaded: true };
+
+        const totalCount = totalSnapshot.data().count || 0;
+
+        // Get assigned roles count from memberRoles collection
+        const memberRolesRef = collection(db, 'memberRoles');
+        const assignedSnapshot = await getCountFromServer(memberRolesRef);
+
+        if (signal?.aborted) return { count: 0, unassigned: 0, loaded: true };
+
+        const assignedCount = assignedSnapshot.data().count || 0;
+
+        // Calculate unassigned (this is a simplification - in reality, we'd need to count unique roleIds)
+        const unassignedCount = Math.max(0, totalCount - assignedCount);
+
+        return {
+          count: totalCount,
+          unassigned: unassignedCount,
+          loaded: true
+        };
+      } catch (error) {
+        console.error('Error getting roles data:', error);
+        throw error;
+      }
+    }
+
+    // Show skeletons
+    function funShowSkeletons() {
+      const elements = [
+        { skeleton: 'teams-skeleton', content: 'teams-content' },
+        { skeleton: 'members-skeleton', content: 'members-content' },
+        { skeleton: 'roles-skeleton', content: 'roles-content' },
+        { skeleton: 'overview-skeleton', content: 'overview-content' }
+      ];
+
+      elements.forEach(({ skeleton, content }) => {
+        const skeletonEl = document.getElementById(skeleton);
+        const contentEl = document.getElementById(content);
+        if (skeletonEl && contentEl) {
+          skeletonEl.classList.remove('hidden');
+          contentEl.classList.add('hidden');
+        }
+      });
+    }
+
+    // Update dashboard UI
+    function funUpdateDashboardUI() {
+      // Update teams
+      if (dashboardData.teams.loaded) {
+        document.getElementById('teams-total').textContent = dashboardData.teams.count;
+        document.getElementById('teams-skeleton').classList.add('hidden');
+        document.getElementById('teams-content').classList.remove('hidden');
+      }
+
+      // Update members
+      if (dashboardData.members.loaded) {
+        document.getElementById('members-total').textContent = dashboardData.members.count;
+        document.getElementById('unassigned-members').textContent = `${dashboardData.members.unassigned} unassigned`;
+        document.getElementById('members-skeleton').classList.add('hidden');
+        document.getElementById('members-content').classList.remove('hidden');
+      }
+
+      // Update roles
+      if (dashboardData.roles.loaded) {
+        document.getElementById('roles-total').textContent = dashboardData.roles.count;
+        document.getElementById('unassigned-roles').textContent = `${dashboardData.roles.unassigned} unassigned`;
+        document.getElementById('roles-skeleton').classList.add('hidden');
+        document.getElementById('roles-content').classList.remove('hidden');
+      }
+
+      // Update overview stats
+      if (dashboardData.teams.loaded && dashboardData.members.loaded && dashboardData.roles.loaded) {
+        const avgTeamSize = dashboardData.teams.count > 0
+          ? Math.round((dashboardData.members.count - dashboardData.members.unassigned) / dashboardData.teams.count * 10) / 10
+          : 0;
+
+        const rolesPerMember = dashboardData.members.count > 0
+          ? Math.round((dashboardData.roles.count - dashboardData.roles.unassigned) / dashboardData.members.count * 10) / 10
+          : 0;
+
+        const totalAssignments = (dashboardData.members.count - dashboardData.members.unassigned) + (dashboardData.roles.count - dashboardData.roles.unassigned);
+        const totalItems = dashboardData.members.count + dashboardData.roles.count;
+        const assignmentRate = totalItems > 0 ? Math.round((totalAssignments / totalItems) * 100) : 0;
+
+        document.getElementById('avg-team-size').textContent = avgTeamSize > 0 ? avgTeamSize.toString() : 'N/A';
+        document.getElementById('roles-per-member').textContent = rolesPerMember > 0 ? rolesPerMember.toString() : 'N/A';
+        document.getElementById('assignment-rate').textContent = assignmentRate > 0 ? `${assignmentRate}%` : 'N/A';
+
+        document.getElementById('overview-skeleton').classList.add('hidden');
+        document.getElementById('overview-content').classList.remove('hidden');
+      }
+    }
+
+    // Show error state
+    function funShowErrorState() {
+      const contentElements = ['teams-content', 'members-content', 'roles-content', 'overview-content'];
+      contentElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.remove('hidden');
+          element.innerHTML = '<div class="text-sm text-red-600">Error loading data</div>';
+        }
+      });
+
+      const skeletonElements = ['teams-skeleton', 'members-skeleton', 'roles-skeleton', 'overview-skeleton'];
+      skeletonElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.add('hidden');
+        }
+      });
+    }
+
+    // Initial load
+    async function funInitialLoad(forceRefresh = false) {
+      await funLoadDashboardData(forceRefresh);
+    }
+
+    // Navigation handlers
+    document.getElementById('btn-manage-teams')?.addEventListener('click', () => {
+      window.location.href = 'team_list.html';
+    });
+
+    document.getElementById('btn-manage-members')?.addEventListener('click', () => {
+      window.location.href = 'member_list.html';
+    });
+
+    document.getElementById('btn-manage-roles')?.addEventListener('click', () => {
+      window.location.href = 'role_list.html';
+    });
+
+    // Refresh handlers
+    document.getElementById('btn-refresh-teams')?.addEventListener('click', () => {
+      funInitialLoad(true);
+    });
+
+    document.getElementById('btn-refresh-members')?.addEventListener('click', () => {
+      funInitialLoad(true);
+    });
+
+    document.getElementById('btn-refresh-roles')?.addEventListener('click', () => {
+      funInitialLoad(true);
+    });
+
+    // Handle page visibility changes to refresh data when page becomes visible
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        funInitialLoad(true);
+      }
+    });
+  </script>
+
+</body>
+
+</html>

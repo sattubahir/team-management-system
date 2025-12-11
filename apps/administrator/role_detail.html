@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internal Team Management System</title>
+
+    <!-- Required: Main JS Script -->
+    <script type="module" src="scripts/main.js" data-tiramai="web-gen"></script>
+
+    <!-- Required: TailwindCSS -->
+    <script src="./lib/tailwindcss/tailwindcss.js" fetchpriority="high" data-tiramai="web-gen"></script>
+
+    <!-- Required: Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" data-tiramai="web-gen"></script>
+
+    <!-- Required: Favicon -->
+    <link rel="icon" href="assets/imgs/logo.png" type="image/x-icon" data-tiramai="web-gen"/>
+
+    <!-- ECharts Support (for charts/graphs) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" data-tiramai="web-gen"></script>
+
+    <!-- Markdown Support (for content rendering) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" data-tiramai="web-gen"></script>
+
+    <script data-tiramai="web-gen">
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+            },
+            colors: {
+              'brand-primary': '#2563EB',
+              'brand-secondary': '#475569',
+              'brand-accent': '#059669',
+              'brand-surface': '#FFFFFF',
+              'brand-background': '#F8FAFC',
+              'brand-border': '#E2E8F0',
+              'brand-text-primary': '#0B1220',
+              'brand-text-secondary': '#111827'
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+    <!-- Top Navigation -->
+    <header class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 flex items-center justify-between px-6 py-4 z-30 h-16">
+      <div class="flex items-center gap-4">
+        <svg width="32" height="32" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+          <circle cx="200" cy="200" r="100" stroke="#2563EB" stroke-width="16" fill="none"/>
+          <circle cx="120" cy="170" r="22" fill="#2563EB"/>
+          <circle cx="280" cy="170" r="22" fill="#2563EB"/>
+          <circle cx="200" cy="255" r="22" fill="#2563EB"/>
+          <line x1="136" y1="182" x2="184" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+          <line x1="264" y1="182" x2="216" y2="242" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+          <line x1="142" y1="176" x2="258" y2="176" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+          <rect x="170" y="150" width="60" height="60" rx="8" stroke="#2563EB" stroke-width="10" fill="white"/>
+        </svg>
+        <span class="text-xl font-semibold text-slate-900">Internal Team Management System</span>
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-toggle" class="md:hidden p-2 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="Toggle menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <!-- User Profile Dropdown -->
+        <div class="relative">
+          <button id="user-profile-button" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold" id="user-avatar">
+              U
+            </div>
+            <span id="user-display-name" class="hidden sm:block">Loading...</span>
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-40 hidden">
+            <div class="px-4 py-2 border-b border-slate-200">
+              <p class="text-sm font-medium text-slate-900" id="dropdown-user-name">Loading...</p>
+              <p class="text-xs text-slate-500" id="dropdown-user-email">Loading...</p>
+            </div>
+            <button id="sign-out-btn" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center gap-2">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex pt-16">
+      <!-- Side Navigation -->
+      <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white border-r border-slate-200 h-screen md:h-[calc(100vh-4rem)] overflow-y-auto z-20 top-16 md:top-0">
+        <nav class="p-4 space-y-2">
+          <!-- Admin Dashboard -->
+          <a href="admin_dashboard.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="admin_dashboard">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span>Admin Dashboard</span>
+          </a>
+
+          <!-- Team Management -->
+          <div class="space-y-1">
+            <a href="team_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="team_list">
+              <i data-lucide="users" class="w-5 h-5"></i>
+              <span>Team List</span>
+            </a>
+          </div>
+
+          <!-- Member Management -->
+          <div class="space-y-1">
+            <a href="member_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="member_list">
+              <i data-lucide="user" class="w-5 h-5"></i>
+              <span>Member List</span>
+            </a>
+          </div>
+
+          <!-- Role Management -->
+          <div class="space-y-1">
+            <a href="role_list.html" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors" data-page="role_list">
+              <i data-lucide="award" class="w-5 h-5"></i>
+              <span>Role List</span>
+            </a>
+          </div>
+        </nav>
+        
+        <!-- Footer -->
+        <div class="absolute bottom-4 left-0 right-0 px-4">
+          <div class="text-center text-xs text-slate-500 bg-white py-2">
+            Made with ❤️ by TiramAi
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile Overlay -->
+      <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+      <!-- Main Content -->
+      <main id="pageContent" class="flex-1 p-6 overflow-y-auto md:ml-0">
+        
+<!-- Role Detail Page Content -->
+<div class="max-w-7xl mx-auto space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <button onclick="window.location.href='role_list.html'" class="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Back to roles">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      </button>
+      <div>
+        <h1 id="role-name" class="text-[1.875rem] leading-[2.375rem] font-bold text-slate-900">Loading...</h1>
+        <p class="text-sm text-slate-500 mt-1">Role Details & Member Management</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button id="btn-edit-role" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg font-medium hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors">
+        <i data-lucide="edit-2" class="w-4 h-4"></i>
+        Edit
+      </button>
+      <button id="btn-delete-role" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+        <i data-lucide="trash-2" class="w-4 h-4"></i>
+        Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Role Information Card -->
+  <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
+    <!-- Skeleton for role info -->
+    <div id="role-info-skeleton" class="space-y-4">
+      <div class="h-6 bg-slate-200 rounded animate-pulse w-3/4"></div>
+      <div class="space-y-2">
+        <div class="h-4 bg-slate-200 rounded animate-pulse"></div>
+        <div class="h-4 bg-slate-200 rounded animate-pulse w-5/6"></div>
+        <div class="h-4 bg-slate-200 rounded animate-pulse w-2/3"></div>
+      </div>
+      <div class="h-4 bg-slate-200 rounded animate-pulse w-1/3"></div>
+    </div>
+
+    <!-- Actual role info (hidden initially) -->
+    <div id="role-info-content" class="hidden space-y-4">
+      <div>
+        <h2 class="text-xl font-semibold text-slate-900 mb-2">Description</h2>
+        <p id="role-description" class="text-slate-700 leading-relaxed">N/A</p>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-slate-500">
+        <div class="flex items-center gap-2">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          <span>Created <span id="role-created-date">N/A</span></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span id="member-count">0</span> assigned members
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assigned Members Section -->
+  <div class="bg-white rounded-lg shadow border border-slate-200">
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 border-b border-slate-200">
+      <h2 class="text-xl font-semibold text-slate-900">Assigned Members</h2>
+      <button id="btn-assign-members" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
+        Assign Members
+      </button>
+    </div>
+
+    <!-- Search and Controls -->
+    <div class="p-6 border-b border-slate-200">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="relative flex-1">
+          <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="text" id="search-members" placeholder="Search members by name or email..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <button id="btn-refresh" class="inline-flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg" aria-label="Refresh">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Members Table Container -->
+    <div class="overflow-x-auto">
+      <!-- Skeleton Table -->
+      <div id="members-table-skeleton" class="min-w-full">
+        <table class="w-full">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Member</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Teams</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Assigned</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-slate-200">
+            <!-- Skeleton rows -->
+            <tr class="animate-pulse" data-skeleton="true">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+                  <div class="space-y-2">
+                    <div class="h-4 bg-slate-200 rounded w-24"></div>
+                    <div class="h-3 bg-slate-200 rounded w-32"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="h-4 bg-slate-200 rounded w-20"></div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="h-4 bg-slate-200 rounded w-16"></div>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="h-8 bg-slate-200 rounded w-16 ml-auto"></div>
+              </td>
+            </tr>
+            <tr class="animate-pulse" data-skeleton="true">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+                  <div class="space-y-2">
+                    <div class="h-4 bg-slate-200 rounded w-28"></div>
+                    <div class="h-3 bg-slate-200 rounded w-36"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="h-4 bg-slate-200 rounded w-24"></div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="h-4 bg-slate-200 rounded w-18"></div>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="h-8 bg-slate-200 rounded w-16 ml-auto"></div>
+              </td>
+            </tr>
+            <tr class="animate-pulse" data-skeleton="true">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+                  <div class="space-y-2">
+                    <div class="h-4 bg-slate-200 rounded w-32"></div>
+                    <div class="h-3 bg-slate-200 rounded w-40"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="h-4 bg-slate-200 rounded w-28"></div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="h-4 bg-slate-200 rounded w-20"></div>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="h-8 bg-slate-200 rounded w-16 ml-auto"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Actual Members Table -->
+      <table id="members-table" class="min-w-full hidden">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Member</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Teams</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Assigned</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="members-tbody" class="bg-white divide-y divide-slate-200">
+          <!-- Dynamic content will be inserted here -->
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-12">
+        <div class="flex flex-col items-center gap-4">
+          <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
+            <i data-lucide="users" class="w-8 h-8 text-slate-400"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-slate-900">No members assigned</h3>
+            <p class="text-slate-500 mt-1">Get started by assigning members to this role.</p>
+          </div>
+          <button onclick="document.getElementById('btn-assign-members').click()" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            Assign Members
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination-container" class="hidden px-6 py-4 border-t border-slate-200">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-slate-700">
+          Showing <span id="pagination-start">1</span> to <span id="pagination-end">25</span> of <span id="pagination-total">0</span> members
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="pagination-prev" class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            Previous
+          </button>
+          <button id="pagination-next" class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Members Modal -->
+<div id="assign-members-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-slate-200">
+        <h3 class="text-lg font-semibold text-slate-900">Assign Members to Role</h3>
+        <button id="close-assign-modal" class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Close modal">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-6 overflow-y-auto max-h-[calc(80vh-140px)]">
+        <!-- Search -->
+        <div class="relative mb-4">
+          <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="text" id="modal-search-members" placeholder="Search available members..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+
+        <!-- Select All Controls -->
+        <div class="flex items-center justify-between mb-4 p-3 bg-slate-50 rounded-lg">
+          <span class="text-sm font-medium text-slate-700">Select members to assign:</span>
+          <div class="flex items-center gap-2">
+            <button id="select-all-btn" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Select All</button>
+            <span class="text-slate-300">|</span>
+            <button id="deselect-all-btn" class="text-sm text-slate-500 hover:text-slate-700 font-medium">Deselect All</button>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="modal-loading" class="space-y-3">
+          <div class="flex items-center gap-3 p-3 animate-pulse">
+            <div class="w-5 h-5 bg-slate-200 rounded"></div>
+            <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+            <div class="space-y-2 flex-1">
+              <div class="h-4 bg-slate-200 rounded w-1/3"></div>
+              <div class="h-3 bg-slate-200 rounded w-1/2"></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 animate-pulse">
+            <div class="w-5 h-5 bg-slate-200 rounded"></div>
+            <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+            <div class="space-y-2 flex-1">
+              <div class="h-4 bg-slate-200 rounded w-2/5"></div>
+              <div class="h-3 bg-slate-200 rounded w-3/5"></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 animate-pulse">
+            <div class="w-5 h-5 bg-slate-200 rounded"></div>
+            <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+            <div class="space-y-2 flex-1">
+              <div class="h-4 bg-slate-200 rounded w-1/4"></div>
+              <div class="h-3 bg-slate-200 rounded w-2/3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Members List -->
+        <div id="available-members-list" class="hidden space-y-2">
+          <!-- Dynamic content will be inserted here -->
+        </div>
+
+        <!-- No Available Members -->
+        <div id="no-available-members" class="hidden text-center py-8">
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
+              <i data-lucide="user-check" class="w-6 h-6 text-slate-400"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-medium text-slate-900">All members assigned</h4>
+              <p class="text-xs text-slate-500 mt-1">All available members are already assigned to this role.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-between p-6 border-t border-slate-200 bg-slate-50">
+        <div class="text-sm text-slate-500">
+          <span id="selected-count">0</span> members selected
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="cancel-assign-btn" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            Cancel
+          </button>
+          <button id="save-assignments-btn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            Assign Members
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Remove Member Confirmation Modal -->
+<div id="remove-member-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-200">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-900">Remove Member from Role</h3>
+        </div>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-6">
+        <p class="text-slate-700">Are you sure you want to remove <strong id="remove-member-name">Member Name</strong> from this role? This action cannot be undone.</p>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-200 bg-slate-50">
+        <button id="cancel-remove-btn" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          Cancel
+        </button>
+        <button id="confirm-remove-btn" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+          Remove Member
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </main>
+    </div>
+
+    <!-- Required: JavaScript -->
+    <script type="module" data-tiramai="web-gen">
+      import { showToast, showLoader, hideLoader, env } from "./scripts/main.js";
+      import { auth, db, storage } from "./scripts/firebase.js";
+      import { onAuthStateChanged, getAuth, signOut } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+      import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Global variables
+      let currentUser = null;
+      let userData = null;
+
+      // Mobile menu functionality
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const mobileOverlay = document.getElementById('mobile-overlay');
+
+      mobileMenuToggle?.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        mobileOverlay.classList.toggle('hidden');
+      });
+
+      mobileOverlay?.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        mobileOverlay.classList.add('hidden');
+      });
+
+      // User profile dropdown functionality
+      const userProfileButton = document.getElementById('user-profile-button');
+      const userDropdown = document.getElementById('user-dropdown');
+
+      userProfileButton?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('hidden');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!userProfileButton?.contains(e.target) && !userDropdown?.contains(e.target)) {
+          userDropdown?.classList.add('hidden');
+        }
+      });
+
+      // Sign out functionality
+      document.getElementById('sign-out-btn')?.addEventListener('click', async () => {
+        try {
+          showLoader('Signing out...');
+          await signOut(auth);
+          hideLoader();
+          window.location.href = 'auth.html';
+        } catch (error) {
+          hideLoader();
+          showToast('Failed to sign out: ' + error.message, 'error');
+        }
+      });
+
+      // Initialize user profile
+      async function initializeUserProfile(user) {
+        currentUser = user;
+        
+        try {
+          // Try to get user data from Firestore
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          if (userDoc.exists()) {
+            userData = userDoc.data();
+            updateUserUI(userData, user.email);
+          } else {
+            // Fallback to auth user data
+            updateUserUI(null, user.email);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          // Fallback to auth user data
+          updateUserUI(null, user.email);
+        }
+      }
+
+      // Update user UI elements
+      function updateUserUI(userData, email) {
+        const userAvatar = document.getElementById('user-avatar');
+        const userDisplayName = document.getElementById('user-display-name');
+        const dropdownUserName = document.getElementById('dropdown-user-name');
+        const dropdownUserEmail = document.getElementById('dropdown-user-email');
+
+        let displayName = 'User';
+        let fullName = 'User';
+
+        if (userData && userData.firstName) {
+          displayName = userData.firstName;
+          fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+        } else if (email) {
+          displayName = email.split('@')[0];
+          fullName = email;
+        }
+
+        // Update avatar with first letter
+        if (userAvatar) {
+          userAvatar.textContent = displayName.charAt(0).toUpperCase();
+        }
+
+        // Update display name
+        if (userDisplayName) {
+          userDisplayName.textContent = displayName;
+        }
+
+        // Update dropdown
+        if (dropdownUserName) {
+          dropdownUserName.textContent = fullName;
+        }
+        if (dropdownUserEmail) {
+          dropdownUserEmail.textContent = email || 'No email';
+        }
+      }
+
+      // Set active navigation item
+      function setActiveNavItem() {
+        const currentPage = window.location.pathname.replace('/', '').replace('.html', '') || 'admin_dashboard';
+        
+        document.querySelectorAll('.nav-item').forEach(item => {
+          const pageName = item.getAttribute('data-page');
+          if (pageName === currentPage) {
+            item.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            item.classList.add('bg-blue-600', 'text-white');
+          } else {
+            item.classList.remove('bg-blue-600', 'text-white');
+            item.classList.add('text-slate-700', 'hover:bg-slate-100');
+          }
+        });
+      }
+
+      // Auth state observer
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          initializeUserProfile(user);
+          setActiveNavItem();
+        } else {
+          window.location.href = 'auth.html';
+        }
+      });
+
+      // Set active nav item on page load
+      setActiveNavItem();
+
+      // Export for use in page-specific scripts
+      window.appGlobals = {
+        currentUser,
+        userData,
+        showToast,
+        showLoader,
+        hideLoader
+      };
+    </script>
+
+    
+<script id="data-script" type="module" data-tiramai="web-gen">
+import { 
+  collection, getDocs, doc, getDoc, deleteDoc, addDoc, query, where, orderBy, limit, startAfter,
+  Timestamp, getCountFromServer 
+} from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { auth, getDb } from "./scripts/firebase.js";
+import { showToast, showLoader, hideLoader } from "./scripts/main.js";
+
+const db = getDb();
+
+// Initialize Lucide icons
+lucide.createIcons();
+
+// Auth check
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname + location.search);
+  }
+});
+
+// Global state
+let currentRole = null;
+let assignedMembers = [];
+let availableMembers = [];
+let filteredMembers = [];
+let currentPage = 1;
+let searchTerm = '';
+let currentAbort;
+let removeTarget = null;
+const PAGE_SIZE = 25;
+
+// Helper functions
+const yieldToFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+
+function createSemaphore(max = 2) {
+  const queue = [];
+  let active = 0;
+  const next = () => {
+    if (active >= max || queue.length === 0) return;
+    active++;
+    const { fn, res, rej } = queue.shift();
+    Promise.resolve()
+      .then(fn)
+      .then(v => res(v))
+      .catch(e => rej(e))
+      .finally(() => { active--; next(); });
+  };
+  return (fn) => new Promise((res, rej) => { queue.push({ fn, res, rej }); next(); });
+}
+const withLimit = createSemaphore(2);
+
+// Get role ID from URL params
+function getRoleIdFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('roleId');
+}
+
+// Format date
+function formatDate(isoString) {
+  if (!isoString) return 'N/A';
+  try {
+    return new Date(isoString).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  } catch (error) {
+    return 'N/A';
+  }
+}
+
+// Fetch role details
+async function funLoadRoleDetails(roleId) {
+  try {
+    const roleDoc = await getDoc(doc(db, 'roles', roleId));
+    if (!roleDoc.exists()) {
+      showToast('Role not found', 'error');
+      window.location.href = 'role_list.html';
+      return null;
+    }
+    return { id: roleDoc.id, ...roleDoc.data() };
+  } catch (error) {
+    showToast('Failed to load role details: ' + (error?.message || 'Unknown error'), 'error');
+    return null;
+  }
+}
+
+// Fetch assigned members with teams
+async function funLoadAssignedMembers(roleId, isRefresh = false) {
+  if (currentAbort && !isRefresh) currentAbort.abort();
+  currentAbort = new AbortController();
+  const signal = currentAbort.signal;
+
+  try {
+    // Get member roles for this role
+    const memberRolesQuery = query(
+      collection(db, 'memberRoles'), 
+      where('roleId', '==', roleId),
+      orderBy('assignedAt', 'desc')
+    );
+    
+    const memberRolesSnapshot = await withLimit(() => getDocs(memberRolesQuery));
+    if (signal.aborted) return { members: [], total: 0 };
+
+    const memberRolesList = memberRolesSnapshot.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+
+    if (memberRolesList.length === 0) {
+      return { members: [], total: 0 };
+    }
+
+    // Get member details
+    const memberIds = memberRolesList.map(mr => mr.memberId);
+    const memberPromises = memberIds.map(id => withLimit(() => getDoc(doc(db, 'members', id))));
+    const memberDocs = await Promise.all(memberPromises);
+    
+    if (signal.aborted) return { members: [], total: 0 };
+
+    const members = [];
+    
+    for (let i = 0; i < memberDocs.length; i++) {
+      const memberDoc = memberDocs[i];
+      if (!memberDoc.exists()) continue;
+
+      const memberData = { id: memberDoc.id, ...memberDoc.data() };
+      const memberRole = memberRolesList[i];
+
+      // Get teams for this member
+      const teamMembersQuery = query(
+        collection(db, 'teamMembers'),
+        where('memberId', '==', memberData.id)
+      );
+      
+      const teamMembersSnapshot = await withLimit(() => getDocs(teamMembersQuery));
+      
+      if (signal.aborted) return { members: [], total: 0 };
+
+      const teamIds = teamMembersSnapshot.docs.map(doc => doc.data().teamId);
+      let teams = [];
+
+      if (teamIds.length > 0) {
+        const teamPromises = teamIds.map(id => withLimit(() => getDoc(doc(db, 'teams', id))));
+        const teamDocs = await Promise.all(teamPromises);
+        teams = teamDocs
+          .filter(doc => doc.exists())
+          .map(doc => ({ id: doc.id, ...doc.data() }));
+      }
+
+      members.push({
+        ...memberData,
+        teams: teams || [],
+        assignedAt: memberRole?.assignedAt || null,
+        memberRoleId: memberRole?.id || null
+      });
+    }
+
+    return { members, total: members.length };
+  } catch (error) {
+    if (signal.aborted) return { members: [], total: 0 };
+    showToast('Failed to load assigned members: ' + (error?.message || 'Unknown error'), 'error');
+    return { members: [], total: 0 };
+  }
+}
+
+// Fetch available members (not assigned to this role)
+async function funLoadAvailableMembers(roleId) {
+  try {
+    // Get all members
+    const membersSnapshot = await withLimit(() => getDocs(
+      query(collection(db, 'members'), orderBy('name'))
+    ));
+    const allMembers = membersSnapshot.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+
+    // Get already assigned member IDs
+    const memberRolesSnapshot = await withLimit(() => getDocs(
+      query(collection(db, 'memberRoles'), where('roleId', '==', roleId))
+    ));
+    const assignedMemberIds = new Set(memberRolesSnapshot.docs.map(doc => doc.data().memberId));
+
+    // Filter out assigned members
+    const available = allMembers.filter(member => !assignedMemberIds.has(member.id));
+
+    return available;
+  } catch (error) {
+    showToast('Failed to load available members: ' + (error?.message || 'Unknown error'), 'error');
+    return [];
+  }
+}
+
+// Update role UI
+function updateRoleUI(role) {
+  if (!role) return;
+  
+  document.getElementById('role-name').textContent = role.name || 'N/A';
+  document.getElementById('role-description').textContent = role.description || 'N/A';
+  document.getElementById('role-created-date').textContent = formatDate(role.createdAt);
+
+  // Show role info and hide skeleton
+  document.getElementById('role-info-skeleton').classList.add('hidden');
+  document.getElementById('role-info-content').classList.remove('hidden');
+}
+
+// Update members count
+function updateMemberCount(count) {
+  const memberCountEl = document.getElementById('member-count');
+  if (memberCountEl) {
+    memberCountEl.textContent = count;
+  }
+}
+
+// Render members table
+function renderMembersTable(members) {
+  const tbody = document.getElementById('members-tbody');
+  const table = document.getElementById('members-table');
+  const skeleton = document.getElementById('members-table-skeleton');
+  const emptyState = document.getElementById('empty-state');
+  const paginationContainer = document.getElementById('pagination-container');
+
+  // Apply search filter
+  filteredMembers = searchTerm ? 
+    members.filter(member => 
+      (member.name && member.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (member.email && member.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    ) : 
+    members;
+
+  // Calculate pagination
+  const total = filteredMembers.length;
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = Math.min(startIndex + PAGE_SIZE, total);
+  const pageMembers = filteredMembers.slice(startIndex, endIndex);
+
+  // Hide skeleton
+  skeleton.classList.add('hidden');
+
+  if (pageMembers.length === 0) {
+    table.classList.add('hidden');
+    paginationContainer.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    return;
+  }
+
+  // Show table and hide empty state
+  table.classList.remove('hidden');
+  emptyState.classList.add('hidden');
+
+  // Generate table rows
+  tbody.innerHTML = pageMembers.map(member => {
+    const initials = member.name ? member.name.charAt(0).toUpperCase() : 'U';
+    const teamsText = member.teams && member.teams.length > 0 ? 
+      member.teams.map(t => t.name).join(', ') : 
+      'No teams';
+
+    return `
+      <tr class="hover:bg-slate-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+              ${initials}
+            </div>
+            <div>
+              <div class="font-medium text-slate-900">
+                <a href="member_detail.html?memberId=${member.id}" class="hover:text-blue-600 focus:text-blue-600 focus:outline-none">
+                  ${member.name || 'N/A'}
+                </a>
+              </div>
+              <div class="text-sm text-slate-500">${member.email || 'N/A'}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-sm text-slate-900">
+          ${teamsText}
+        </td>
+        <td class="px-6 py-4 text-sm text-slate-500">
+          ${formatDate(member.assignedAt)}
+        </td>
+        <td class="px-6 py-4 text-right">
+          <button 
+            onclick="funShowRemoveConfirmation('${member.id}', '${member.name?.replace(/'/g, "\\'")}', '${member.memberRoleId}')" 
+            class="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            title="Remove from role"
+          >
+            <i data-lucide="user-minus" class="w-4 h-4"></i>
+            Remove
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  // Update pagination
+  updatePagination(total, startIndex + 1, endIndex);
+  lucide.createIcons();
+}
+
+// Update pagination UI
+function updatePagination(total, start, end) {
+  const paginationContainer = document.getElementById('pagination-container');
+  
+  if (total <= PAGE_SIZE) {
+    paginationContainer.classList.add('hidden');
+    return;
+  }
+
+  paginationContainer.classList.remove('hidden');
+  
+  document.getElementById('pagination-start').textContent = start;
+  document.getElementById('pagination-end').textContent = end;
+  document.getElementById('pagination-total').textContent = total;
+
+  const prevBtn = document.getElementById('pagination-prev');
+  const nextBtn = document.getElementById('pagination-next');
+
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = end >= total;
+}
+
+// Show assign members modal
+async function funShowAssignModal() {
+  const modal = document.getElementById('assign-members-modal');
+  const loading = document.getElementById('modal-loading');
+  const membersList = document.getElementById('available-members-list');
+  const noMembers = document.getElementById('no-available-members');
+  
+  modal.classList.remove('hidden');
+  loading.classList.remove('hidden');
+  membersList.classList.add('hidden');
+  noMembers.classList.add('hidden');
+
+  // Reset search
+  document.getElementById('modal-search-members').value = '';
+  
+  // Focus trap
+  document.getElementById('modal-search-members').focus();
+
+  try {
+    availableMembers = await funLoadAvailableMembers(currentRole.id);
+    
+    loading.classList.add('hidden');
+    
+    if (availableMembers.length === 0) {
+      noMembers.classList.remove('hidden');
+    } else {
+      renderAvailableMembers(availableMembers);
+      membersList.classList.remove('hidden');
+    }
+  } catch (error) {
+    loading.classList.add('hidden');
+    showToast('Failed to load available members: ' + (error?.message || 'Unknown error'), 'error');
+  }
+}
+
+// Render available members in modal
+function renderAvailableMembers(members, filter = '') {
+  const membersList = document.getElementById('available-members-list');
+  
+  const filtered = filter ? 
+    members.filter(member => 
+      (member.name && member.name.toLowerCase().includes(filter.toLowerCase())) ||
+      (member.email && member.email.toLowerCase().includes(filter.toLowerCase()))
+    ) : 
+    members;
+
+  membersList.innerHTML = filtered.map(member => {
+    const initials = member.name ? member.name.charAt(0).toUpperCase() : 'U';
+    
+    return `
+      <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer">
+        <input 
+          type="checkbox" 
+          class="member-checkbox w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500" 
+          data-member-id="${member.id}"
+          onchange="funUpdateSelectedCount()"
+        >
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+          ${initials}
+        </div>
+        <div class="flex-1">
+          <div class="font-medium text-slate-900">${member.name || 'N/A'}</div>
+          <div class="text-sm text-slate-500">${member.email || 'N/A'}</div>
+        </div>
+      </label>
+    `;
+  }).join('');
+
+  if (filtered.length === 0 && filter) {
+    membersList.innerHTML = `
+      <div class="text-center py-8">
+        <p class="text-slate-500">No members found matching "${filter}"</p>
+      </div>
+    `;
+  }
+}
+
+// Update selected count
+function funUpdateSelectedCount() {
+  const checkboxes = document.querySelectorAll('.member-checkbox:checked');
+  const count = checkboxes.length;
+  const selectedCountEl = document.getElementById('selected-count');
+  const saveBtn = document.getElementById('save-assignments-btn');
+  
+  selectedCountEl.textContent = count;
+  saveBtn.disabled = count === 0;
+}
+
+// Select/deselect all members
+function funSelectAllMembers(select = true) {
+  const checkboxes = document.querySelectorAll('.member-checkbox');
+  checkboxes.forEach(cb => cb.checked = select);
+  funUpdateSelectedCount();
+}
+
+// Save member assignments
+async function funSaveAssignments() {
+  const selectedCheckboxes = document.querySelectorAll('.member-checkbox:checked');
+  const selectedMemberIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.memberId);
+  
+  if (selectedMemberIds.length === 0) {
+    showToast('Please select at least one member', 'error');
+    return;
+  }
+
+  try {
+    showLoader('Assigning members...');
+    
+    // Create memberRoles records
+    const assignments = selectedMemberIds.map(memberId => ({
+      id: crypto.randomUUID(),
+      memberId,
+      roleId: currentRole.id,
+      assignedAt: new Date().toISOString()
+    }));
+
+    // Save all assignments
+    for (const assignment of assignments) {
+      await addDoc(collection(db, 'memberRoles'), assignment);
+    }
+
+    hideLoader();
+    showToast(`Successfully assigned ${selectedMemberIds.length} member(s) to the role`, 'success');
+    
+    // Close modal and refresh
+    funCloseAssignModal();
+    await funRefreshData();
+    
+  } catch (error) {
+    hideLoader();
+    showToast('Failed to assign members: ' + (error?.message || 'Unknown error'), 'error');
+  }
+}
+
+// Show remove confirmation modal
+function funShowRemoveConfirmation(memberId, memberName, memberRoleId) {
+  removeTarget = { memberId, memberName, memberRoleId };
+  
+  document.getElementById('remove-member-name').textContent = memberName;
+  document.getElementById('remove-member-modal').classList.remove('hidden');
+  
+  // Focus on cancel button
+  document.getElementById('cancel-remove-btn').focus();
+}
+
+// Remove member from role
+async function funRemoveMember() {
+  if (!removeTarget) return;
+
+  try {
+    showLoader('Removing member from role...');
+    
+    await deleteDoc(doc(db, 'memberRoles', removeTarget.memberRoleId));
+    
+    hideLoader();
+    showToast('Member removed from role successfully', 'success');
+    
+    // Close modal and refresh
+    funCloseRemoveModal();
+    await funRefreshData();
+    
+  } catch (error) {
+    hideLoader();
+    showToast('Failed to remove member: ' + (error?.message || 'Unknown error'), 'error');
+  }
+}
+
+// Close modals
+function funCloseAssignModal() {
+  document.getElementById('assign-members-modal').classList.add('hidden');
+  funSelectAllMembers(false);
+}
+
+function funCloseRemoveModal() {
+  document.getElementById('remove-member-modal').classList.add('hidden');
+  removeTarget = null;
+}
+
+// Refresh all data
+async function funRefreshData() {
+  if (!currentRole) return;
+
+  // Show skeleton
+  document.getElementById('members-table').classList.add('hidden');
+  document.getElementById('members-table-skeleton').classList.remove('hidden');
+  document.getElementById('empty-state').classList.add('hidden');
+
+  // Refresh assigned members
+  const { members, total } = await funLoadAssignedMembers(currentRole.id, true);
+  assignedMembers = members;
+  updateMemberCount(total);
+  
+  await yieldToFrame();
+  renderMembersTable(assignedMembers);
+}
+
+// Delete role
+async function funDeleteRole() {
+  if (!currentRole) return;
+  
+  if (!confirm(`Are you sure you want to delete the role "${currentRole.name}"? This action cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    showLoader('Deleting role...');
+    
+    // Delete all member role assignments first
+    const memberRolesSnapshot = await getDocs(
+      query(collection(db, 'memberRoles'), where('roleId', '==', currentRole.id))
+    );
+    
+    for (const memberRoleDoc of memberRolesSnapshot.docs) {
+      await deleteDoc(memberRoleDoc.ref);
+    }
+    
+    // Delete the role
+    await deleteDoc(doc(db, 'roles', currentRole.id));
+    
+    hideLoader();
+    showToast('Role deleted successfully', 'success');
+    
+    // Redirect to role list
+    window.location.href = 'role_list.html';
+    
+  } catch (error) {
+    hideLoader();
+    showToast('Failed to delete role: ' + (error?.message || 'Unknown error'), 'error');
+  }
+}
+
+// Initial load
+async function funInitialLoad() {
+  const roleId = getRoleIdFromUrl();
+  
+  if (!roleId) {
+    showToast('Role ID is required', 'error');
+    window.location.href = 'role_list.html';
+    return;
+  }
+
+  try {
+    // Load role details
+    currentRole = await funLoadRoleDetails(roleId);
+    if (!currentRole) return;
+
+    updateRoleUI(currentRole);
+
+    // Load assigned members
+    const { members, total } = await funLoadAssignedMembers(roleId);
+    assignedMembers = members;
+    updateMemberCount(total);
+    
+    await yieldToFrame();
+    renderMembersTable(assignedMembers);
+
+  } catch (error) {
+    showToast('Failed to load page data: ' + (error?.message || 'Unknown error'), 'error');
+  }
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Search functionality
+  const searchInput = document.getElementById('search-members');
+  let searchTimeout;
+  
+  searchInput?.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      searchTerm = e.target.value.trim();
+      currentPage = 1;
+      renderMembersTable(assignedMembers);
+    }, 300);
+  });
+
+  // Pagination
+  document.getElementById('pagination-prev')?.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderMembersTable(assignedMembers);
+    }
+  });
+
+  document.getElementById('pagination-next')?.addEventListener('click', () => {
+    const total = filteredMembers.length;
+    if (currentPage * PAGE_SIZE < total) {
+      currentPage++;
+      renderMembersTable(assignedMembers);
+    }
+  });
+
+  // Refresh button
+  document.getElementById('btn-refresh')?.addEventListener('click', funRefreshData);
+
+  // Action buttons
+  document.getElementById('btn-assign-members')?.addEventListener('click', funShowAssignModal);
+  document.getElementById('btn-edit-role')?.addEventListener('click', () => {
+    // Navigate to edit page (would need to be implemented)
+    showToast('Edit functionality would be implemented here', 'info');
+  });
+  document.getElementById('btn-delete-role')?.addEventListener('click', funDeleteRole);
+
+  // Modal controls - Assign Members
+  document.getElementById('close-assign-modal')?.addEventListener('click', funCloseAssignModal);
+  document.getElementById('cancel-assign-btn')?.addEventListener('click', funCloseAssignModal);
+  document.getElementById('save-assignments-btn')?.addEventListener('click', funSaveAssignments);
+  
+  document.getElementById('select-all-btn')?.addEventListener('click', () => funSelectAllMembers(true));
+  document.getElementById('deselect-all-btn')?.addEventListener('click', () => funSelectAllMembers(false));
+
+  // Modal search
+  const modalSearchInput = document.getElementById('modal-search-members');
+  let modalSearchTimeout;
+  
+  modalSearchInput?.addEventListener('input', (e) => {
+    clearTimeout(modalSearchTimeout);
+    modalSearchTimeout = setTimeout(() => {
+      const filter = e.target.value.trim();
+      renderAvailableMembers(availableMembers, filter);
+    }, 300);
+  });
+
+  // Modal controls - Remove Member
+  document.getElementById('cancel-remove-btn')?.addEventListener('click', funCloseRemoveModal);
+  document.getElementById('confirm-remove-btn')?.addEventListener('click', funRemoveMember);
+
+  // Close modals on backdrop click
+  document.getElementById('assign-members-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'assign-members-modal') {
+      funCloseAssignModal();
+    }
+  });
+
+  document.getElementById('remove-member-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'remove-member-modal') {
+      funCloseRemoveModal();
+    }
+  });
+
+  // ESC key handling
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (!document.getElementById('assign-members-modal').classList.contains('hidden')) {
+        funCloseAssignModal();
+      }
+      if (!document.getElementById('remove-member-modal').classList.contains('hidden')) {
+        funCloseRemoveModal();
+      }
+    }
+  });
+});
+
+// Expose global functions for inline event handlers
+window.funShowRemoveConfirmation = funShowRemoveConfirmation;
+window.funUpdateSelectedCount = funUpdateSelectedCount;
+
+// Initialize page
+funInitialLoad();
+</script>
+
+  </body>
+</html>
