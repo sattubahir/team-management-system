@@ -599,6 +599,50 @@
           </div>
         </div>
       </div>
+
+      <!-- Replace Role Confirmation Modal -->
+      <div id="replace-role-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
+        aria-labelledby="replace-role-title" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-xl shadow-xl max-w-md w-full" role="document">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h3 id="replace-role-title" class="text-lg leading-[1.625rem] font-medium text-slate-900">Replace Role
+              </h3>
+              <button id="close-replace-role-modal" class="text-slate-400 hover:text-slate-600"
+                aria-label="Close modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-900"><strong id="confirm-member-name"></strong> already has a role
+                    assigned.</p>
+                  <p class="text-sm text-slate-600 mt-1">Current role: <strong id="current-role-name"></strong></p>
+                  <p class="text-sm text-slate-600 mt-2">Do you want to replace it with <strong
+                      id="new-role-name"></strong>?</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-200">
+              <button id="cancel-replace-role"
+                class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Cancel
+              </button>
+              <button id="confirm-replace-role"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Assign
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Edit Member Modal -->
       <div id="edit-member-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50" role="dialog"
         aria-labelledby="edit-member-title" aria-hidden="true">
@@ -632,7 +676,8 @@
               <button id="cancel-edit-member"
                 class="px-4 py-2 text-slate-700 bg-white border border-slate-200 rounded font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500">Cancel</button>
               <button id="save-edit-member"
-                class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50">Save Changes</button>
+                class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50">Save
+                Changes</button>
             </div>
           </div>
         </div>
@@ -1355,11 +1400,68 @@
           return;
         }
 
-        showLoader('Adding to roles...');
+        // Only allow one role to be assigned
+        if (selectedRoles.length > 1) {
+          showToast('You can only assign one role per person. Please select only one role.', 'warning');
+          return;
+        }
+
+        // Check if member already has a role assigned
+        if (currentRoles.length > 0) {
+          // Show confirmation modal instead of blocking
+          const newRoleId = selectedRoles[0];
+          const newRole = Array.from(document.querySelectorAll('.role-checkbox')).find(cb => cb.value === newRoleId);
+          const newRoleName = newRole?.getAttribute('data-role-name') || 'Unknown';
+          const currentRoleName = currentRoles[0]?.name || 'Unknown';
+
+          // Store data for confirmation
+          window.pendingRoleAssignment = {
+            selectedRoles,
+            newRoleId,
+            currentRoleId: currentRoles[0].id
+          };
+
+          document.getElementById('confirm-member-name').textContent = currentMember?.name || 'this member';
+          document.getElementById('current-role-name').textContent = currentRoleName;
+          document.getElementById('new-role-name').textContent = newRoleName;
+          document.getElementById('replace-role-modal').classList.remove('hidden');
+          return;
+        }
+
+        // No existing role, assign directly
+        await funPerformRoleAssignment(selectedRoles);
+
+      } catch (error) {
+        console.error('Error in role assignment process:', error);
+        hideLoader();
+        showToast('Error: ' + (error.message || 'Unknown error'), 'error');
+      }
+    }
+
+    // Perform the actual role assignment
+    async function funPerformRoleAssignment(selectedRoles) {
+      try {
+        showLoader('Assigning role...');
 
         const batch = writeBatch(db);
         const now = new Date().toISOString();
 
+        // If member has existing roles, remove them first
+        if (currentRoles.length > 0) {
+          for (const role of currentRoles) {
+            const memberRoleQuery = query(
+              collection(db, 'memberRoles'),
+              where('memberId', '==', memberId),
+              where('roleId', '==', role.id)
+            );
+            const memberRoleSnapshot = await getDocs(memberRoleQuery);
+            memberRoleSnapshot.docs.forEach(doc => {
+              batch.delete(doc.ref);
+            });
+          }
+        }
+
+        // Add new roles
         for (const roleId of selectedRoles) {
           const memberRoleRef = doc(collection(db, 'memberRoles'));
           batch.set(memberRoleRef, {
@@ -1373,9 +1475,10 @@
         await batch.commit();
 
         hideLoader();
-        showToast(`Successfully assigned ${selectedRoles.length} role${selectedRoles.length === 1 ? '' : 's'}`, 'success');
+        showToast(`Successfully assigned role`, 'success');
 
         document.getElementById('add-roles-modal').classList.add('hidden');
+        document.getElementById('replace-role-modal').classList.add('hidden');
 
         // Refresh roles list
         await funLoadMemberRoles();
@@ -1383,7 +1486,7 @@
       } catch (error) {
         console.error('Error saving role assignments:', error);
         hideLoader();
-        showToast('Failed to assign roles: ' + (error.message || 'Unknown error'), 'error');
+        showToast('Failed to assign role: ' + (error.message || 'Unknown error'), 'error');
       }
     }
 
@@ -1736,6 +1839,21 @@
         document.getElementById('remove-role-modal').classList.add('hidden');
       });
       document.getElementById('confirm-remove-role')?.addEventListener('click', funRemoveFromRole);
+
+      // Replace Role Modal
+      document.getElementById('close-replace-role-modal')?.addEventListener('click', () => {
+        document.getElementById('replace-role-modal').classList.add('hidden');
+      });
+      document.getElementById('cancel-replace-role')?.addEventListener('click', () => {
+        document.getElementById('replace-role-modal').classList.add('hidden');
+      });
+      document.getElementById('confirm-replace-role')?.addEventListener('click', async () => {
+        if (window.pendingRoleAssignment) {
+          document.getElementById('replace-role-modal').classList.add('hidden');
+          await funPerformRoleAssignment(window.pendingRoleAssignment.selectedRoles);
+          window.pendingRoleAssignment = null;
+        }
+      });
 
       // Close modals on backdrop click
       document.getElementById('add-teams-modal')?.addEventListener('click', (e) => {
