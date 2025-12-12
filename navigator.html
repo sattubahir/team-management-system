@@ -1,359 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
 
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Internal Team Management System - Tiram AI</title>
-      <style>
-          :root {
-              --primary-color: #374151;
-              --primary-hover: #1f2937;
-              --primary-light: #6b7280;
-              --secondary-color: #0ea5e9;
-              --success-color: #10b981;
-              --gray-50: #f9fafb;
-              --gray-100: #f3f4f6;
-              --gray-200: #e5e7eb;
-              --gray-300: #d1d5db;
-              --gray-400: #9ca3af;
-              --gray-500: #6b7280;
-              --gray-600: #4b5563;
-              --gray-700: #374151;
-              --gray-800: #1f2937;
-              --gray-900: #111827;
-              --white: #ffffff;
-              --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-              --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-              --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-              --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-          }
-  
-          * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-          }
-  
-          body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
-              min-height: 100vh;
-              color: var(--gray-900);
-          }
-  
-          .container {
-              max-width: 1200px;
-              margin: 0 auto;
-              padding: 2rem;
-          }
-  
-          .header {
-              text-align: center;
-              margin-bottom: 3rem;
-          }
-  
-          .header h1 {
-              font-size: 2.5rem;
-              font-weight: 700;
-              background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              margin-bottom: 1rem;
-          }
-  
-          .header p {
-              font-size: 1.1rem;
-              color: var(--gray-600);
-              max-width: 600px;
-              margin: 0 auto;
-          }
-  
-          .prototype-badge {
-              display: inline-flex;
-              align-items: center;
-              gap: 0.5rem;
-              background: rgba(240, 74, 0, 0.1);
-              color: var(--primary-color);
-              padding: 0.5rem 1rem;
-              border-radius: 50px;
-              font-size: 0.9rem;
-              font-weight: 600;
-              margin-bottom: 2rem;
-          }
-  
-          .apps-grid {
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-              gap: 2rem;
-              margin-top: 2rem;
-              max-width: 1400px;
-              margin-left: auto;
-              margin-right: auto;
-          }
-  
-          .app-card {
-              background: var(--white);
-              border-radius: 20px;
-              padding: 0;
-              box-shadow: var(--shadow-md);
-              transition: all 0.3s ease;
-              border: 2px solid transparent;
-              overflow: hidden;
-              position: relative;
-          }
-  
-          .app-card:hover {
-              transform: translateY(-8px);
-              box-shadow: var(--shadow-xl);
-              border-color: var(--primary-color);
-          }
-  
-          .app-content {
-              padding: 3rem 1.5rem 1.5rem;
-              display: flex;
-              flex-direction: column;
-              min-height: 200px;
-          }
-  
-          .app-info {
-              flex: 1;
-          }
-  
-          .app-title-container {
-              display: flex;
-              align-items: center;
-              gap: 0.75rem;
-              margin-bottom: 0.75rem;
-          }
-  
-          .app-title {
-              font-size: 1.4rem;
-              font-weight: 700;
-              color: var(--gray-900);
-              line-height: 1.3;
-              margin: 0;
-              flex: 1;
-          }
-  
-          .launch-icon {
-              background: var(--primary-color);
-              color: var(--white);
-              border: none;
-              border-radius: 8px;
-              width: 32px;
-              height: 32px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              cursor: pointer;
-              transition: all 0.2s ease;
-              box-shadow: var(--shadow-sm);
-              flex-shrink: 0;
-          }
-  
-          .launch-icon:hover {
-              background: var(--primary-hover);
-              transform: scale(1.1);
-              box-shadow: var(--shadow-md);
-          }
-  
-          .app-description {
-              color: var(--gray-600);
-              font-size: 0.95rem;
-              line-height: 1.6;
-              margin-bottom: 1rem;
-              display: -webkit-box;
-              -webkit-line-clamp: 3;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              max-height: 4.8em;
-          }
-  
-          .app-persona {
-              display: inline-flex;
-              align-items: center;
-              gap: 0.5rem;
-              background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
-              color: var(--gray-700);
-              padding: 0.5rem 1rem;
-              border-radius: 25px;
-              font-size: 0.85rem;
-              font-weight: 600;
-              border: 1px solid var(--gray-200);
-          }
-  
-  
-  
-          .footer {
-              text-align: center;
-              margin-top: 4rem;
-              padding-top: 2rem;
-              border-top: 1px solid var(--gray-200);
-          }
-  
-          .footer p {
-              color: var(--gray-500);
-              font-size: 0.9rem;
-          }
-  
-          .feedback-button {
-              position: fixed;
-              bottom: 2rem;
-              right: 2rem;
-              background: var(--primary-color);
-              color: var(--white);
-              border: none;
-              border-radius: 50px;
-              padding: 1rem 2rem;
-              font-weight: 600;
-              cursor: pointer;
-              box-shadow: var(--shadow-lg);
-              transition: all 0.3s ease;
-          }
-  
-          .feedback-button:hover {
-              background: var(--primary-hover);
-              transform: scale(1.05);
-          }
-  
-          @media (max-width: 768px) {
-              .container {
-                  padding: 1rem;
-              }
-  
-              .header h1 {
-                  font-size: 2rem;
-              }
-  
-              .apps-grid {
-                  grid-template-columns: 1fr;
-                  gap: 1rem;
-              }
-  
-              .app-content {
-                  padding: 2.5rem 1rem 1rem;
-                  min-height: 180px;
-              }
-  
-              .app-number {
-                  top: 1rem;
-                  left: 1rem;
-                  width: 24px;
-                  height: 24px;
-                  font-size: 0.75rem;
-              }
-  
-              .app-title {
-                  font-size: 1.2rem;
-              }
-  
-              .app-description {
-                  font-size: 0.9rem;
-                  margin-bottom: 0.75rem;
-              }
-  
-              .launch-icon {
-                  width: 28px;
-                  height: 28px;
-              }
-  
-              .feedback-button {
-                  bottom: 1rem;
-                  right: 1rem;
-                  padding: 0.75rem 1.5rem;
-              }
-          }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <div class="header">
-              
-              <h1>Internal Team Management System</h1>
-              <p>Choose an application to explore. Each app is designed for specific user personas and business workflows.</p>
-          </div>
-  
-          <div class="apps-grid">
-              
-          <div class="app-card">
-            <div class="app-content">
-              <div class="app-info">
-                <div class="app-title-container">
-                  <h3 class="app-title">Team Admin Portal</h3>
-                  <button class="launch-icon" onclick="navigateToApp('administrator', 'admin_dashboard.html')" title="Launch App">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                      <polyline points="15,3 21,3 21,9"/>
-                      <line x1="10" y1="14" x2="21" y2="3"/>
-                    </svg>
-                  </button>
-                </div>
-                <p class="app-description">Comprehensive management interface for administrators to establish team names, maintain member lists, define roles with descriptions, and assign members to roles. Web platform is optimal for administrators who need full data entry capabilities, detailed forms, and extensive configuration options that work best on desktop environments with larger screens and keyboard input.</p>
-                <span class="app-persona">👤 Administrator</span>
-              </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Team Management System - Tiram AI</title>
+  <style>
+    :root {
+      --primary-color: #374151;
+      --primary-hover: #1f2937;
+      --primary-light: #6b7280;
+      --secondary-color: #0ea5e9;
+      --success-color: #10b981;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      min-height: 100vh;
+      color: var(--gray-900);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: var(--gray-600);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .prototype-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(240, 74, 0, 0.1);
+      color: var(--primary-color);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .app-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .app-card {
+      cursor: pointer;
+    }
+
+    .app-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary-color);
+    }
+
+    .app-content {
+      padding: 3rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 200px;
+    }
+
+    .app-info {
+      flex: 1;
+    }
+
+    .app-title-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .app-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      line-height: 1.3;
+      margin: 0;
+      flex: 1;
+    }
+
+    .launch-icon {
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+
+    .launch-icon:hover {
+      background: var(--primary-hover);
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+    }
+
+    .app-description {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 4.8em;
+    }
+
+    .app-persona {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
+      color: var(--gray-700);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid var(--gray-200);
+    }
+
+
+
+    .footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .footer p {
+      color: var(--gray-500);
+      font-size: 0.9rem;
+    }
+
+    .feedback-button {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+
+    .feedback-button:hover {
+      background: var(--primary-hover);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .apps-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .app-content {
+        padding: 2.5rem 1rem 1rem;
+        min-height: 180px;
+      }
+
+      .app-number {
+        top: 1rem;
+        left: 1rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+      }
+
+      .app-title {
+        font-size: 1.2rem;
+      }
+
+      .app-description {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .launch-icon {
+        width: 28px;
+        height: 28px;
+      }
+
+      .feedback-button {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+
+      <h1>Internal Team Management System</h1>
+      <p>Choose an application to explore. Each app is designed for specific user personas and business workflows.</p>
+    </div>
+
+    <div class="apps-grid">
+
+      <div class="app-card" onclick="navigateToApp('administrator', 'admin_dashboard.html')">
+        <div class="app-content">
+          <div class="app-info">
+            <div class="app-title-container">
+              <h3 class="app-title">Team Admin Portal</h3>
+              <button class="launch-icon" onclick="event.stopPropagation()" title="Launch App">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15,3 21,3 21,9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </button>
             </div>
+            <p class="app-description">Comprehensive management interface for administrators to establish team names,
+              maintain member lists, define roles with descriptions, and assign members to roles. Web platform is
+              optimal for administrators who need full data entry capabilities, detailed forms, and extensive
+              configuration options that work best on desktop environments with larger screens and keyboard input.</p>
+            <span class="app-persona">👤 Administrator</span>
           </div>
-        
-          <div class="app-card">
-            <div class="app-content">
-              <div class="app-info">
-                <div class="app-title-container">
-                  <h3 class="app-title">Team Portal</h3>
-                  <button class="launch-icon" onclick="navigateToApp('team_member', 'team_portal.html')" title="Launch App">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                      <polyline points="15,3 21,3 21,9"/>
-                      <line x1="10" y1="14" x2="21" y2="3"/>
-                    </svg>
-                  </button>
-                </div>
-                <p class="app-description">Single-page read-only display showing current team structure, roles, and assigned members as configured by administrators. Web platform is suitable for this reference-only application as it provides easy access across devices and can be bookmarked for quick reference without requiring mobile-specific features.</p>
-                <span class="app-persona">👤 Team Member</span>
-              </div>
-            </div>
-          </div>
-        
-          </div>
-  
-          <div class="footer">
-              <p>Built with Tiram AI</p>
-          </div>
+        </div>
       </div>
-  
-      <script>
-          function navigateToApp(appFolderName, firstPage) {
-              const appUrl = `./apps/${appFolderName}/${firstPage}`;
-              window.open(appUrl, '_blank');
-          }
-  
-          function openFeedback() {
-              // This would integrate with your feedback system
-              alert('Feedback system integration - to be implemented');
-          }
-  
-          // Initialize navigator with modal functionality
-          document.addEventListener('DOMContentLoaded', function() {
-              console.log('Navigator page loaded with 2 applications');
-              
-              // Initialize feedback module for navigator
-              initialiseFeedback();
-              
-              // Show modal if not confirmed before (using same storage key as individual apps)
-              if (!localStorage.getItem('prototype_confirmed')) {
-                  showConfirmationModal();
-              }
-          });
-  
-          // Reuse existing modal functionality with same storage key
-          
-            
-            const showConfirmationModal = () => {
-              // Inject styles
-              const style = document.createElement("style");
-              style.textContent = `
+
+      <div class="app-card" onclick="navigateToApp('team_member', 'team_portal.html')">
+        <div class="app-content">
+          <div class="app-info">
+            <div class="app-title-container">
+              <h3 class="app-title">Team Portal</h3>
+              <button class="launch-icon" onclick="event.stopPropagation()" title="Launch App">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15,3 21,3 21,9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </button>
+            </div>
+            <p class="app-description">Single-page read-only display showing current team structure, roles, and assigned
+              members as configured by administrators. Web platform is suitable for this reference-only application as
+              it provides easy access across devices and can be bookmarked for quick reference without requiring
+              mobile-specific features.</p>
+            <span class="app-persona">👤 Team Member</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <p>Built with Tiram AI</p>
+    </div>
+  </div>
+
+  <script>
+    function navigateToApp(appFolderName, firstPage) {
+      const appUrl = `./apps/${appFolderName}/${firstPage}`;
+      window.open(appUrl, '_blank');
+    }
+
+    function openFeedback() {
+      // This would integrate with your feedback system
+      alert('Feedback system integration - to be implemented');
+    }
+
+    // Initialize navigator with modal functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('Navigator page loaded with 2 applications');
+
+      // Initialize feedback module for navigator
+      initialiseFeedback();
+
+      // Show modal if not confirmed before (using same storage key as individual apps)
+      if (!localStorage.getItem('prototype_confirmed')) {
+        showConfirmationModal();
+      }
+    });
+
+    // Reuse existing modal functionality with same storage key
+
+
+    const showConfirmationModal = () => {
+      // Inject styles
+      const style = document.createElement("style");
+      style.textContent = `
         :root {
       --primary-color-modal: #f04a00;
       --primary-hover-modal: #d63d00;
@@ -1054,11 +1065,11 @@
       }
     }
       `;
-              document.head.appendChild(style);
+      document.head.appendChild(style);
 
-              // Inject modal HTML
-              const modalWrapper = document.createElement("div");
-              modalWrapper.innerHTML = `
+      // Inject modal HTML
+      const modalWrapper = document.createElement("div");
+      modalWrapper.innerHTML = `
         <div id="confirmation-modal-overlay">
           <div id="confirmation-modal-content">
             <div class="modal-header">
@@ -1176,127 +1187,128 @@
           </div>
         </div>
       `;
-              document.body.appendChild(modalWrapper);
+      document.body.appendChild(modalWrapper);
 
-              const checkbox = document.getElementById("confirm-checkbox");
-              const button = document.getElementById("confirm-prototype-button");
+      const checkbox = document.getElementById("confirm-checkbox");
+      const button = document.getElementById("confirm-prototype-button");
 
-              checkbox.addEventListener("change", () => {
-                if (checkbox.checked) {
-                  button.disabled = false;
-                } else {
-                  button.disabled = true;
-                }
-              });
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          button.disabled = false;
+        } else {
+          button.disabled = true;
+        }
+      });
 
-              button.addEventListener("click", () => {
-                if (checkbox.checked) {
-                  hideConfirmationModal();
-                }
-              });
-            };
+      button.addEventListener("click", () => {
+        if (checkbox.checked) {
+          hideConfirmationModal();
+        }
+      });
+    };
 
-            const hideConfirmationModal = () => {
-              localStorage.setItem('prototype_confirmed', "true");
-              const overlay = document.getElementById("confirmation-modal-overlay");
-              if (overlay) {
-                overlay.style.opacity = "0";
-                setTimeout(() => overlay.remove(), 300);
-              }
-            };
-            
-            const initialiseFeedback = () => {
-              const style = document.createElement("link");
-              style.rel = "stylesheet";
-              style.href = "https://feedback-lib.tiram.app/tiramai-feedback-lib.css";
-              document.body.appendChild(style);
+    const hideConfirmationModal = () => {
+      localStorage.setItem('prototype_confirmed', "true");
+      const overlay = document.getElementById("confirmation-modal-overlay");
+      if (overlay) {
+        overlay.style.opacity = "0";
+        setTimeout(() => overlay.remove(), 300);
+      }
+    };
 
-              const script = document.createElement("script");
-              script.src = "https://feedback-lib.tiram.app/tiramai-feedback-lib.min.js";
+    const initialiseFeedback = () => {
+      const style = document.createElement("link");
+      style.rel = "stylesheet";
+      style.href = "https://feedback-lib.tiram.app/tiramai-feedback-lib.css";
+      document.body.appendChild(style);
 
-              script.onload = async function () {
-                new window.TiramaiFeedbackLib({
-                  // Required
-                  apiKey: "eyJidXNpbmVzc0lkZWFJZCI6ImMwYTMxZDIyLTU3ZTktNDBkNC1hNTA0LWVjN2JlNmNkMGJjNSIsImNyZWF0ZWRBdCI6MTc2NTMxNTAxOTc3OCwiY3JlYXRlZEJ5IjoiY29kZWdlbmVzaXMifQ==",
+      const script = document.createElement("script");
+      script.src = "https://feedback-lib.tiram.app/tiramai-feedback-lib.min.js";
 
-                  // Context
-                  businessIdeaId: "c0a31d22-57e9-40d4-a504-ec7be6cd0bc5",
-                  projectName: "Internal Team Management System",
-                  personaRole: "Internal Team Management System",
-                  email: "N/A",
-                  environment: "development"
-                });
-              };
-              document.body.appendChild(script);
-            };
+      script.onload = async function () {
+        new window.TiramaiFeedbackLib({
+          // Required
+          apiKey: "eyJidXNpbmVzc0lkZWFJZCI6ImMwYTMxZDIyLTU3ZTktNDBkNC1hNTA0LWVjN2JlNmNkMGJjNSIsImNyZWF0ZWRBdCI6MTc2NTMxNTAxOTc3OCwiY3JlYXRlZEJ5IjoiY29kZWdlbmVzaXMifQ==",
 
-            const initialiseHelpbot = () => {              
-              // Inject CSS
-              const style = document.createElement('link');
-              style.rel = 'stylesheet';
-              style.href = 'https://tiramai-helpbot-lib.vercel.app/tiramai-helpbot-lib.css';
-              document.body.appendChild(style);
+          // Context
+          businessIdeaId: "c0a31d22-57e9-40d4-a504-ec7be6cd0bc5",
+          projectName: "Internal Team Management System",
+          personaRole: "Internal Team Management System",
+          email: "N/A",
+          environment: "development"
+        });
+      };
+      document.body.appendChild(script);
+    };
 
-              // Inject JS
-              const script = document.createElement('script');
-              script.src = 'https://tiramai-helpbot-lib.vercel.app/tiramai-helpbot-lib.min.js';
+    const initialiseHelpbot = () => {
+      // Inject CSS
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = 'https://tiramai-helpbot-lib.vercel.app/tiramai-helpbot-lib.css';
+      document.body.appendChild(style);
 
-              script.onload = function () {
-                    new window.TiramaiHelpBotLib({
-                      ideaId: "c0a31d22-57e9-40d4-a504-ec7be6cd0bc5",
-                      apiKey: "eyJidXNpbmVzc0lkZWFJZCI6ImMwYTMxZDIyLTU3ZTktNDBkNC1hNTA0LWVjN2JlNmNkMGJjNSIsImNyZWF0ZWRBdCI6MTc2NTMxNTAxOTc3OCwiY3JlYXRlZEJ5IjoiY29kZWdlbmVzaXMifQ==",
-                      shouldShowMode: false,
-                      defaultVersion: 'v1'
-                    });
-                    console.log('[Stage1] Helpbot initialized successfully');
-              };
+      // Inject JS
+      const script = document.createElement('script');
+      script.src = 'https://tiramai-helpbot-lib.vercel.app/tiramai-helpbot-lib.min.js';
 
-              script.onerror = function () {
-                console.error('[Stage1] Failed to load Helpbot library');
-              };
+      script.onload = function () {
+        new window.TiramaiHelpBotLib({
+          ideaId: "c0a31d22-57e9-40d4-a504-ec7be6cd0bc5",
+          apiKey: "eyJidXNpbmVzc0lkZWFJZCI6ImMwYTMxZDIyLTU3ZTktNDBkNC1hNTA0LWVjN2JlNmNkMGJjNSIsImNyZWF0ZWRBdCI6MTc2NTMxNTAxOTc3OCwiY3JlYXRlZEJ5IjoiY29kZWdlbmVzaXMifQ==",
+          shouldShowMode: false,
+          defaultVersion: 'v1'
+        });
+        console.log('[Stage1] Helpbot initialized successfully');
+      };
 
-              document.body.appendChild(script);
-            };
-            
-            
-            /**
- * Initialize the refiner module
- */
-const initialiseRefiner = () => {
-  console.log('[Main] Initializing Refiner');
-  // Add CDN for refiner
-  const style = document.createElement('link');
-  style.rel = 'stylesheet';
-  style.href = 'https://refiner-lib.tiram.app/tiramai-refiner-lib.css';
-  document.body.appendChild(style);
+      script.onerror = function () {
+        console.error('[Stage1] Failed to load Helpbot library');
+      };
 
-  const script = document.createElement('script');
-  script.src = 'https://refiner-lib.tiram.app/tiramai-refiner-lib.min.js';
+      document.body.appendChild(script);
+    };
 
-  // Initialize the refiner lib on script load
-  script.onload = function () {
-    // Initialize the Tiramai Refiner
-    new window.RefinerLib({
-      apiUrl:
-        "https://code-genesis-dev.azurewebsites.net/refiner/refine-page?env=dev",
-      saveApiUrl:
-        "https://code-genesis-dev.azurewebsites.net/refiner/apply-changes-to-deployments?env=dev",
-      suggestionsApiUrl:
-        "https://code-genesis-dev.azurewebsites.net/refiner/get-element-suggestions?env=dev",
-      fabPosition: "bottom-right",
-      highlightColor: "#f04a01",
-      createdBy: "prototype_email@zpqv.com",
-      personaRole: "Internal Team Management System",
-      appTitle: "Internal Team Management System",
-      appType: "business",
-      businessIdeaId: "c0a31d22-57e9-40d4-a504-ec7be6cd0bc5",
-      environment: "development",
-    });
-  };
 
-  document.body.appendChild(script);
-};
+    /**
+* Initialize the refiner module
+*/
+    const initialiseRefiner = () => {
+      console.log('[Main] Initializing Refiner');
+      // Add CDN for refiner
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = 'https://refiner-lib.tiram.app/tiramai-refiner-lib.css';
+      document.body.appendChild(style);
 
-      </script>
-  </body>
-  </html>
+      const script = document.createElement('script');
+      script.src = 'https://refiner-lib.tiram.app/tiramai-refiner-lib.min.js';
+
+      // Initialize the refiner lib on script load
+      script.onload = function () {
+        // Initialize the Tiramai Refiner
+        new window.RefinerLib({
+          apiUrl:
+            "https://code-genesis-dev.azurewebsites.net/refiner/refine-page?env=dev",
+          saveApiUrl:
+            "https://code-genesis-dev.azurewebsites.net/refiner/apply-changes-to-deployments?env=dev",
+          suggestionsApiUrl:
+            "https://code-genesis-dev.azurewebsites.net/refiner/get-element-suggestions?env=dev",
+          fabPosition: "bottom-right",
+          highlightColor: "#f04a01",
+          createdBy: "prototype_email@zpqv.com",
+          personaRole: "Internal Team Management System",
+          appTitle: "Internal Team Management System",
+          appType: "business",
+          businessIdeaId: "c0a31d22-57e9-40d4-a504-ec7be6cd0bc5",
+          environment: "development",
+        });
+      };
+
+      document.body.appendChild(script);
+    };
+
+  </script>
+</body>
+
+</html>
