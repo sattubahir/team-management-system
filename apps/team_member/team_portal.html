@@ -42,6 +42,24 @@
       transform: translateY(0);
     }
   </style>
+  <style>
+    :root {
+      --sidebar-width: 16rem;
+    }
+
+    /* w-64 */
+    @media (min-width: 768px) {
+      #pageContent {
+        margin-left: var(--sidebar-width) !important;
+      }
+
+      /* optionally ensure the inner container uses full width to the right of sidebar */
+      #pageContent>.container,
+      #pageContent>.max-w-screen-xl {
+        margin-left: 0;
+      }
+    }
+  </style>
 </head>
 
 <body class="bg-slate-50 min-h-screen text-slate-900">
