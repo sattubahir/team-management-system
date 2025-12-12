@@ -499,10 +499,19 @@
       let displayName = 'User';
       let fullName = 'User';
 
-      if (userData && userData.firstName) {
-        displayName = userData.firstName;
-        fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+      // Check if userData exists and has name information
+      if (userData) {
+        if (userData.firstName || userData.lastName) {
+          // Use first name if available, otherwise use last name
+          displayName = userData.firstName || userData.lastName;
+          fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
+        } else if (userData.email) {
+          // Fallback to email if no name is provided
+          displayName = userData.email.split('@')[0];
+          fullName = userData.email;
+        }
       } else if (email) {
+        // If no userData, use email
         displayName = email.split('@')[0];
         fullName = email;
       }
