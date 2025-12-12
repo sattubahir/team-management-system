@@ -46,15 +46,23 @@
     }
   </script>
   <style>
-  :root { --sidebar-width: 16rem; } /* w-64 */
-  @media (min-width: 768px) {
-    #pageContent { margin-left: var(--sidebar-width) !important; }
-    /* optionally ensure the inner container uses full width to the right of sidebar */
-    #pageContent > .container, #pageContent > .max-w-screen-xl {
-      margin-left: 0;
+    :root {
+      --sidebar-width: 16rem;
     }
-  }
-</style>
+
+    /* w-64 */
+    @media (min-width: 768px) {
+      #pageContent {
+        margin-left: var(--sidebar-width) !important;
+      }
+
+      /* optionally ensure the inner container uses full width to the right of sidebar */
+      #pageContent>.container,
+      #pageContent>.max-w-screen-xl {
+        margin-left: 0;
+      }
+    }
+  </style>
 
 </head>
 
@@ -442,21 +450,28 @@
 
       let displayName = 'User';
       let fullName = 'User';
+      let avatarLetter = 'U';
 
-      if (userData && userData.firstName) {
+      if (userData && userData.firstName && userData.lastName) {
+        fullName = `${userData.firstName} ${userData.lastName}`.trim();
+        displayName = fullName;
+        avatarLetter = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`.toUpperCase();
+      } else if (userData && userData.firstName) {
         displayName = userData.firstName;
-        fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+        fullName = userData.firstName;
+        avatarLetter = userData.firstName.charAt(0).toUpperCase();
       } else if (email) {
         displayName = email.split('@')[0];
         fullName = email;
+        avatarLetter = email.charAt(0).toUpperCase();
       }
 
-      // Update avatar with first letter
+      // Update avatar with initials or first letter
       if (userAvatar) {
-        userAvatar.textContent = displayName.charAt(0).toUpperCase();
+        userAvatar.textContent = avatarLetter;
       }
 
-      // Update display name
+      // Update display name with full name
       if (userDisplayName) {
         userDisplayName.textContent = displayName;
       }

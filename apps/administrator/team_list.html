@@ -498,30 +498,28 @@
 
       let displayName = 'User';
       let fullName = 'User';
+      let avatarLetter = 'U';
 
-      // Check if userData exists and has name information
-      if (userData) {
-        if (userData.firstName || userData.lastName) {
-          // Use first name if available, otherwise use last name
-          displayName = userData.firstName || userData.lastName;
-          fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
-        } else if (userData.email) {
-          // Fallback to email if no name is provided
-          displayName = userData.email.split('@')[0];
-          fullName = userData.email;
-        }
+      if (userData && userData.firstName && userData.lastName) {
+        fullName = `${userData.firstName} ${userData.lastName}`.trim();
+        displayName = fullName;
+        avatarLetter = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`.toUpperCase();
+      } else if (userData && userData.firstName) {
+        displayName = userData.firstName;
+        fullName = userData.firstName;
+        avatarLetter = userData.firstName.charAt(0).toUpperCase();
       } else if (email) {
-        // If no userData, use email
         displayName = email.split('@')[0];
         fullName = email;
+        avatarLetter = email.charAt(0).toUpperCase();
       }
 
-      // Update avatar with first letter
+      // Update avatar with initials or first letter
       if (userAvatar) {
-        userAvatar.textContent = displayName.charAt(0).toUpperCase();
+        userAvatar.textContent = avatarLetter;
       }
 
-      // Update display name
+      // Update display name with full name
       if (userDisplayName) {
         userDisplayName.textContent = displayName;
       }
